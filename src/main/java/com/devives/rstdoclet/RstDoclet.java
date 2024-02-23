@@ -34,7 +34,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 /**
- * Marklet entry point. This class declares
+ * RstDoclet entry point. This class declares
  * the {@link #start(RootDoc)} method required
  * by the doclet API in order to be called by the
  * javadoc tool.
@@ -85,79 +85,9 @@ public final class RstDoclet extends AbstractDoclet {
     }
 
     /**
-     * Start the generation of files. Call generate methods in the individual
-     * writers, which will in turn genrate the documentation files. Call the
-     * TreeWriter generation first to ensure the Class Hierarchy is built
-     * first and then can be used in the later generation.
-     * <p>
-     * For new format.
-     *
-     * @see com.sun.javadoc.RootDoc
-     */
-    protected void generateOtherFiles(RootDoc root, ClassTree classtree)
-            throws Exception {
-//        super.generateOtherFiles(root, classtree);
-//        if (configuration.linksource) {
-//            SourceToHTMLConverter.convertRoot(configuration,
-//                    root, DocPaths.SOURCE_OUTPUT);
-//        }
-//
-//        if (configuration.topFile.isEmpty()) {
-//            configuration.standardmessage.
-//                    error("doclet.No_Non_Deprecated_Classes_To_Document");
-//            return;
-//        }
-//        boolean nodeprecated = configuration.nodeprecated;
-//        performCopy(configuration.helpfile);
-//        performCopy(configuration.stylesheetfile);
-//        // do early to reduce memory footprint
-//        if (configuration.classuse) {
-//            ClassUseWriter.generate(configuration, classtree);
-//        }
-//        IndexBuilder indexbuilder = new IndexBuilder(configuration, nodeprecated);
-//
-//        if (configuration.createtree) {
-//            TreeWriter.generate(configuration, classtree);
-//        }
-//        if (configuration.createindex) {
-//            if (configuration.splitindex) {
-//                SplitIndexWriter.generate(configuration, indexbuilder);
-//            } else {
-//                SingleIndexWriter.generate(configuration, indexbuilder);
-//            }
-//        }
-//
-//        if (!(configuration.nodeprecatedlist || nodeprecated)) {
-//            DeprecatedListWriter.generate(configuration);
-//        }
-//
-//        AllClassesFrameWriter.generate(configuration,
-//                new IndexBuilder(configuration, nodeprecated, true));
-//
-//        FrameOutputWriter.generate(configuration);
-//
-//        if (configuration.createoverview) {
-//            PackageIndexWriter.generate(configuration);
-//        }
-//        if (configuration.helpfile.length() == 0 &&
-//                !configuration.nohelp) {
-//            HelpWriter.generate(configuration);
-//        }
-//        // If a stylesheet file is not specified, copy the default stylesheet
-//        // and replace newline with platform-specific newline.
-//        DocFile f;
-//        if (configuration.stylesheetfile.length() == 0) {
-//            f = DocFile.createFileForOutput(configuration, DocPaths.STYLESHEET);
-//            f.copyResource(DocPaths.RESOURCES.resolve(DocPaths.STYLESHEET), false, true);
-//        }
-//        f = DocFile.createFileForOutput(configuration, DocPaths.JAVASCRIPT);
-//        f.copyResource(DocPaths.RESOURCES.resolve(DocPaths.JAVASCRIPT), true, true);
-    }
-
-    /**
      * {@inheritDoc}
      */
-    protected void generateClassFiles(ClassDoc[] arr, ClassTree classtree) {
+    protected void generateClassFiles(ClassDoc[] arr, ClassTree classTree) {
         Arrays.sort(arr);
         for (int i = 0; i < arr.length; i++) {
             if (!(configuration.isGeneratedDoc(arr[i]) && arr[i].isIncluded())) {
@@ -172,24 +102,12 @@ public final class RstDoclet extends AbstractDoclet {
                 String fileName = curr.name().replace(".", "-");
                 File file = packageDirectory.resolve(fileName + ".rst").toFile();
                 new TextFileWriter(file, new ClassRstGenerator(curr, configuration)).write();
-//                if (curr.isAnnotationType()) {
-//                    AbstractBuilder annotationTypeBuilder =
-//                            configuration.getBuilderFactory()
-//                                    .getAnnotationTypeBuilder((AnnotationTypeDoc) curr,
-//                                            prev, next);
-//                    annotationTypeBuilder.build();
-//                } else {
-//                    AbstractBuilder classBuilder =
-//                            configuration.getBuilderFactory()
-//                                    .getClassBuilder(curr, prev, next, classtree);
-//                    classBuilder.build();
-//                }
-            } catch (IOException e) {
-                throw new DocletAbortException(e);
             } catch (FatalError fe) {
                 throw fe;
             } catch (DocletAbortException de) {
                 throw de;
+            } catch (IOException e) {
+                throw new DocletAbortException(e);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new DocletAbortException(e);
@@ -227,6 +145,7 @@ public final class RstDoclet extends AbstractDoclet {
             if (!Files.exists(directoryPath)) {
                 Files.createDirectories(directoryPath);
             }
+
             File file = directoryPath.resolve(configuration.packageIndexFileName + ".rst").toFile();
             new TextFileWriter(file, new PackageSummaryRstGenerator(packageDoc, configuration)).write();
             return directoryPath;
@@ -238,7 +157,7 @@ public final class RstDoclet extends AbstractDoclet {
     /**
      * {@inheritDoc}
      */
-    protected void generatePackageFiles(ClassTree classtree) throws Exception {
+    protected void generatePackageFiles(ClassTree classTree) throws Exception {
         PackageDoc[] packages = configuration.packages;
         for (int i = 0; i < packages.length; i++) {
             // if -nodeprecated option is set and the package is marked as
@@ -281,26 +200,4 @@ public final class RstDoclet extends AbstractDoclet {
         return docletToStart.configuration.validOptions(options, reporter);
     }
 
-    private void performCopy(String filename) {
-        if (filename.isEmpty())
-            return;
-
-        try {
-            DocFile fromfile = DocFile.createFileForInput(configuration, filename);
-            DocPath path = DocPath.create(fromfile.getName());
-            DocFile toFile = DocFile.createFileForOutput(configuration, path);
-            if (toFile.isSameFile(fromfile))
-                return;
-
-            configuration.message.notice((SourcePosition) null,
-                    "doclet.Copying_File_0_To_File_1",
-                    fromfile.toString(), path.getPath());
-            toFile.copyFile(fromfile);
-        } catch (IOException exc) {
-            configuration.message.error((SourcePosition) null,
-                    "doclet.perform_copy_exception_encountered",
-                    exc.toString());
-            throw new DocletAbortException(exc);
-        }
-    }
 }

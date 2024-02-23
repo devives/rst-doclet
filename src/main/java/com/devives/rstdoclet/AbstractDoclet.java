@@ -22,14 +22,13 @@ import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.internal.toolkit.Configuration;
-import com.sun.tools.doclets.internal.toolkit.builders.AbstractBuilder;
-import com.sun.tools.doclets.internal.toolkit.builders.BuilderFactory;
 import com.sun.tools.doclets.internal.toolkit.util.*;
 
 /**
  * An abstract implementation of a Doclet.
  *
  * @author <a href="mailto:ivvlev@devives.com">Vladimir Ivanov</a>
+ * @see com.sun.javadoc.Doclet
  */
 public abstract class AbstractDoclet {
 
@@ -61,7 +60,7 @@ public abstract class AbstractDoclet {
      * The method that starts the execution of the doclet.
      *
      * @param doclet the doclet to start the execution for.
-     * @param root   the {@link RootDoc} that points to the source to document.
+     * @param root   the {@link com.sun.javadoc.RootDoc} that points to the source to document.
      * @return true if the doclet executed without error.  False otherwise.
      */
     public boolean start(AbstractDoclet doclet, RootDoc root) {
@@ -117,81 +116,64 @@ public abstract class AbstractDoclet {
      *
      * @see RootDoc
      */
-    private void startGeneration(RootDoc root) throws Configuration.Fault, Exception {
+    private void startGeneration(RootDoc root) throws Exception {
         if (root.classes().length == 0) {
             configuration.message.
-                error("doclet.No_Public_Classes_To_Document");
+                    error("doclet.No_Public_Classes_To_Document");
             return;
         }
         configuration.setOptions();
         configuration.getDocletSpecificMsg().notice("doclet.build_version",
-            configuration.getDocletSpecificBuildDate());
+                configuration.getDocletSpecificBuildDate());
         ClassTree classtree = new ClassTree(configuration, configuration.nodeprecated);
 
         generateClassFiles(root, classtree);
         Util.copyDocFiles(configuration, DocPaths.DOC_FILES);
 
-        //PackageListWriter.generate(configuration);
         generatePackageFiles(classtree);
-        //generateProfileFiles();
 
-        //generateOtherFiles(root, classtree);
         configuration.tagletManager.printReport();
-    }
-
-    /**
-     * Generate additional documentation that is added to the API documentation.
-     *
-     * @param root      the RootDoc of source to document.
-     * @param classtree the data structure representing the class tree.
-     */
-    protected void generateOtherFiles(RootDoc root, ClassTree classtree) throws Exception {
-        BuilderFactory builderFactory = configuration.getBuilderFactory();
-        AbstractBuilder constantsSummaryBuilder = builderFactory.getConstantsSummaryBuider();
-        constantsSummaryBuilder.build();
-        AbstractBuilder serializedFormBuilder = builderFactory.getSerializedFormBuilder();
-        serializedFormBuilder.build();
     }
 
     /**
      * Generate the package documentation.
      *
-     * @param classtree the data structure representing the class tree.
+     * @param classTree the data structure representing the class tree.
      */
-    protected abstract void generatePackageFiles(ClassTree classtree) throws Exception;
+    protected abstract void generatePackageFiles(ClassTree classTree) throws Exception;
 
     /**
      * Generate the class documentation.
      *
-     * @param classtree the data structure representing the class tree.
+     * @param classTree the data structure representing the class tree.
      */
-    protected abstract void generateClassFiles(ClassDoc[] arr, ClassTree classtree);
+    protected abstract void generateClassFiles(ClassDoc[] arr, ClassTree classTree);
 
     /**
      * Iterate through all classes and construct documentation for them.
      *
      * @param root      the RootDoc of source to document.
-     * @param classtree the data structure representing the class tree.
+     * @param classTree the data structure representing the class tree.
      */
-    protected void generateClassFiles(RootDoc root, ClassTree classtree) {
-        generateClassFiles(classtree);
+    protected void generateClassFiles(RootDoc root, ClassTree classTree) {
+        generateClassFiles(classTree);
         PackageDoc[] packages = root.specifiedPackages();
         for (int i = 0; i < packages.length; i++) {
-            generateClassFiles(packages[i].allClasses(), classtree);
+            generateClassFiles(packages[i].allClasses(), classTree);
         }
     }
 
     /**
      * Generate the class files for single classes specified on the command line.
      *
-     * @param classtree the data structure representing the class tree.
+     * @param classTree the data structure representing the class tree.
      */
-    private void generateClassFiles(ClassTree classtree) {
+    private void generateClassFiles(ClassTree classTree) {
         String[] packageNames = configuration.classDocCatalog.packageNames();
         for (int packageNameIndex = 0; packageNameIndex < packageNames.length;
                 packageNameIndex++) {
             generateClassFiles(configuration.classDocCatalog.allClasses(
-                packageNames[packageNameIndex]), classtree);
+                packageNames[packageNameIndex]), classTree);
         }
     }
 }

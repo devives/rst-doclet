@@ -89,14 +89,14 @@ public class ConfigurationImpl extends Configuration {
     /**
      * Unique Resource Handler for this package.
      */
-    public final MessageRetriever standardmessage;
+    public final MessageRetriever standardMessages;
 
     /**
      * Constructor. Initializes resource for the
      * {@link com.sun.tools.doclets.internal.toolkit.util.MessageRetriever MessageRetriever}.
      */
     public ConfigurationImpl() {
-        standardmessage = new CompositeMessageRetriever(this,
+        standardMessages = new CompositeMessageRetriever(this,
                 "com.devives.rstdoclet.resources.standard",
                 "com.sun.tools.doclets.formats.html.resources.standard");
     }
@@ -145,26 +145,26 @@ public class ConfigurationImpl extends Configuration {
                 noDeprecatedList = true;
             } else if (opt.equals("-packageindexfilename")) {
                 packageIndexFileName = os[1];
-            } else if (opt.equals("-footer")) {
+            } else if (opt.equals("-footer")
+                    || opt.equals("-header")
+                    || opt.equals("-packagesheader")
+                    || opt.equals("-doctitle")
+                    || opt.equals("-windowtitle")
+                    || opt.equals("-top")
+                    || opt.equals("-bottom")
+                    || opt.equals("-helpfile")
+                    || opt.equals("-stylesheetfile")
+                    || opt.equals("-nohelp")
+                    || opt.equals("-splitindex")
+                    || opt.equals("-use")
+                    || opt.equals("-notree")
+                    || opt.equals("-nonavbar")
+                    || opt.equals("-nooverview")
+                    || opt.equals("-overview")
+                    || opt.equals("-xdoclint")
+                    || opt.startsWith("-xdoclint:")
+                    || opt.equals("--allow-script-in-comments")) {
                 // Ignore standard doclet options
-            } else if (opt.equals("-header")) {
-            } else if (opt.equals("-packagesheader")) {
-            } else if (opt.equals("-doctitle")) {
-            } else if (opt.equals("-windowtitle")) {
-            } else if (opt.equals("-top")) {
-            } else if (opt.equals("-bottom")) {
-            } else if (opt.equals("-helpfile")) {
-            } else if (opt.equals("-stylesheetfile")) {
-            } else if (opt.equals("-nohelp")) {
-            } else if (opt.equals("-splitindex")) {
-            } else if (opt.equals("-use")) {
-            } else if (opt.equals("-notree")) {
-            } else if (opt.equals("-nonavbar")) {
-            } else if (opt.equals("-nooverview")) {
-            } else if (opt.equals("-overview")) {
-            } else if (opt.equals("-xdoclint")) {
-            } else if (opt.startsWith("-xdoclint:")) {
-            } else if (opt.equals("--allow-script-in-comments")) {
             }
         }
 
@@ -203,18 +203,18 @@ public class ConfigurationImpl extends Configuration {
         }
         // otherwise look for the options we have added
         option = StringUtils.toLowerCase(option);
-        if (option.equals("-nodeprecatedlist") ||
-                option.equals("-noindex") ||
-                option.equals("-notree") ||
-                option.equals("-nohelp") ||
-                option.equals("-splitindex") ||
-                option.equals("-serialwarn") ||
-                option.equals("-use") ||
-                option.equals("-nonavbar") ||
-                option.equals("-nooverview") ||
-                option.equals("-xdoclint") ||
-                option.startsWith("-xdoclint:") ||
-                option.equals("--allow-script-in-comments")) {
+        if (option.equals("-nodeprecatedlist")
+                || option.equals("-noindex")
+                || option.equals("-notree")
+                || option.equals("-nohelp")
+                || option.equals("-splitindex")
+                || option.equals("-serialwarn")
+                || option.equals("-use")
+                || option.equals("-nonavbar")
+                || option.equals("-nooverview")
+                || option.equals("-xdoclint")
+                || option.startsWith("-xdoclint:")
+                || option.equals("--allow-script-in-comments")) {
             return 1;
         } else if (option.equals("-help")) {
             // Uugh: first, this should not be hidden inside optionLength,
@@ -230,19 +230,19 @@ public class ConfigurationImpl extends Configuration {
             // allow use of reporter.printNotice
             System.out.println(getText("rstdoclet.X.usage"));
             return 1;
-        } else if (option.equals("-packageindexfilename") ||
-                option.equals("-footer") ||
-                option.equals("-header") ||
-                option.equals("-packagesheader") ||
-                option.equals("-doctitle") ||
-                option.equals("-windowtitle") ||
-                option.equals("-top") ||
-                option.equals("-bottom") ||
-                option.equals("-helpfile") ||
-                option.equals("-stylesheetfile") ||
-                option.equals("-charset") ||
-                option.equals("-overview") ||
-                option.equals("-xdocrootparent")) {
+        } else if (option.equals("-packageindexfilename")
+                || option.equals("-footer")
+                || option.equals("-header")
+                || option.equals("-packagesheader")
+                || option.equals("-doctitle")
+                || option.equals("-windowtitle")
+                || option.equals("-top")
+                || option.equals("-bottom")
+                || option.equals("-helpfile")
+                || option.equals("-stylesheetfile")
+                || option.equals("-charset")
+                || option.equals("-overview")
+                || option.equals("-xdocrootparent")) {
             return 2;
         } else {
             return 0;
@@ -280,7 +280,7 @@ public class ConfigurationImpl extends Configuration {
      */
     @Override
     public MessageRetriever getDocletSpecificMsg() {
-        return standardmessage;
+        return standardMessages;
     }
 
     /**

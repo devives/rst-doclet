@@ -24,6 +24,9 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+/**
+ * Retrieve and format messages stored in multiple a resource files.
+ */
 public class CompositeMessageRetriever extends MessageRetriever {
 
     private final MessageRetriever[] messageRetrievers_;
@@ -34,6 +37,12 @@ public class CompositeMessageRetriever extends MessageRetriever {
      */
     private ResourceBundle messageRB;
 
+    /**
+     * Initialize the ResourceBundle with the given resource.
+     *
+     * @param configuration     the configuration
+     * @param resourceLocations resources.
+     */
     public CompositeMessageRetriever(Configuration configuration, String... resourceLocations) {
         super(configuration, resourceLocations[0]);
         resourceLocations_ = resourceLocations;

@@ -9,6 +9,9 @@ group = 'com.devives'
 archivesBaseName = "devive-rst-doclet"
 version = '0.2.1'
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
