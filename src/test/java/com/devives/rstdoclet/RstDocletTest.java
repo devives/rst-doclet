@@ -21,13 +21,19 @@ import com.devives.AbstractTest;
 import com.sun.tools.javadoc.Main;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Usage: javadoc [options] [packagenames] [sourcefiles] [@files]
@@ -66,16 +72,21 @@ public class RstDocletTest extends AbstractTest {
     public static void beforeAll() throws Exception {
         System.out.println("project.root = " + projectRootPath);
         System.out.println("outputPath = " + outputPath);
-        if (Files.exists(outputPath)) {
-            Files.walk(outputPath)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+    }
+
+    private void deleteDirectoryRecursive(Path path) throws Exception {
+        if (Files.exists(path)) {
+            try (Stream<Path> pathStream = Files.walk(path)) {
+                pathStream.sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            }
         }
     }
 
     @Test
     public void generate_forSamples_noExceptions() throws Exception {
+        deleteDirectoryRecursive(outputPath.resolve("com"));
         Path sourcePath = projectRootPath.resolve("src/test/java/");
         String subPackages = "com.devives.samples";
         String[] args = new String[]{
@@ -89,11 +100,16 @@ public class RstDocletTest extends AbstractTest {
         };
         System.out.println("sourcePath = " + sourcePath);
         Assertions.assertEquals(0, Main.execute(args));
+        validateResults(
+                projectRootPath.resolve("src/test/expectations/com/devives"),
+                outputPath.resolve("com/devives"));
     }
 
 
     @Test
+    @Disabled
     public void generate_forJavaUtils_noExceptions() throws Exception {
+        deleteDirectoryRecursive(outputPath.resolve("java"));
         Path sourcePath = Paths.get(System.getenv("JAVA_HOME")).resolve("src").toAbsolutePath();
         String subpackages = "java.util";
         String[] args = new String[]{
@@ -109,5 +125,47 @@ public class RstDocletTest extends AbstractTest {
         Assertions.assertEquals(0, Main.execute(args));
     }
 
+    @Test
+    @Disabled
+    public void validateResultsTest() throws Exception {
+        validateResults(
+                projectRootPath.resolve("src/test/expectations/com/devives"),
+                outputPath.resolve("com/devives"));
+    }
 
+    private void validateResults(Path expectationsPath, Path resultsPath) throws Exception {
+        if (!Files.exists(expectationsPath)) {
+            throw new IOException("Directory '" + expectationsPath + "' not exists.");
+        }
+        if (!Files.exists(resultsPath)) {
+            throw new IOException("Directory '" + resultsPath + "' not exists.");
+        }
+
+        try (Stream<Path> pathStream = Files.walk(expectationsPath)) {
+            pathStream.forEach(expectedPath -> {
+                try {
+                    Path relativeActualPath = expectationsPath.relativize(expectedPath);
+                    Path actualPath = resultsPath.resolve(relativeActualPath);
+                    if (!Files.exists(actualPath)) {
+                        throw new IOException("Directory or file '" + actualPath + "' not exists.");
+                    }
+                    if (actualPath.toFile().isFile()) {
+                        List<String> expectedLines = Files.readAllLines(expectedPath);
+                        List<String> actualLines = Files.readAllLines(actualPath);
+                        for (int i = 0; i < expectedLines.size(); i++) {
+                            try {
+                                Assertions.assertEquals(expectedLines.get(i), actualLines.get(i));
+                            } catch (AssertionFailedError e) {
+                                e.addSuppressed(new Exception(String.format("Files '%s' and '%s' are not equals.", expectedPath, actualPath)));
+                                throw e;
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+    }
+    // E:\GitHub\devives\RstProjectGroup\rst-doclet\build\test-results\javadoc2rst\com\devives
 }
