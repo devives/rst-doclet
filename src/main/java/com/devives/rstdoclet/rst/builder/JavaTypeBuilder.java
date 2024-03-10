@@ -141,8 +141,11 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
     }
 
     private String formatModifiers(ClassDoc classDoc) {
-        if (classDoc.isEnum()) {
-            return classDoc.modifiers().replace("final", "").replace("static", "").trim();
+        if (classDoc.isEnum() || classDoc.isInterface()) {
+            return Arrays.stream(classDoc.modifiers().split(" "))
+                    .filter(s -> !(s.equals("final") || s.equals("static")))
+                    .collect(Collectors.joining(" "))
+                    .trim();
         } else if (classDoc.isAnnotationType()) {
             return classDoc.modifiers().replace("interface", "@interface");
         } else {
