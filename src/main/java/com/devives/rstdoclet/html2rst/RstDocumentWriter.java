@@ -457,9 +457,9 @@ public class RstDocumentWriter implements HtmlVisitor {
     }
 
     private String escapeRstEmphasis(String text) {
-        return (text == null || text.isEmpty())
-                ? text
-                : text
+        if (text == null || text.isEmpty()) return text;
+        if (text.trim().startsWith(".. ")) return text;
+        return text
                 .replaceAll("\\\\", "\\\\\\\\")
                 .replaceAll("_", "\\\\_")
                 .replaceAll("\\*", "\\\\*")
