@@ -133,7 +133,11 @@ public class HtmlDocumentReader implements Constants {
                 acceptDefinitionList(node, visitor);
                 break;
             case "a":
-                if (node.hasAttr("name")) {
+                if (node.hasAttr("id")) {
+                    String name = node.attr("id");
+                    String label = _compress_whitespace(getInnerText(node).trim(), " ", true);
+                    visitor.visitAnchor(name, label);
+                } else if (node.hasAttr("name")) {
                     String name = node.attr("name");
                     String label = _compress_whitespace(getInnerText(node).trim(), " ", true);
                     visitor.visitAnchor(name, label);
