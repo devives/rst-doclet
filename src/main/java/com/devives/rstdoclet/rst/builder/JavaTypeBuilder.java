@@ -113,7 +113,7 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                 && classDoc.superclass() != null
                 && !classDoc.superclass().qualifiedTypeName().equals(Object.class.getCanonicalName())) {
             result += "extends ";
-            LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.CLASS_SIGNATURE_PARENT_NAME, classDoc.superclass());
+            LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.CLASS_SIGNATURE_PARENT_NAME, classDoc.superclassType());
             linkInfo.linkToSelf = false;
             Content content = docContext_.getLink(linkInfo);
             result += HtmlUtils.unescapeLtRtAmpBSlash(content.toString());
@@ -127,9 +127,9 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
         if (!classDoc.isAnnotationType()) {
             if (classDoc.interfaceTypes().length > 0) {
                 result += classDoc.isInterface() ? "extends " : "implements ";
-                result += Arrays.stream(classDoc.interfaces())
-                        .map(interfaceDoc -> {
-                            LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.IMPLEMENTED_INTERFACES, interfaceDoc);
+                result += Arrays.stream(classDoc.interfaceTypes())
+                        .map(interfaceType -> {
+                            LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.IMPLEMENTED_INTERFACES, interfaceType);
                             Content content = docContext_.getLink(linkInfo);
                             return collapseNamespaces(HtmlUtils.unescapeLtRtAmpBSlash(content.toString()));
 
