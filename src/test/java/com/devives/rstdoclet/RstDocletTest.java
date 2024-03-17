@@ -87,7 +87,7 @@ public class RstDocletTest extends AbstractTest {
     @Test
     public void generate_forSamples_noExceptions() throws Exception {
         deleteDirectoryRecursive(outputPath.resolve("com"));
-        Path sourcePath = projectRootPath.resolve("src/test/java/");
+        Path sourcePath = projectRootPath.resolve("../samples/src/main/java/");
         String subPackages = "com.devives.samples";
         String[] args = new String[]{
                 "-d", outputPath.toString()
@@ -107,7 +107,6 @@ public class RstDocletTest extends AbstractTest {
 
 
     @Test
-    @Disabled
     public void generate_forJavaUtils_noExceptions() throws Exception {
         deleteDirectoryRecursive(outputPath.resolve("java"));
         Path sourcePath = Paths.get(System.getenv("JAVA_HOME")).resolve("src").toAbsolutePath();

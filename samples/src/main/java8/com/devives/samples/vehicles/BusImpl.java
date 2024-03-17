@@ -17,5 +17,8 @@
  */
 package com.devives.samples.vehicles;
 
-public interface Bus extends Vehicle {
+/**
+ * Is a bus interface implementation.
+ */
+public class BusImpl extends VehicleAbst implements Bus {
 }

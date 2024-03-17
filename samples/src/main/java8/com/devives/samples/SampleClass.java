@@ -20,21 +20,22 @@ package com.devives.samples;
 /**
  * Sample class.
  * <ul>
- *     <li> <a href="package-summary.html">HTML ссылка на индекс пакета.</a>
+ *     <li> <a href="package-index.html">HTML ссылка на индекс пакета.</a>
  *     <li> <a href="#internal_sphinx_anchor">Sphinx ссылка на якорь в описании пакета.</a>
  *     <li> <a href="#internal_sphinx_anchor_native">Native Sphinx ссылка на якорь в описании пакета.</a>
  * </ul>
  *
  * @see SampleInterface
- * @see <a href="package-summary.html">HTML cсылка на индекс пакета.</a>
+ * @see <a href="package-index.html">HTML ссылка на индекс пакета.</a>
  * @see <a href="internal_sphinx_anchor">Sphinx ссылка на якорь в описании пакета.</a>
  * @see ":ref:`Sphinx ссылка на якорь в описании пакета.<internal_sphinx_anchor>`"
  * @see <a href="#this-is-inline-anchor">Sphinx ссылка на инлайн якорь на странице</a>
  */
+@SampleAnnotation
 public class SampleClass extends SampleClassAbst<String> implements SampleInterface, SampleInterface2<String> {
 
     /**
-     * The problem with inline anchors: ReStructuredText allow latin symbols only. <a name='this-text-has-no-matter'>This is inline anchor</a>.
+     * The problem with inline anchors: ReStructuredText allow latin symbols only. <a id='this-text-has-no-matter'>This is inline anchor</a>.
      */
     public void inlineAnchorExample() {
     }
@@ -103,6 +104,21 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
      * </pre>
      */
     public void multilineCodeExamples() {
+    }
+
+    /**
+     * Forth equals lines is correct. See tags illustrate different formats of references.
+     *
+     * @see #inlineAnchorExample
+     * @see #inlineAnchorExample()
+     * @see SampleClass#inlineAnchorExample This is multiline
+     * label for reference
+     * @see SampleClass#inlineAnchorExample()
+     * @see com.devives.samples.inners.SampleRootClass
+     * @see com.devives.samples
+     * @see java.util.ArrayList
+     */
+    public void seeTagsInComment() {
     }
 
 }

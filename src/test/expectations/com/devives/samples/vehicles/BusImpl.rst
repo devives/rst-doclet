@@ -6,6 +6,8 @@ BusImpl
 
 .. java:type:: public class BusImpl extends VehicleAbst implements Bus
 
+   Is a bus interface implementation.
+
 Constructors
 ------------
 

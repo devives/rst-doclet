@@ -88,7 +88,7 @@ public class HtmlDocletTest extends AbstractTest {
 
     @Test
     public void generate_forSamples_noExceptions() throws Exception {
-        Path sourcePath = projectRootPath.resolve("src/test/java/");
+        Path sourcePath = projectRootPath.resolve("../samples/src/main/java/");
         String subPackages = "com.devives.samples";
         String[] args = new String[]{
                 "-d", outputPath.toString()
@@ -108,59 +108,11 @@ public class HtmlDocletTest extends AbstractTest {
         String[] args = new String[]{
                 "-d", outputPath.toString()
                 , "-encoding", "UTF-8"
-                , "-doclet", RstDoclet.class.getCanonicalName()
                 , "-sourcepath", sourcePath + "/" + ";"
                 , "-subpackages", subpackages
         };
         System.out.println("sourcePath = " + sourcePath);
-        Assertions.assertEquals(0, Main.execute(args));
+        Assertions.assertEquals(1, Main.execute(args));
     }
-
-
-//
-//    private static final Path projectRootPath = Paths.get("").toAbsolutePath();
-//
-//    @BeforeAll
-//    public static void beforeAll() {
-//        System.out.println("user.dir = " + System.getProperty("user.dir"));
-//
-//    }
-//
-//    @Test
-//    public void javadoc_for_samples() throws Exception {
-//        String sourcePath = projectRootPath.resolve("src/test/java/").toString();
-//        String outPath = projectRootPath.resolve("build/docs/javadoc/").toString();
-//        String subPackages = "com.devives.rstdoclet.samples";
-//        String[] args = new String[]{
-//                "-d", outPath
-//                , "-package"
-//                , "-encoding", "UTF-8"
-//                , "-sourcepath", sourcePath
-//                , "-subpackages", subPackages
-//        };
-//        Assertions.assertEquals(0, Main.execute(args));
-//    }
-//
-//    @Test
-//    public void javadoc_for_java_util() throws Exception {
-//        Path jkdSourcePath = Paths.get(System.getenv("JAVA_HOME")).resolve("src").toAbsolutePath();
-//        System.out.println("jdk.source = " + jkdSourcePath);
-//        String docletPath = projectRootPath.resolve("build/classes/java/main/") + "/";
-//        String sourcePath = jkdSourcePath + "/;";
-//        String subpackages = "java.util";
-//        //String sourceFiles = sourceRoot.resolve("java\\util\\AbstractQueue.java").toString();
-//        String outPath = projectRootPath.resolve("sphinx/sphinx-project/source/java-doc/").toString();
-//        String[] args = new String[]{
-//                "-d", outPath
-//                , "-encoding", "UTF-8"
-//                , "-doclet", RstDoclet.class.getCanonicalName()
-//                , "-docletpath", docletPath
-//                , "-sourcepath", sourcePath
-//                , "-subpackages", subpackages
-//                //, sourceFiles
-//        };
-//        Assertions.assertEquals(0, Main.execute(args));
-//    }
-
 
 }

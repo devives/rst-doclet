@@ -6,6 +6,8 @@ VehicleAbst
 
 .. java:type:: public abstract class VehicleAbst implements Vehicle
 
+   Abstract class of all vehicles.
+
 Constructors
 ------------
 

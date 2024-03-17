@@ -6,6 +6,8 @@ SampleClassAbst
 
 .. java:type:: public abstract class SampleClassAbst<T>
 
+   Example of the abstract class.
+
 Constructors
 ------------
 

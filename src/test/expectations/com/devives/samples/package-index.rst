@@ -3,11 +3,13 @@ com.devives.samples
 
 .. java:package:: com.devives.samples
 
+.. versionadded:: 0.1.0
+
 .. _internal_sphinx_anchor:
 
 Internal sphinx anchor
 
-.. \_internal\_sphinx\_anchor\_native:
+.. _internal_sphinx_anchor_native:
 
 Native Internal sphinx anchor
 
@@ -18,11 +20,13 @@ Sample classes package. This is inline anchor.
 .. toctree::
    :maxdepth: 1
 
+   SampleAnnotation.rst
    SampleClass.rst
    SampleClassAbst.rst
    SampleCollection.rst
    SampleEnum.rst
    SampleFieldDeclarations.rst
+   SampleGenericCollection.rst
    SampleInterface.rst
    SampleInterface2.rst
    SampleMethodDeclarations.rst

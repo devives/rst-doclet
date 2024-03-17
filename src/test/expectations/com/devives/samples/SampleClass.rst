@@ -4,18 +4,20 @@ SampleClass
 .. java:package:: com.devives.samples
    :noindex:
 
-.. java:type:: public class SampleClass extends SampleClassAbst<T> implements SampleInterface, SampleInterface2<T>
+@SampleAnnotation
+
+.. java:type:: public class SampleClass extends SampleClassAbst<String> implements SampleInterface, SampleInterface2<String>
 
    Sample class.
 
-   * `HTML ссылка на индекс пакета. <package-summary.html>`__
+   * `HTML ссылка на индекс пакета. <package-index.html>`__
    * :ref:`Sphinx ссылка на якорь в описании пакета. <internal_sphinx_anchor>`
    * :ref:`Native Sphinx ссылка на якорь в описании пакета. <internal_sphinx_anchor_native>`
 
    .. seealso::
 
       | :java:ref:`SampleInterface <com.devives.samples.SampleInterface>`
-      | `HTML cсылка на индекс пакета. <package-summary.html>`_
+      | `HTML cсылка на индекс пакета. <package-index.html>`_
       | :ref:`Sphinx ссылка на якорь в описании пакета. <internal_sphinx_anchor>`
       | \ :ref:`Sphinx ссылка на якорь в описании пакета.<internal_sphinx_anchor>`\ 
       | `Sphinx ссылка на инлайн якорь на странице <#this-is-inline-anchor>`_

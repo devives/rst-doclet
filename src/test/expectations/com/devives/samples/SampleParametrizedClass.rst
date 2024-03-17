@@ -6,6 +6,8 @@ SampleParametrizedClass
 
 .. java:type:: public class SampleParametrizedClass<T extends SampleInterface & SampleInterface2<T>>
 
+   Sample parametrized class.
+
 Constructors
 ------------
 

@@ -68,6 +68,12 @@ methodWithClassTypeParameter
 .. java:method:: <R> R methodWithClassTypeParameter(Map<T, R> map)
    :outertype: SampleMethodDeclarations
 
+   Method with class type parameter.
+
+   :param map: map
+   :param <R>: return type
+   :return: Some object
+
 parametrisedFunction
 ^^^^^^^^^^^^^^^^^^^^
 

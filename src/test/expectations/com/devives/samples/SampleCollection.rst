@@ -6,7 +6,9 @@ SampleCollection
 .. java:package:: com.devives.samples
    :noindex:
 
-.. java:type:: public class SampleCollection extends AbstractList<E>
+.. java:type:: public class SampleCollection extends AbstractList<String>
+
+   Example of class extended from generic
 
 Constructors
 ------------
@@ -31,3 +33,5 @@ size
 
 .. java:method:: @Override public int size()
    :outertype: SampleCollection
+
+   :return:

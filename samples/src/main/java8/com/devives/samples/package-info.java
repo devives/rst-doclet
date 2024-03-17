@@ -15,23 +15,14 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.samples.inners;
-
-import com.devives.samples.SampleInterface;
-
 /**
- * Sample interface.
+ * <a id="internal_sphinx_anchor">Internal sphinx anchor</a>
+ * <p>
+ * .. _internal_sphinx_anchor_native:
+ * <p>
+ * Native Internal sphinx anchor
+ * <p>
+ * Sample classes package. <a id="this-text-has-no-matter">This is inline anchor</a>.
+ * @since 0.1.0
  */
-public interface SampleRootInterface<R> extends SampleInterface {
-
-    /**
-     * Some inner class.
-     */
-    class InnerClass {
-
-    }
-
-    interface InnerInterface {
-
-    }
-}
+package com.devives.samples;

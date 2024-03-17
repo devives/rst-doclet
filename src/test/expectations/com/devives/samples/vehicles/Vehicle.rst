@@ -5,3 +5,5 @@ Vehicle
    :noindex:
 
 .. java:type:: public interface Vehicle
+
+   Interface of vehicle.

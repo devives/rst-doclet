@@ -15,7 +15,26 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.samples.vehicles;
+package com.devives.samples.inners;
 
-public class CarImpl extends VehicleAbst implements Car {
+import com.devives.samples.SampleInterface;
+
+/**
+ * Sample interface.
+ */
+public interface SampleRootInterface<R> extends SampleInterface {
+
+    /**
+     * Some inner class.
+     */
+    class InnerClass {
+
+    }
+
+    /**
+     * Inner interface.
+     */
+    interface InnerInterface {
+
+    }
 }

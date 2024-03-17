@@ -32,7 +32,7 @@ public interface SampleMethodDeclarations<T> {
      */
     void procedure();
 
-    void procedureWithoutJavaDoc(String arg1, List<?> arg2);
+    void procedureWithoutJavaDoc(String arg1, List<?> arg2); // `No javadoc` is correct.
 
     /**
      * Procedure with variable arguments.
@@ -47,6 +47,13 @@ public interface SampleMethodDeclarations<T> {
      * @param args Array of {@code <T>}.
      */
     void varArgProcedure2(T... args);
+
+    /**
+     * Procedure with array arguments.
+     *
+     * @param args Array of {@code <T>}.
+     */
+    void arrayProcedure(T[] args);
 
     /**
      * Simple function with boolean result.
@@ -121,6 +128,12 @@ public interface SampleMethodDeclarations<T> {
             dest.set(i, src.get(i));
     }
 
+    /**
+     * Method with class type parameter.
+     * @param map map
+     * @return Some object
+     * @param <R> return type
+     */
     default <R> R methodWithClassTypeParameter(Map<T, R> map) {
         return null;
     }

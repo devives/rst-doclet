@@ -15,7 +15,10 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.samples;
+package com.devives.samples.vehicles;
 
-public abstract class SampleClassAbst<T> {
+/**
+ * Is a car interface implementation.
+ */
+public class CarImpl extends VehicleAbst implements Car {
 }

@@ -6,6 +6,8 @@ CarImpl
 
 .. java:type:: public class CarImpl extends VehicleAbst implements Car
 
+   Is a car interface implementation.
+
 Constructors
 ------------
 

@@ -5,3 +5,5 @@ Car
    :noindex:
 
 .. java:type:: public interface Car extends Vehicle
+
+   Interface of car.

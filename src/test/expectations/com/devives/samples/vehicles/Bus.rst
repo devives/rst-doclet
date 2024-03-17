@@ -5,3 +5,5 @@ Bus
    :noindex:
 
 .. java:type:: public interface Bus extends Vehicle
+
+   Interface of bus.
