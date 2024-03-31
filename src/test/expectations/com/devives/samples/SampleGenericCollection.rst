@@ -27,7 +27,7 @@ Methods
 get
 ^^^
 
-.. java:method:: @Override public SampleGenericCollection get(int index)
+.. java:method:: @Override public T get(int index)
    :outertype: SampleGenericCollection
 
 size

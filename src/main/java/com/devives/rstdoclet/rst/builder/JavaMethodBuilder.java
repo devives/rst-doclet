@@ -25,6 +25,7 @@ import com.devives.rstdoclet.html2rst.HtmlUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.Type;
 import com.sun.tools.doclets.internal.toolkit.Content;
 
 import java.util.List;
@@ -59,10 +60,22 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
     }
 
     public String formatReturnType(MethodDoc methodDoc) {
-        LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.RETURN_TYPE, methodDoc.returnType());
-        Content parameterLinks = docContext_.getLink(linkInfo);
-        String result = HtmlUtils.unescapeLtRtAmpBSlash(parameterLinks.toString());
-        result = collapseNamespaces(result);
+        String result;
+        Type returnType = methodDoc.returnType();
+        if (returnType.isPrimitive()) {
+            result = returnType.qualifiedTypeName();
+        } else if (returnType.asWildcardType() != null) {
+            result = returnType.qualifiedTypeName();
+        } else if (returnType.asTypeVariable() != null) {
+            result = returnType.qualifiedTypeName();
+        } else if (returnType.asParameterizedType() != null) {
+            LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.RETURN_TYPE, methodDoc.returnType());
+            Content parameterLinks = docContext_.getLink(linkInfo);
+            result = HtmlUtils.unescapeLtRtAmpBSlash(parameterLinks.toString());
+        } else {
+            result = returnType.qualifiedTypeName();
+        }
+        result = collapseNamespaces(result) + returnType.dimension();
         return result;
     }
 }
