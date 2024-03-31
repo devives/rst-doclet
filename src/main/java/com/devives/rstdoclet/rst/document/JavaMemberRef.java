@@ -17,6 +17,7 @@
  */
 package com.devives.rstdoclet.rst.document;
 
+import com.devives.rst.util.StringUtils;
 import com.devives.rstdoclet.html2rst.DocUtils;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.FieldDoc;
@@ -29,6 +30,10 @@ public class JavaMemberRef extends JavaRef {
 
     public JavaMemberRef(MemberDoc memberDoc) {
         super(formatUri(memberDoc), formatText(memberDoc));
+    }
+
+    public JavaMemberRef(MemberDoc memberDoc, String label) {
+        super(formatUri(memberDoc), StringUtils.requireNotNullOrEmpty(label));
     }
 
     private static String formatText(MemberDoc memberDoc) {

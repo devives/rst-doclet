@@ -8,7 +8,7 @@ SampleGenericCollection
 .. java:package:: com.devives.samples
    :noindex:
 
-.. java:type:: public class SampleGenericCollection<T extends java.util.List<?>> extends AbstractList<T>
+.. java:type:: public class SampleGenericCollection<T extends List<?>> extends AbstractList<T>
 
    Example of class extended from generic
 

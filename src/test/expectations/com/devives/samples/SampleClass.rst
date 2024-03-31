@@ -17,7 +17,7 @@ SampleClass
    .. seealso::
 
       | :java:ref:`SampleInterface <com.devives.samples.SampleInterface>`
-      | `HTML cсылка на индекс пакета. <package-index.html>`_
+      | `HTML ссылка на индекс пакета. <package-index.html>`_
       | :ref:`Sphinx ссылка на якорь в описании пакета. <internal_sphinx_anchor>`
       | \ :ref:`Sphinx ссылка на якорь в описании пакета.<internal_sphinx_anchor>`\ 
       | `Sphinx ссылка на инлайн якорь на странице <#this-is-inline-anchor>`_
@@ -120,3 +120,23 @@ multilineCodeExamples
        <h4>Hello World!</h4>
        </body>
        </html>
+
+seeTagsInComment
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public void seeTagsInComment()
+   :outertype: SampleClass
+
+   Forth equals lines is correct. See tags illustrate different formats of references.
+
+
+   .. seealso::
+
+      | :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+      | :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+      | :java:ref:`This is multiline
+         label for reference <com.devives.samples.SampleClass.inlineAnchorExample()>`
+      | :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+      | :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
+      | :java:ref:`com.devives.samples <com.devives.samples>`
+      | \ java.util.ArrayList<String>\

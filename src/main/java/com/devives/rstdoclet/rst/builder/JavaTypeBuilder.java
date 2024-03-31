@@ -103,6 +103,7 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
         linkInfo.linkToSelf = false;
         Content content = docContext_.getTypeParameterLinks(linkInfo);
         result += HtmlUtils.unescapeLtRtAmpBSlash(content.toString());
+        result = collapseNamespaces(result);
         return result;
     }
 
