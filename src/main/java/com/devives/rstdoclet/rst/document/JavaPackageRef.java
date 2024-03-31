@@ -17,12 +17,17 @@
  */
 package com.devives.rstdoclet.rst.document;
 
+import com.devives.rst.util.StringUtils;
 import com.sun.javadoc.PackageDoc;
 
 public class JavaPackageRef extends JavaRef {
 
     public JavaPackageRef(PackageDoc packageDoc) {
         super(formatUri(packageDoc), formatText(packageDoc));
+    }
+
+    public JavaPackageRef(PackageDoc packageDoc, String label) {
+        super(formatUri(packageDoc), StringUtils.requireNotNullOrEmpty(label));
     }
 
     private static String formatText(PackageDoc packageDoc) {

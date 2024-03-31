@@ -19,6 +19,16 @@ SampleMethodDeclarations
 Methods
 -------
 
+arrayProcedure
+^^^^^^^^^^^^^^
+
+.. java:method:: void arrayProcedure(T[] args)
+   :outertype: SampleMethodDeclarations
+
+   Procedure with array arguments.
+
+   :param args: Array of ``<T>``\ .
+
 copy
 ^^^^
 

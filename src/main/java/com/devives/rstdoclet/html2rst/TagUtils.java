@@ -21,10 +21,11 @@ import com.devives.rst.builder.BodyBuilders;
 import com.devives.rst.builder.RstElementBuilder;
 import com.devives.rst.document.inline.InlineElement;
 import com.devives.rst.document.inline.Link;
-import com.devives.rst.document.inline.Role;
 import com.devives.rst.util.StringUtils;
 import com.devives.rstdoclet.rst.document.JavaMemberRef;
+import com.devives.rstdoclet.rst.document.JavaPackageRef;
 import com.devives.rstdoclet.rst.document.JavaTypeRef;
+import com.devives.rstdoclet.rst.document.Ref;
 import com.devives.sphinx.rst.Rst4Sphinx;
 import com.devives.sphinx.rst.document.directive.Directives;
 import com.sun.javadoc.Doc;
@@ -135,14 +136,23 @@ public class TagUtils {
 
     public static InlineElement seeTagToJavaRef(SeeTag see) {
         String text = see.text().trim();
+        String label = see.label().trim();
         if (text.contains("<a")) {
             return hrefToLink(text);
         } else if (text.startsWith("\"")) {
             return Rst4Sphinx.elements().text("\\ " + StringUtils.dequote(text, '\"') + "\\ ");
         } else if (see.referencedMember() != null) {
-            return new JavaMemberRef(see.referencedMember());
+            return (label.isEmpty())
+                    ? new JavaMemberRef(see.referencedMember())
+                    : new JavaMemberRef(see.referencedMember(), label);
         } else if (see.referencedClass() != null) {
-            return new JavaTypeRef(see.referencedClass());
+            return (label.isEmpty())
+                    ? new JavaTypeRef(see.referencedClass())
+                    : new JavaTypeRef(see.referencedClass(), label);
+        } else if (see.referencedPackage() != null) {
+            return (label.isEmpty())
+                    ? new JavaPackageRef(see.referencedPackage())
+                    : new JavaPackageRef(see.referencedPackage(), label);
         } else {
             return Rst4Sphinx.elements().text("\\ " + text + "\\ ");
         }
@@ -176,7 +186,7 @@ public class TagUtils {
                 relativeLinkLowerCase.contains(".html")) {
             return new Link(href, StringUtils.findFirstNotNullOrEmpty(text, href));
         } else {
-            return new Role("ref", href, StringUtils.findFirstNotNullOrEmpty(text, href));
+            return new Ref(href, StringUtils.findFirstNotNullOrEmpty(text, href));
         }
 
     }
