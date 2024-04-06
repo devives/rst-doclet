@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -155,7 +154,7 @@ public class RstDocletTest extends AbstractTest {
                             try {
                                 Assertions.assertEquals(expectedLines.get(i), actualLines.get(i));
                             } catch (AssertionFailedError e) {
-                                e.addSuppressed(new Exception(String.format("Files '%s' and '%s' are not equals.", expectedPath, actualPath)));
+                                e.addSuppressed(new Exception(String.format("Files are not equals at line: %s, '%s' and '%s' ", i + 1, expectedPath, actualPath)));
                                 throw e;
                             }
                         }

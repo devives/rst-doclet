@@ -139,4 +139,4 @@ seeTagsInComment
       | :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
       | :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
       | :java:ref:`com.devives.samples <com.devives.samples>`
-      | \ java.util.ArrayList<String>\
+      | :java:ref:`ArrayList <java.util.ArrayList>`
