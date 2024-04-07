@@ -3,5 +3,6 @@ plugins {
 }
 
 rootProject.name = 'rst-doclet'
-include 'jdk8'
+include 'jdk8',
+        'jdk11'
 

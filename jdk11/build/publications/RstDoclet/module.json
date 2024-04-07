@@ -1,0 +1,100 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.devives",
+    "module": "devive-rst-doclet-jdk17-all",
+    "version": "0.2.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.6"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "devive-rst-doclet-jdk17-all-0.2.0.jar",
+          "url": "devive-rst-doclet-jdk17-all-0.2.0.jar",
+          "size": 773658,
+          "sha512": "3fa96e059493cb15648b3b952455d2530b433056758a89923d6014bef5a5b4e60adcece801c61f36b31323ce763587c50b96ae570d79e0a2a271b8b501150ced",
+          "sha256": "fb72e623d3ff679956fabc02108e197aee990b97d98e862f1017ee894b0f78ed",
+          "sha1": "101f4592d7c4fc01d7dcee8657322c5c855f8951",
+          "md5": "54bd4b5e5407b51050d5e717395d991a"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "devive-rst-doclet-jdk17-all-0.2.0.jar",
+          "url": "devive-rst-doclet-jdk17-all-0.2.0.jar",
+          "size": 773658,
+          "sha512": "3fa96e059493cb15648b3b952455d2530b433056758a89923d6014bef5a5b4e60adcece801c61f36b31323ce763587c50b96ae570d79e0a2a271b8b501150ced",
+          "sha256": "fb72e623d3ff679956fabc02108e197aee990b97d98e862f1017ee894b0f78ed",
+          "sha1": "101f4592d7c4fc01d7dcee8657322c5c855f8951",
+          "md5": "54bd4b5e5407b51050d5e717395d991a"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "devive-rst-doclet-jdk17-all-0.2.0-javadoc.jar",
+          "url": "devive-rst-doclet-jdk17-all-0.2.0-javadoc.jar",
+          "size": 261,
+          "sha512": "3c3e418742a02f0da4790146752805154328d520e9fe4abcbb6292ee99e58081e812ff360f220457c4d81caaaecef4bcbc988c6e47bf71c5f1d204ca1c9e5d1c",
+          "sha256": "b60405d8fb5064b1d94152707a0492b180f1fb04001d41bffc9edbc031c71849",
+          "sha1": "3eb965598c9b7592fff1ab3fddea00c3219d02d1",
+          "md5": "3adb39436528107c55743309c8a88dd0"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "devive-rst-doclet-jdk17-all-0.2.0-sources.jar",
+          "url": "devive-rst-doclet-jdk17-all-0.2.0-sources.jar",
+          "size": 101387,
+          "sha512": "6c360c05cdf0396be256b1c51850ad69dcc07947a6995868727ed712042f90e911890ea9a2b8f7c6a2af6fc86306d7c4220e2090fcf5742964efc7f6867d0313",
+          "sha256": "b267e024b43935e243b31e5b101c9d783fb6b2ea82861431e4614b985ee31990",
+          "sha1": "ceb27c71791af06f1ee56782d037d06df07b3fc7",
+          "md5": "98a2511284d82d254743d35fd913a615"
+        }
+      ]
+    }
+  ]
+}
