@@ -6,4 +6,7 @@ rootProject.name = 'rst-doclet'
 include 'jdk8',
         'jdk11',
         'jdk17'
+include 'usage:gradle:java8',
+        'usage:gradle:java11',
+        'usage:gradle:java17'
 
