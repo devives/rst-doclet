@@ -17,7 +17,6 @@
  */
 package com.devives.rstdoclet;
 
-import com.devives.AbstractTest;
 import com.sun.tools.javadoc.Main;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -61,7 +60,7 @@ import java.util.stream.Stream;
  *   -J<flag>                         Pass <flag> directly to the runtime system
  *   -X                               Print a synopsis of nonstandard options and exit
  */
-public class RstDocletTest extends AbstractTest {
+public class RstDoclet8Test {
 
     private static final Path projectRootPath = Paths.get("").toAbsolutePath();
     private static final Path docletPath = projectRootPath.resolve("build/classes/java/main/");
@@ -86,7 +85,7 @@ public class RstDocletTest extends AbstractTest {
     @Test
     public void generate_forSamples_noExceptions() throws Exception {
         deleteDirectoryRecursive(outputPath.resolve("com"));
-        Path sourcePath = projectRootPath.resolve("../samples/src/main/java/");
+        Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");
         String subPackages = "com.devives.samples";
         String[] args = new String[]{
                 "-d", outputPath.toString()

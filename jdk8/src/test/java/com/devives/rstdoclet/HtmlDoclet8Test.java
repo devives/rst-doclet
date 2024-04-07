@@ -17,10 +17,10 @@
  */
 package com.devives.rstdoclet;
 
-import com.devives.AbstractTest;
 import com.sun.tools.javadoc.Main;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -69,7 +69,7 @@ import java.util.Comparator;
  * -stylesheetfile <path>           File to change style of the generated documentation
  * -docencoding <name>              Specify the character encoding for the output
  */
-public class HtmlDocletTest extends AbstractTest {
+public class HtmlDoclet8Test {
 
     private static final Path projectRootPath = Paths.get("").toAbsolutePath();
     private static final Path outputPath = projectRootPath.resolve("build/test-results/javadoc");
@@ -87,8 +87,9 @@ public class HtmlDocletTest extends AbstractTest {
     }
 
     @Test
+    @Disabled // Test exists for debugging purposes.
     public void generate_forSamples_noExceptions() throws Exception {
-        Path sourcePath = projectRootPath.resolve("../samples/src/main/java/");
+        Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");
         String subPackages = "com.devives.samples";
         String[] args = new String[]{
                 "-d", outputPath.toString()
@@ -102,6 +103,7 @@ public class HtmlDocletTest extends AbstractTest {
 
 
     @Test
+    @Disabled // Test exists for debugging purposes.
     public void generate_forJavaUtils_noExceptions() throws Exception {
         Path sourcePath = Paths.get(System.getenv("JAVA_HOME")).resolve("src").toAbsolutePath();
         String subpackages = "java.util";

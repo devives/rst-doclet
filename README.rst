@@ -46,7 +46,7 @@ Quick Start
    .. code:: gradle
 
       dependencies {
-          rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.2.0')
+          rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.2.1')
       }
 #. Register gradle task ``javadoc2rst``:
 
@@ -56,13 +56,14 @@ Quick Start
           description = 'Generate rst files based on javadoc comments in code.'
           group = 'documentation'
           source = sourceSets.main.allJava
+          classpath = configurations.compileClasspath
           destinationDir = file("$docsDir/javadoc2rst")
-          options.docletpath = configurations.rstDoclet.files.asType(List)
+          failOnError = true
+          options.docletpath = configurations.rstDoclet.files as List
           options.doclet = "com.devives.rstdoclet.RstDoclet"
           options.encoding = "UTF-8"
           options.showFromPackage()
-          failOnError = false
-          (options as CoreJavadocOptions).addStringOption("packageindexfilename", "package-summary")
+          (options as CoreJavadocOptions).addStringOption("packageindexfilename", "package-index")
       }
 #. Reload All Gradle Projects.
 #. Execute gradle task ``documentation \ javadoc2rst``.
@@ -88,4 +89,4 @@ Links
 
 .. footer::
 
-   This document generated using `this code <https://github.com/devives/rst-doclet/blob/main/src/test/java/com/devives/ReadMeGenerator.java>`_.
+   This document generated using `this code <https://github.com/devives/rst-doclet/blob/main/jdk8/src/test/java/com/devives/rstdoclet/ReadMeGenerator.java>`_.

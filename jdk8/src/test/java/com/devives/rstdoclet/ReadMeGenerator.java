@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives;
+package com.devives.rstdoclet;
 
 import com.devives.rst.Rst;
 import com.devives.rst.document.RstDocument;
@@ -78,7 +78,7 @@ public class ReadMeGenerator implements Constants {
                         .item(itm -> itm
                                 .paragraph("Add library to dependencies:")
                                 .code("gradle", "dependencies {\n" +
-                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.2.0')\n" +
+                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.2.1')\n" +
                                         "}"))
                         .item(itm -> itm
                                 .paragraph(p -> p.text("Register gradle task ").literal("javadoc2rst").text(":"))
@@ -86,13 +86,14 @@ public class ReadMeGenerator implements Constants {
                                         "    description = 'Generate rst files based on javadoc comments in code.'\n" +
                                         "    group = 'documentation'\n" +
                                         "    source = sourceSets.main.allJava\n" +
+                                        "    classpath = configurations.compileClasspath\n" +
                                         "    destinationDir = file(\"$docsDir/javadoc2rst\")\n" +
-                                        "    options.docletpath = configurations.rstDoclet.files.asType(List)\n" +
+                                        "    failOnError = true\n" +
+                                        "    options.docletpath = configurations.rstDoclet.files as List\n" +
                                         "    options.doclet = \"com.devives.rstdoclet.RstDoclet\"\n" +
                                         "    options.encoding = \"UTF-8\"\n" +
                                         "    options.showFromPackage()\n" +
-                                        "    failOnError = false\n" +
-                                        "    (options as CoreJavadocOptions).addStringOption(\"packageindexfilename\", \"package-summary\")\n" +
+                                        "    (options as CoreJavadocOptions).addStringOption(\"packageindexfilename\", \"package-index\")\n" +
                                         "}"))
                         .item("Reload All Gradle Projects.")
                         .item(itm -> itm.paragraph(p -> p.text("Execute gradle task ").literal("documentation \\ javadoc2rst").text(".")))
@@ -116,7 +117,7 @@ public class ReadMeGenerator implements Constants {
                 .end()
                 .directive(Directives.Footer, a -> a.paragraph(p -> p
                         .text("This document generated using ")
-                        .link("https://github.com/devives/rst-doclet/blob/main/src/test/java/com/devives/ReadMeGenerator.java", "this code")
+                        .link("https://github.com/devives/rst-doclet/blob/main/jdk8/src/test/java/com/devives/rstdoclet/ReadMeGenerator.java", "this code")
                         .text(".")))
                 .build();
 

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.devives'
-archivesBaseName = "devive-rst-doclet"
+archivesBaseName = "devive-rst-doclet-jdk8"
 version = '0.2.1'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -27,25 +27,26 @@ repositories {
 }
 
 configurations {
-    javadocOnly
     rstDoclet
 }
 
 dependencies {
-    // https://docs.gradle.org/current/userguide/java_library_plugin.html#java_library_plugin
-    compileOnly project(path: ':rst-document')
-    compileOnly project(path: ':rst-document-for-sphinx')
+    // Why `compileOnly` instead `api`?
+    // We build a fat jar. `compileOnly` dependencies will no be added to pom.xml.
+    compileOnly 'com.devives:devive-rst-document:0.2.0'
+    //compileOnly project(path: ':rst-document')
+    compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.0'
+    //compileOnly project(path: ':rst-document-for-sphinx')
     compileOnly 'org.jsoup:jsoup:1.15.3'
     compileOnly ':tools:'
 
-    rstDoclet project(path: ':rst-doclet')
+    rstDoclet project(path: ':jdk8')
     rstDoclet ':tools:'
 
-    javadocOnly project(path: ':rst-doclet')
-    javadocOnly ':tools:'
-
-    testImplementation project(path: ':rst-document')
-    testImplementation project(path: ':rst-document-for-sphinx')
+    testImplementation 'com.devives:devive-rst-document:0.2.0'
+    //testImplementation project(path: ':rst-document')
+    testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
+    //testImplementation project(path: ':rst-document-for-sphinx')
     testImplementation ':tools:'
     testImplementation 'org.jsoup:jsoup:1.15.3'
     testImplementation platform('org.junit:junit-bom:5.9.1')
@@ -78,7 +79,9 @@ var manifest = manifest {
 jar {
     setManifest(manifest)
 
-    archiveAppendix = 'jdk8-all'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    archiveAppendix = 'all'
     from {
         // Collect fat jar, excluding 'tools.jar'
         configurations.compileClasspath
@@ -109,7 +112,7 @@ sourcesJar {
 }
 
 license {
-    header project.file('codequality/HEADER')
+    header project.file('./../codequality/HEADER')
     strictCheck true
     exclude("**/com/devives/rstdoclet/html2rst/jdkloans/**")
 }
@@ -120,7 +123,7 @@ publishing {
             from components.java
             pom {
                 packaging = "jar"
-                artifactId = archivesBaseName + '-jdk8-all'
+                artifactId = archivesBaseName + '-all'
                 url = "https://github.com/devives/rst-doclet"
                 description = "Doclet for JavaDoc Tool, generating reStructuredText for Sphinx."
 
@@ -178,12 +181,12 @@ tasks.register('javadoc2rst', Javadoc) {
     description = 'Generate rst files based on javadoc comments in code.'
     group = 'documentation'
     source = sourceSets.main.allJava
-    classpath = configurations.javadocOnly
+    classpath = configurations.compileClasspath
     destinationDir = file("$docsDir/javadoc2rst")
-    options.docletpath = configurations.rstDoclet.files.asType(List)
+    failOnError = true
+    options.docletpath = configurations.rstDoclet.files as List
     options.doclet = "com.devives.rstdoclet.RstDoclet"
     options.encoding = "UTF-8"
     options.showFromPackage()
-    failOnError = false
     (options as CoreJavadocOptions).addStringOption("packageindexfilename", "package-summary")
 }
