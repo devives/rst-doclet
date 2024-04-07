@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.devives.samples"},{"l":"com.devives.samples.inners"},{"l":"com.devives.samples.vehicles"}];updateSearchResults();
