@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.devives'
 archivesBaseName = "devive-rst-doclet-jdk11"
-version = '0.2.1'
+version = '0.2.2'
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
