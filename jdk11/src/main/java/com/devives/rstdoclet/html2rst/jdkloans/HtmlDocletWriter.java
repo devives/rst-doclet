@@ -1027,8 +1027,8 @@ public class HtmlDocletWriter {
                 }
 
             }
-            Content link = getLink(new LinkInfoImpl(configuration, LinkInfoImpl.Kind.DEFAULT, refClass)
-                    .label(label));
+//            Content link = getLink(new LinkInfoImpl(configuration, LinkInfoImpl.Kind.DEFAULT, refClass)
+//                    .label(label));
             return new JavaTypeRef(refClass);
         } else if (refMem == null) {
             // Must be a member reference since refClass is not null and refMemName is not null.
@@ -1471,7 +1471,7 @@ public class HtmlDocletWriter {
                 @Override
                 public Boolean visitLink(LinkTree node, Content c) {
                     // we need to pass the DocTreeImpl here, so ignore node
-                    Content content = new StringContent(seeTagToContent(element, node).toString());
+                    Content content = new StringContent(seeTagToContent(element, node).serialize());
                     result.addContent(content);
                     return false;
                 }
@@ -1489,7 +1489,7 @@ public class HtmlDocletWriter {
                 @Override
                 public Boolean visitSee(SeeTree node, Content c) {
                     // we need to pass the DocTreeImpl here, so ignore node
-                    Content content = new StringContent(seeTagToContent(element, tag).toString());
+                    Content content = new StringContent(seeTagToContent(element, tag).serialize());
                     result.addContent(content);
                     return false;
                 }

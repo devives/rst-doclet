@@ -266,7 +266,7 @@ public class TagletWriterImpl extends TagletWriter {
         if (!seeTags.isEmpty()) {
             for (DocTree dt : seeTags) {
                 appendSeparatorIfNotEmpty(body);
-                body.addContent(new StringContent(htmlWriter.seeTagToContent(holder, dt).toString()));
+                body.addContent(new StringContent(htmlWriter.seeTagToContent(holder, dt).serialize()));
             }
         }
         if (utils.isVariableElement(holder) && ((VariableElement)holder).getConstantValue() != null &&

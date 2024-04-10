@@ -121,4 +121,20 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
     public void seeTagsInComment() {
     }
 
+    /**
+     * Forth equals lines is correct. See tags illustrate different formats of references.
+     * <ul>
+     * <li>{@link #inlineAnchorExample}
+     * <li>{@link #inlineAnchorExample()}
+     * <li>{@link SampleClass#inlineAnchorExample This is multiline
+     * label for reference}
+     * <li>{@link SampleClass#inlineAnchorExample()}
+     * <li>{@link com.devives.samples.inners.SampleRootClass}
+     * <li>{@link com.devives.samples}
+     * <li>{@link java.util.ArrayList}
+     * </ul>
+     */
+    public void linkTagsInComment() {
+    }
+
 }

@@ -299,7 +299,7 @@ public class TagletWriterImpl extends TagletWriter {
     public Content seeTagOutput(Element holder, List<? extends SeeTree> seeTags) {
         List<Content> links = new ArrayList<>();
         for (DocTree dt : seeTags) {
-            links.add(new StringContent(htmlWriter.seeTagToContent(holder, dt, context.within(dt)).toString()));
+            links.add(new StringContent(htmlWriter.seeTagToContent(holder, dt, context.within(dt)).serialize()));
         }
         if (utils.isVariableElement(holder) && ((VariableElement)holder).getConstantValue() != null &&
                 htmlWriter.parentDoc instanceof TypeElement typeElement) {

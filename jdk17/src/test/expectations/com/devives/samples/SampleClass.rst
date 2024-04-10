@@ -62,6 +62,23 @@ inlineCodeExamples
    ``@Getter``
    ``List<Integer> nums = new ArrayList<>();``
 
+linkTagsInComment
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void linkTagsInComment()
+   :outertype: SampleClass
+
+   Forth equals lines is correct. See tags illustrate different formats of references.
+
+   * :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`This is multiline
+     label for reference <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
+   * :java:ref:`com.devives.samples <com.devives.samples>`
+   * :java:ref:`ArrayList <java.util.ArrayList>`
+
 multilineCodeExamples
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -73,7 +90,7 @@ multilineCodeExamples
    .. parsed-literal::
 
       public class Application(){
-          List<Integer> nums = new ArrayList<>();
+          List<Integer> nums = new ArrayList<>(); 
       }
 
 
@@ -94,7 +111,7 @@ multilineCodeExamples
 
       public class Application(){
           @Getter
-          List<Integer> nums = new ArrayList<>();
+          List<Integer> nums = new ArrayList<>(); 
       }
 
 

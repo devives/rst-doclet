@@ -1050,10 +1050,10 @@ public class HtmlDocletWriter {
                     Content link = getLink(new HtmlLinkInfo(configuration, HtmlLinkInfo.Kind.DEFAULT, referencedType));
                     return new JavaTypeRef(refClass, link.toString());
                 }
-                labelContent = plainOrCode(isLinkPlain, Text.of(utils.getSimpleName(refClass)));
+//                labelContent = plainOrCode(isLinkPlain, Text.of(utils.getSimpleName(refClass)));
             }
-            Content link = getLink(new HtmlLinkInfo(configuration, HtmlLinkInfo.Kind.DEFAULT, refClass)
-                    .label(labelContent));
+//            Content link = getLink(new HtmlLinkInfo(configuration, HtmlLinkInfo.Kind.DEFAULT, refClass)
+//                    .label(labelContent));
             return new JavaTypeRef(refClass);
         } else if (refMem == null) {
             // Must be a member reference since refClass is not null and refMemName is not null.
@@ -1515,7 +1515,7 @@ public class HtmlDocletWriter {
                         }
                         result.add(label);
                     } else {
-                        Content content = new StringContent(seeTagToContent(element, node, context.within(node)).toString());
+                        Content content = new StringContent(seeTagToContent(element, node, context.within(node)).serialize());
                         result.add(content);
                     }
                     return false;
@@ -1533,7 +1533,7 @@ public class HtmlDocletWriter {
 
                 @Override
                 public Boolean visitSee(SeeTree node, Content c) {
-                    Content content = new StringContent(seeTagToContent(element, node, context).toString());
+                    Content content = new StringContent(seeTagToContent(element, node, context).serialize());
                     result.add(content);
                     return false;
                 }
