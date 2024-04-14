@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.devives'
 archivesBaseName = "devive-rst-doclet-jdk17"
-version = '0.2.2'
+version = '0.2.3'
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -38,6 +38,7 @@ dependencies {
     //compileOnly project(path: ':rst-document')
     compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.0'
     //compileOnly project(path: ':rst-document-for-sphinx')
+    compileOnly project(path: ':javasphinx')
     compileOnly 'org.jsoup:jsoup:1.15.3'
 
     rstDoclet project(path: ':jdk17')
@@ -46,6 +47,7 @@ dependencies {
     //testImplementation project(path: ':rst-document')
     testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
     //testImplementation project(path: ':rst-document-for-sphinx')
+    testImplementation project(path: ':javasphinx')
     testImplementation 'org.jsoup:jsoup:1.15.3'
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

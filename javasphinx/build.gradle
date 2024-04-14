@@ -1,0 +1,51 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.devives'
+archivesBaseName = "devive-javasphinx"
+version = '0.2.3'
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+javadoc.options.encoding = "UTF-8"
+javadoc.failOnError = false
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    // Why `compileOnly` instead `api`?
+    // We build a fat jar. `compileOnly` dependencies will no be added to pom.xml.
+    compileOnly 'com.devives:devive-rst-document:0.2.0'
+    //compileOnly project(path: ':rst-document')
+    compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.0'
+    //compileOnly project(path: ':rst-document-for-sphinx')
+    compileOnly 'org.jsoup:jsoup:1.15.3'
+
+    testImplementation 'com.devives:devive-rst-document:0.2.0'
+    //testImplementation project(path: ':rst-document')
+    testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
+    //testImplementation project(path: ':rst-document-for-sphinx')
+    testImplementation 'org.jsoup:jsoup:1.15.3'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.platform:junit-platform-suite'
+}
+
+jar {
+
+}
+
+//configurations.archives.with {
+//    artifacts.remove artifacts.find { it.toString().contains("jar") }
+//}

@@ -81,6 +81,11 @@ public class ConfigurationImpl extends Configuration {
     public String packageIndexFileName = "package-index";
 
     /**
+     * Argument for command line option "-doctitle".
+     */
+    public String doctitle = "JavaDoc";
+
+    /**
      * True if command line option "-nodeprecated" is used. Default value is
      * false.
      */
@@ -145,10 +150,11 @@ public class ConfigurationImpl extends Configuration {
                 noDeprecatedList = true;
             } else if (opt.equals("-packageindexfilename")) {
                 packageIndexFileName = os[1];
+            } else if (opt.equals("-doctitle")) {
+                doctitle = os[1];
             } else if (opt.equals("-footer")
                     || opt.equals("-header")
                     || opt.equals("-packagesheader")
-                    || opt.equals("-doctitle")
                     || opt.equals("-windowtitle")
                     || opt.equals("-top")
                     || opt.equals("-bottom")

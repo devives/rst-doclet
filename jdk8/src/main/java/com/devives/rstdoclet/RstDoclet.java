@@ -22,6 +22,7 @@ import com.devives.rst.util.TextFileWriter;
 import com.devives.rstdoclet.rst.ClassRstGenerator;
 import com.devives.rstdoclet.rst.JavaDocRstElementFactoryImpl;
 import com.devives.rstdoclet.rst.PackageSummaryRstGenerator;
+import com.devives.sphinx.java.doc.PackagesIndexRstGenerator;
 import com.sun.javadoc.*;
 import com.sun.tools.doclets.internal.toolkit.Configuration;
 import com.sun.tools.doclets.internal.toolkit.util.*;
@@ -131,6 +132,23 @@ public final class RstDoclet extends AbstractDoclet {
     }
 
     /**
+     * Generates package index for the given packages.
+     *
+     * @param packages Packages to generate index for.
+     * @throws IOException If any error occurs while creating file or directories.
+     */
+    private void generatePackagesIndex(final PackageDoc[] packages) throws IOException {
+        configuration.root.printNotice("Generates packages index.");
+        File file = Paths.get(configuration.destDirName).resolve("packages.rst").toFile();
+        String[] packageNames = Arrays.stream(packages).map(Doc::name).toArray(String[]::new);
+        new TextFileWriter(file,
+                new PackagesIndexRstGenerator(packageNames)
+                        .setTitle(configuration.doctitle)
+                        .setPackageIndexFileName(configuration.packageIndexFileName)
+        ).write();
+    }
+
+    /**
      * Generates package documentation for the given
      * ``packageDoc``.
      *
@@ -158,14 +176,15 @@ public final class RstDoclet extends AbstractDoclet {
      * {@inheritDoc}
      */
     protected void generatePackageFiles(ClassTree classTree) throws Exception {
-        PackageDoc[] packages = configuration.packages;
-        for (int i = 0; i < packages.length; i++) {
-            // if -nodeprecated option is set and the package is marked as
-            // deprecated, do not generate the package-summary.html, package-frame.html
-            // and package-tree.html pages for that package.
-            if (!(configuration.nodeprecated && Util.isDeprecated(packages[i]))) {
-                generatePackage(packages[i]);
-            }
+        // if -nodeprecated option is set and the package is marked as
+        // deprecated, do not generate the package-summary.html, package-frame.html
+        // and package-tree.html pages for that package.
+        final PackageDoc[] packages = Arrays.stream(configuration.packages)
+                .filter(pkg -> !(configuration.nodeprecated && Util.isDeprecated(pkg)))
+                .toArray(PackageDoc[]::new);
+        generatePackagesIndex(packages);
+        for (PackageDoc pkg : packages) {
+            generatePackage(pkg);
         }
     }
 

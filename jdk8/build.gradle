@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.devives'
 archivesBaseName = "devive-rst-doclet-jdk8"
-version = '0.2.2'
+version = '0.2.3'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -39,6 +39,7 @@ dependencies {
     //compileOnly project(path: ':rst-document-for-sphinx')
     compileOnly 'org.jsoup:jsoup:1.15.3'
     compileOnly ':tools:'
+    compileOnly project(path: ':javasphinx')
 
     rstDoclet project(path: ':jdk8')
     rstDoclet ':tools:'
@@ -48,6 +49,7 @@ dependencies {
     testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
     //testImplementation project(path: ':rst-document-for-sphinx')
     testImplementation ':tools:'
+    testImplementation project(path: ':javasphinx')
     testImplementation 'org.jsoup:jsoup:1.15.3'
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

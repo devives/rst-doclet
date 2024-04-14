@@ -21,6 +21,7 @@ package com.devives.rstdoclet;
 import com.devives.rst.util.TextFileWriter;
 import com.devives.rstdoclet.rst.ClassRstGenerator;
 import com.devives.rstdoclet.rst.PackageSummaryRstGenerator;
+import com.devives.sphinx.java.doc.PackagesIndexRstGenerator;
 import com.sun.tools.javac.util.FatalError;
 import jdk.javadoc.internal.doclets.toolkit.DocletException;
 import jdk.javadoc.internal.doclets.toolkit.util.ClassTree;
@@ -36,9 +37,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.Arrays;
 import java.util.SortedSet;
 
 
@@ -54,18 +53,37 @@ public class RstDoclet extends AbstractRstDoclet {
      */
     @Override // defined by AbstractDoclet
     protected void generatePackageFiles(ClassTree classtree) throws DocletException {
-        Set<PackageElement> packages = configuration.packages;
-        List<PackageElement> pList = new ArrayList<>(packages);
-        for (PackageElement pkg : pList) {
-            // if -nodeprecated option is set and the package is marked as
-            // deprecated, do not generate the package-summary.html, package-frame.html
-            // and package-tree.html pages for that package.
-            if (!(configuration.nodeprecated && utils.isDeprecated(pkg))) {
-                if (configuration.createtree) {
-                    generatePackage(pkg);
-                }
+        // if -nodeprecated option is set and the package is marked as
+        // deprecated, do not generate the package-summary.html, package-frame.html
+        // and package-tree.html pages for that package.
+        final PackageElement[] packages = configuration.packages.stream()
+                .filter(pkg -> (!(configuration.nodeprecated && utils.isDeprecated(pkg)) && configuration.createtree))
+                .toArray(PackageElement[]::new);
+        try {
+            generatePackagesIndex(packages);
+            for (PackageElement pkg : packages) {
+                generatePackage(pkg);
             }
+        } catch (IOException e) {
+            throw new SimpleDocletException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Generates package index for the given packages.
+     *
+     * @param packages Packages to generate index for.
+     * @throws IOException If any error occurs while creating file or directories.
+     */
+    private void generatePackagesIndex(final PackageElement[] packages) throws IOException {
+        configuration.reporter.print(Diagnostic.Kind.NOTE, "Generates packages index.");
+        File file = Paths.get(configuration.destDirName).resolve("packages.rst").toFile();
+        String[] packageNames = Arrays.stream(packages).map(p -> p.getQualifiedName().toString()).toArray(String[]::new);
+        new TextFileWriter(file,
+                new PackagesIndexRstGenerator(packageNames)
+                        .setTitle(configuration.doctitle)
+                        .setPackageIndexFileName(rstConfiguration.getPackageIndexFileName())
+        ).write();
     }
 
     /**
@@ -78,8 +96,7 @@ public class RstDoclet extends AbstractRstDoclet {
      */
     private Path getPackageDirectory(final String packageName) {
         final String directory = packageName.replace('.', '/');
-        //todo проверить пути
-        String path = DocFile.createFileForDirectory(configuration, directory).getPath();
+        DocFile.createFileForDirectory(configuration, directory);
         return Paths.get(configuration.destDirName)
                 .resolve(directory)
                 .toAbsolutePath();

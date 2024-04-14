@@ -86,15 +86,17 @@ public class RstDocletJdk11Test {
 
     @Test
     public void generate_forSamples_noExceptions() throws Exception {
-        deleteDirectoryRecursive(outputPath.resolve("com"));
+        Path testOutputPath = outputPath.resolve("samples");
+        deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");
         Path source11Path = projectRootPath.resolve("../samples/src/main/java11/");
         String subPackages = "com.devives.samples";
         List<String> args = new ArrayList<>();
         args.addAll(Arrays.asList(
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 , "-package"
                 , "-encoding", "UTF-8"
+                , "-doctitle", "Sample v.0.0.0 Api"
                 , "-doclet", RstDoclet.class.getCanonicalName()
                 , "-docletpath", docletPath.toString()
                 , "-sourcepath", sourcePath + ";" + source11Path
@@ -104,46 +106,43 @@ public class RstDocletJdk11Test {
         System.out.println("sourcePath = " + sourcePath + ";" + source11Path);
         Assertions.assertEquals(0, Main.execute(args.toArray(String[]::new)));
         validateResults(
-                projectRootPath.resolve("src/test/expectations/com/devives"),
-                outputPath.resolve("com/devives"));
+                projectRootPath.resolve("src/test/expectations"),
+                testOutputPath);
     }
 
+    private final List<String> exports = Arrays.asList(
+            "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal=ALL-UNNAMED",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED",
+            "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED");
 
     @Test
     public void generate_forRstDoclet_noExceptions() throws Exception {
-
-
-        List<String> exports = Arrays.asList(
-                "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED",
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal=ALL-UNNAMED",
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED",
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED",
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED",
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED",
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED",
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED",
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED",
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED",
-                "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED");
-
-
-        deleteDirectoryRecursive(outputPath.resolve("com"));
+        Path testOutputPath = outputPath.resolve("rst-doclet");
+        deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = projectRootPath.resolve("src/main/java/");
         String subPackages = "com.devives.rstdoclet";
         List<String> args = new ArrayList<>();
         exports.forEach(itm -> args.add(itm));
         args.addAll(Arrays.asList(
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 //, "-package"
                 , "-encoding", "UTF-8"
                 , "-doclet", RstDoclet.class.getCanonicalName()
@@ -160,7 +159,8 @@ public class RstDocletJdk11Test {
     @Test
     @Disabled
     public void generate_forJavaUtils_noExceptions() throws Exception {
-        deleteDirectoryRecursive(outputPath.resolve("java"));
+        Path testOutputPath = outputPath.resolve("java-util");
+        deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = Paths.get(System.getenv("JAVA_HOME_11"))
                 .resolve("lib").resolve("src")
                 .resolve("java.base")
@@ -184,7 +184,7 @@ public class RstDocletJdk11Test {
     public void validateResultsTest() throws Exception {
         validateResults(
                 projectRootPath.resolve("src/test/expectations/com/devives"),
-                outputPath.resolve("com/devives"));
+                outputPath.resolve("samples"));
     }
 
     private void validateResults(Path expectationsPath, Path resultsPath) throws Exception {

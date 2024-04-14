@@ -86,15 +86,17 @@ public class RstDocletJdk17Test {
 
     @Test
     public void generate_forSamples_noExceptions() throws Exception {
-        deleteDirectoryRecursive(outputPath.resolve("com"));
+        Path testOutputPath = outputPath.resolve("samples");
+        deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");
         Path source11Path = projectRootPath.resolve("../samples/src/main/java11/");
         Path source17Path = projectRootPath.resolve("../samples/src/main/java17/");
         String subPackages = "com.devives.samples";
         String[] args = new String[]{
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 , "-package"
                 , "-encoding", "UTF-8"
+                , "-doctitle", "Sample v.0.0.0 Api"
                 , "-doclet", RstDoclet.class.getCanonicalName()
                 , "-docletpath", docletPath.toString()
                 , "-sourcepath", sourcePath + ";" + source11Path + ";" + source17Path
@@ -104,11 +106,11 @@ public class RstDocletJdk17Test {
         System.out.println("sourcePath = " + sourcePath + ";" + source11Path + ";" + source17Path);
         Assertions.assertEquals(0, Main.execute(args));
         validateResults(
-                projectRootPath.resolve("src/test/expectations/com/devives"),
-                outputPath.resolve("com/devives"));
+                projectRootPath.resolve("src/test/expectations"),
+                testOutputPath);
     }
 
-    List<String> exports = Arrays.asList(
+    private final List<String> exports = Arrays.asList(
             "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
             "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
             "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
@@ -134,7 +136,8 @@ public class RstDocletJdk17Test {
 
     @Test
     public void generate_forRstDoclet_noExceptions() throws Exception {
-        deleteDirectoryRecursive(outputPath.resolve("com"));
+        Path testOutputPath = outputPath.resolve("rst-doclet");
+        deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = projectRootPath.resolve("src/main/java/");
         String subPackages = "com.devives.rstdoclet";
         List<String> args = new ArrayList<>();
@@ -157,14 +160,15 @@ public class RstDocletJdk17Test {
     @Test
     @Disabled
     public void generate_forJavaUtils_noExceptions() throws Exception {
-        deleteDirectoryRecursive(outputPath.resolve("java"));
+        Path testOutputPath = outputPath.resolve("java-util");
+        deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = Paths.get(System.getenv("JAVA_HOME_11"))
                 .resolve("lib").resolve("src")
                 .resolve("java.base")
                 .toAbsolutePath();
         String subpackages = "java.util";
         String[] args = new String[]{
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 , "-encoding", "UTF-8"
                 , "-doclet", RstDoclet.class.getCanonicalName()
                 , "-docletpath", docletPath.toString()
@@ -180,8 +184,8 @@ public class RstDocletJdk17Test {
     @Disabled
     public void validateResultsTest() throws Exception {
         validateResults(
-                projectRootPath.resolve("src/test/expectations/com/devives"),
-                outputPath.resolve("com/devives"));
+                projectRootPath.resolve("src/test/expectations"),
+                outputPath.resolve("samples"));
     }
 
     private void validateResults(Path expectationsPath, Path resultsPath) throws Exception {

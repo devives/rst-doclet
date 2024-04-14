@@ -84,13 +84,15 @@ public class RstDoclet8Test {
 
     @Test
     public void generate_forSamples_noExceptions() throws Exception {
-        deleteDirectoryRecursive(outputPath.resolve("com"));
+        Path testOutputPath = outputPath.resolve("samples");
+        deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");
         String subPackages = "com.devives.samples";
         String[] args = new String[]{
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 , "-package"
                 , "-encoding", "UTF-8"
+                , "-doctitle", "Sample v.0.0.0 Api"
                 , "-doclet", RstDoclet.class.getCanonicalName()
                 , "-docletpath", docletPath.toString()
                 , "-sourcepath", sourcePath.toString()
@@ -99,18 +101,19 @@ public class RstDoclet8Test {
         System.out.println("sourcePath = " + sourcePath);
         Assertions.assertEquals(0, Main.execute(args));
         validateResults(
-                projectRootPath.resolve("src/test/expectations/com/devives"),
-                outputPath.resolve("com/devives"));
+                projectRootPath.resolve("src/test/expectations"),
+                testOutputPath);
     }
 
 
     @Test
     public void generate_forJavaUtils_noExceptions() throws Exception {
-        deleteDirectoryRecursive(outputPath.resolve("java"));
+        Path testOutputPath = outputPath.resolve("java-utils");
+        deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = Paths.get(System.getenv("JAVA_HOME")).resolve("src").toAbsolutePath();
         String subpackages = "java.util";
         String[] args = new String[]{
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 , "-encoding", "UTF-8"
                 , "-doclet", RstDoclet.class.getCanonicalName()
                 , "-docletpath", docletPath.toString()
