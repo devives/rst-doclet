@@ -22,11 +22,11 @@ import com.devives.rst.builder.RstElementBuilder;
 import com.devives.rst.document.inline.InlineElement;
 import com.devives.rst.document.inline.Link;
 import com.devives.rst.util.StringUtils;
-import com.devives.rstdoclet.rst.document.JavaMemberRef;
-import com.devives.rstdoclet.rst.document.JavaPackageRef;
-import com.devives.rstdoclet.rst.document.JavaTypeRef;
-import com.devives.rstdoclet.rst.document.Ref;
+import com.devives.rstdoclet.rst.builder.JavaMemberRefBuilder;
+import com.devives.rstdoclet.rst.builder.JavaPackageRefBuilder;
+import com.devives.rstdoclet.rst.builder.JavaTypeRefBuilder;
 import com.devives.sphinx.rst.Rst4Sphinx;
+import com.devives.sphinx.rst.document.Ref;
 import com.devives.sphinx.rst.document.directive.Directives;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.SeeTag;
@@ -143,16 +143,16 @@ public class TagUtils {
             return Rst4Sphinx.elements().text("\\ " + StringUtils.dequote(text, '\"') + "\\ ");
         } else if (see.referencedMember() != null) {
             return (label.isEmpty())
-                    ? new JavaMemberRef(see.referencedMember())
-                    : new JavaMemberRef(see.referencedMember(), label);
+                    ? new JavaMemberRefBuilder<>(see.referencedMember()).build()
+                    : new JavaMemberRefBuilder<>(see.referencedMember()).setText(label).build();
         } else if (see.referencedClass() != null) {
             return (label.isEmpty())
-                    ? new JavaTypeRef(see.referencedClass())
-                    : new JavaTypeRef(see.referencedClass(), label);
+                    ? new JavaTypeRefBuilder<>(see.referencedClass()).build()
+                    : new JavaTypeRefBuilder<>(see.referencedClass()).setText(label).build();
         } else if (see.referencedPackage() != null) {
             return (label.isEmpty())
-                    ? new JavaPackageRef(see.referencedPackage())
-                    : new JavaPackageRef(see.referencedPackage(), label);
+                    ? new JavaPackageRefBuilder<>(see.referencedPackage()).build()
+                    : new JavaPackageRefBuilder<>(see.referencedPackage()).setText(label).build();
         } else {
             return Rst4Sphinx.elements().text("\\ " + text + "\\ ");
         }

@@ -17,6 +17,7 @@
  */
 package com.devives.rstdoclet.rst.builder;
 
+import com.devives.html2rst.HtmlUtils;
 import com.devives.rst.builder.BlockQuoteBuilder;
 import com.devives.rst.builder.BlockQuoteBuilderImpl;
 import com.devives.rst.builder.RstNodeBuilder;
@@ -25,12 +26,11 @@ import com.devives.rst.document.directive.Directive;
 import com.devives.rst.document.inline.Text;
 import com.devives.rstdoclet.ConfigurationImpl;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
-import com.devives.html2rst.HtmlUtils;
 import com.devives.rstdoclet.html2rst.ImportsCollector;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.DocContext;
 import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;
-import com.devives.rstdoclet.rst.document.IncludeDocument;
+import com.devives.sphinx.rst.document.IncludeDocument;
 import com.sun.javadoc.ClassDoc;
 import com.sun.tools.doclets.internal.toolkit.Content;
 

@@ -1,41 +1,50 @@
 /**
  * RstDoclet for JavaDoc Tool, generating reStructuredText for Sphinx.
  * Copyright (C) 2023-2024 Vladimir Ivanov <ivvlev@devives.com>.
- *
+ * <p>
  * This code is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 only, as
  * published by the Free Software Foundation..
- *
+ * <p>
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.rstdoclet.rst.document;
+package com.devives.rstdoclet.rst.builder;
 
-import com.devives.rst.util.StringUtils;
+import com.devives.rst.builder.RstNodeBuilder;
 
 import javax.lang.model.element.TypeElement;
+import java.util.Objects;
 
-public class JavaTypeRef extends JavaRef {
+public class JavaTypeRefBuilder<
+        PARENT extends RstNodeBuilder<?, ?, ?, ?>,
+        SELF extends JavaTypeRefBuilder<PARENT, SELF>>
+        extends JavaRoleBuilderAbst<PARENT, SELF> {
 
-    public JavaTypeRef(TypeElement typeElement) {
-        super(formatUri(typeElement), formatText(typeElement));
+    private final TypeElement typeElement_;
+
+    public JavaTypeRefBuilder(TypeElement typeElement) {
+        this.typeElement_ = Objects.requireNonNull(typeElement);
     }
 
-    public JavaTypeRef(TypeElement typeElement, String label) {
-        super(formatUri(typeElement), StringUtils.requireNotNullOrEmpty(label));
+    @Override
+    protected String formatName() {
+        return "java:ref";
     }
 
-    private static String formatText(TypeElement typeElement) {
-        return typeElement.getSimpleName().toString();
+    @Override
+    protected String formatTarget() {
+        return typeElement_.getQualifiedName().toString();
     }
 
-    private static String formatUri(TypeElement typeElement) {
-        return typeElement.getQualifiedName().toString();
+    @Override
+    protected String formatText() {
+        return text_ != null ? text_ : typeElement_.getSimpleName().toString();
     }
 }

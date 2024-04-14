@@ -17,12 +17,12 @@
  */
 package com.devives.rstdoclet;
 
-import com.devives.sphinx.java.doc.PackagesIndexRstGenerator;
 import com.devives.rst.Rst;
 import com.devives.rst.util.TextFileWriter;
 import com.devives.rstdoclet.rst.ClassRstGenerator;
 import com.devives.rstdoclet.rst.PackageSummaryRstGenerator;
-import com.devives.rstdoclet.rst.document.JavaDocRstElementFactoryImpl;
+import com.devives.sphinx.java.doc.PackagesIndexRstGenerator;
+import com.devives.sphinx.rst.document.JavaDocRstElementFactoryImpl;
 import com.sun.tools.javac.util.FatalError;
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.DocletEnvironment;

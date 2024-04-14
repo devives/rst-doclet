@@ -15,14 +15,17 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.rstdoclet.rst.document;
+package com.devives.sphinx.rst.document;
 
-import com.devives.rst.document.RstDocument;
-import com.devives.rst.document.RstNodeAbst;
+import com.devives.rst.document.inline.Role;
 
-/**
- * RstNode witch allow to include one Rst-document to another.
- */
-public class IncludeDocument extends RstNodeAbst<RstDocument> {
+public class Ref extends Role {
 
+    public Ref(String target) {
+        super("ref", target);
+    }
+
+    public Ref(String target, String title) {
+        super("ref", target, title);
+    }
 }

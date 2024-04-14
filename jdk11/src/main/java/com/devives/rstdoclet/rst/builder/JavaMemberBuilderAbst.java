@@ -28,7 +28,7 @@ import com.devives.rstdoclet.html2rst.CommentBuilder;
 import com.devives.rstdoclet.html2rst.ImportsCollector;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
-import com.devives.rstdoclet.rst.document.IncludeDocument;
+import com.devives.sphinx.rst.document.IncludeDocument;
 import com.sun.source.doctree.DocTree;
 
 import javax.lang.model.element.Element;

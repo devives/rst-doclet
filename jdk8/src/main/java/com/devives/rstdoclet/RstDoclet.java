@@ -20,12 +20,15 @@ package com.devives.rstdoclet;
 import com.devives.rst.Rst;
 import com.devives.rst.util.TextFileWriter;
 import com.devives.rstdoclet.rst.ClassRstGenerator;
-import com.devives.rstdoclet.rst.JavaDocRstElementFactoryImpl;
 import com.devives.rstdoclet.rst.PackageSummaryRstGenerator;
 import com.devives.sphinx.java.doc.PackagesIndexRstGenerator;
+import com.devives.sphinx.rst.document.JavaDocRstElementFactoryImpl;
 import com.sun.javadoc.*;
 import com.sun.tools.doclets.internal.toolkit.Configuration;
-import com.sun.tools.doclets.internal.toolkit.util.*;
+import com.sun.tools.doclets.internal.toolkit.util.ClassTree;
+import com.sun.tools.doclets.internal.toolkit.util.DocletAbortException;
+import com.sun.tools.doclets.internal.toolkit.util.FatalError;
+import com.sun.tools.doclets.internal.toolkit.util.Util;
 
 import java.io.File;
 import java.io.IOException;

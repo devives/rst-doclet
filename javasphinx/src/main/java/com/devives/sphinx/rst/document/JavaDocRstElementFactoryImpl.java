@@ -15,14 +15,15 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.rstdoclet.rst.document;
+package com.devives.sphinx.rst.document;
 
-import com.devives.rst.document.RstDocument;
-import com.devives.rst.document.RstNodeAbst;
+import com.devives.rst.document.DefaultRstElementFactoryImpl;
+import com.devives.rst.document.Paragraph;
 
-/**
- * RstNode witch allow to include one Rst-document to another.
- */
-public class IncludeDocument extends RstNodeAbst<RstDocument> {
+public class JavaDocRstElementFactoryImpl extends DefaultRstElementFactoryImpl {
 
+    @Override
+    public Paragraph paragraph() {
+        return new JavaDocParagraph();
+    }
 }

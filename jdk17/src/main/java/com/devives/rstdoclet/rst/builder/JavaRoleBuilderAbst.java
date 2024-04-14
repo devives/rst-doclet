@@ -1,33 +1,49 @@
 /**
  * RstDoclet for JavaDoc Tool, generating reStructuredText for Sphinx.
  * Copyright (C) 2023-2024 Vladimir Ivanov <ivvlev@devives.com>.
- *
+ * <p>
  * This code is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 only, as
  * published by the Free Software Foundation..
- *
+ * <p>
  * This code is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.rstdoclet.rst.document;
+package com.devives.rstdoclet.rst.builder;
 
+import com.devives.rst.Rst;
+import com.devives.rst.builder.RstElementBuilderAbst;
+import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.inline.Role;
 
+public abstract class JavaRoleBuilderAbst<
+        PARENT extends RstNodeBuilder<?, ?, ?, ?>,
+        SELF extends JavaRoleBuilderAbst<PARENT, SELF>>
+        extends RstElementBuilderAbst<PARENT, Role, SELF> {
 
-public class JavaRef extends Role {
+    protected String text_;
 
-    public JavaRef(String target) {
-        super("java:ref", target);
+    @Override
+    protected Role createRstElement() {
+        return Rst.elements().role(formatName(), formatTarget(), formatText());
     }
 
-    public JavaRef(String target, String title) {
-        super("java:ref", target, title);
+    protected abstract String formatName();
+
+    protected abstract String formatTarget();
+
+    protected String formatText() {
+        return text_;
     }
 
+    public SELF setText(String label) {
+        text_ = label;
+        return (SELF) this;
+    }
 }

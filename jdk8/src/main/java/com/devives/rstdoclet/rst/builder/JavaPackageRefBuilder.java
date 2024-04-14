@@ -15,16 +15,34 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.rstdoclet.rst.document;
+package com.devives.rstdoclet.rst.builder;
 
-import com.devives.rst.document.DefaultRstElementFactoryImpl;
-import com.devives.rst.document.Paragraph;
-import com.devives.rstdoclet.rst.document.JavaDocParagraph;
+import com.devives.rst.builder.RstNodeBuilder;
+import com.sun.javadoc.PackageDoc;
 
-public class JavaDocRstElementFactoryImpl extends DefaultRstElementFactoryImpl {
+public class JavaPackageRefBuilder<
+        PARENT extends RstNodeBuilder<?, ?, ?, ?>,
+        SELF extends JavaPackageRefBuilder<PARENT, SELF>>
+        extends JavaRoleBuilderAbst<PARENT, SELF> {
+
+    private final PackageDoc packageDoc_;
+
+    public JavaPackageRefBuilder(PackageDoc packageDoc) {
+        packageDoc_ = packageDoc;
+    }
 
     @Override
-    public Paragraph paragraph() {
-        return new JavaDocParagraph();
+    protected String formatName() {
+        return "java:ref";
+    }
+
+    @Override
+    protected String formatTarget() {
+        return packageDoc_.name();
+    }
+
+    @Override
+    protected String formatText() {
+        return text_ != null ? text_ : packageDoc_.name();
     }
 }

@@ -18,7 +18,7 @@
 package com.devives.rstdoclet;
 
 import com.devives.rst.Rst;
-import com.devives.rstdoclet.rst.document.JavaDocRstElementFactoryImpl;
+import com.devives.sphinx.rst.document.JavaDocRstElementFactoryImpl;
 import com.sun.source.util.DocTreePath;
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.DocletEnvironment;

@@ -19,8 +19,8 @@ package com.devives.rstdoclet.html2rst;
 
 
 import com.devives.html2rst.HtmlUtils;
-import com.devives.rstdoclet.rst.document.JavaRef;
-import com.devives.rstdoclet.rst.document.Ref;
+import com.devives.sphinx.rst.document.JavaRef;
+import com.devives.sphinx.rst.document.Ref;
 
 public class RstDocumentWriter extends com.devives.html2rst.RstDocumentWriter {
 

@@ -15,9 +15,9 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.rstdoclet.rst.document;
+package com.devives.rstdoclet.rst.builder;
 
-import com.devives.rst.util.StringUtils;
+import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rstdoclet.html2rst.DocUtils;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.FieldDoc;
@@ -26,42 +26,53 @@ import com.sun.javadoc.MethodDoc;
 
 import java.util.Arrays;
 
-public class JavaMemberRef extends JavaRef {
+public class JavaMemberRefBuilder<
+        PARENT extends RstNodeBuilder<?, ?, ?, ?>,
+        SELF extends JavaMemberRefBuilder<PARENT, SELF>>
+        extends JavaRoleBuilderAbst<PARENT, SELF> {
 
-    public JavaMemberRef(MemberDoc memberDoc) {
-        super(formatUri(memberDoc), formatText(memberDoc));
+    private final MemberDoc memberDoc_;
+
+    public JavaMemberRefBuilder(MemberDoc memberDoc) {
+        this.memberDoc_ = memberDoc;
     }
 
-    public JavaMemberRef(MemberDoc memberDoc, String label) {
-        super(formatUri(memberDoc), StringUtils.requireNotNullOrEmpty(label));
+    @Override
+    protected String formatName() {
+        return "java:ref";
     }
 
-    private static String formatText(MemberDoc memberDoc) {
+    @Override
+    protected String formatTarget() {
         String member;
-        if (memberDoc instanceof MethodDoc) {
-            member = formatNameWithParamTypeNames((MethodDoc) memberDoc);
-        } else if (memberDoc instanceof FieldDoc) {
-            member = memberDoc.name();
+        if (memberDoc_ instanceof MethodDoc) {
+            member = formatNameWithParamTypeNames((MethodDoc) memberDoc_);
+        } else if (memberDoc_ instanceof FieldDoc) {
+            member = memberDoc_.name();
         } else {
-            member = memberDoc.name();
+            member = memberDoc_.name();
         }
-        String type = memberDoc.containingClass().typeName();
+        String type = memberDoc_.containingClass().qualifiedTypeName();
         return type + "." + member;
     }
 
-    private static String formatUri(MemberDoc memberDoc) {
-        String member;
-        if (memberDoc instanceof MethodDoc) {
-            member = formatNameWithParamTypeNames((MethodDoc) memberDoc);
-        } else if (memberDoc instanceof FieldDoc) {
-            member = memberDoc.name();
+    @Override
+    protected String formatText() {
+        if (text_ != null) {
+            return text_;
         } else {
-            member = memberDoc.name();
+            String member;
+            if (memberDoc_ instanceof MethodDoc) {
+                member = formatNameWithParamTypeNames((MethodDoc) memberDoc_);
+            } else if (memberDoc_ instanceof FieldDoc) {
+                member = memberDoc_.name();
+            } else {
+                member = memberDoc_.name();
+            }
+            String type = memberDoc_.containingClass().typeName();
+            return type + "." + member;
         }
-        String type = memberDoc.containingClass().qualifiedTypeName();
-        return type + "." + member;
     }
-
 
     public static String formatNameWithParamTypeNames(ExecutableMemberDoc methodDoc) {
         return new StringBuilder()
@@ -74,15 +85,5 @@ public class JavaMemberRef extends JavaRef {
                 .append(")")
                 .toString();
     }
-//    private static String formatText(String type, String method) {
-//        StringUtils.requireNotNullOrEmpty(type);
-//        StringUtils.requireNotNullOrEmpty(method);
-//        return type + "." + method + "()";
-//    }
-//
-//    private static String formatUri(String type, String method) {
-//        StringUtils.requireNotNullOrEmpty(type);
-//        StringUtils.requireNotNullOrEmpty(method);
-//        return type + "." + method + "()";
-//    }
+
 }

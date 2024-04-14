@@ -30,11 +30,11 @@ import com.devives.rst.document.inline.Link;
 import com.devives.rst.util.StringUtils;
 import com.devives.rstdoclet.RstConfiguration;
 import com.devives.rstdoclet.RstOptions;
-import com.devives.rstdoclet.rst.document.JavaMemberRef;
-import com.devives.rstdoclet.rst.document.JavaPackageRef;
-import com.devives.rstdoclet.rst.document.JavaTypeRef;
-import com.devives.rstdoclet.rst.document.Ref;
+import com.devives.rstdoclet.rst.builder.JavaMemberRefBuilder;
+import com.devives.rstdoclet.rst.builder.JavaPackageRefBuilder;
+import com.devives.rstdoclet.rst.builder.JavaTypeRefBuilder;
 import com.devives.sphinx.rst.Rst4Sphinx;
+import com.devives.sphinx.rst.document.Ref;
 import com.sun.source.doctree.*;
 import com.sun.source.doctree.AttributeTree.ValueKind;
 import com.sun.source.doctree.DocTree.Kind;
@@ -569,7 +569,7 @@ public class HtmlDocletWriter {
 //                return hrefToLink(link.toString());
 //            }
 //            Content link = links.createLink(targetLink, label);
-            return new JavaPackageRef(packageElement);
+            return new JavaPackageRefBuilder<>(packageElement).build();
         } else {
 //            if (flags.contains(ElementFlag.PREVIEW)) {
 //                Content link = new ContentBuilder(
@@ -1048,13 +1048,13 @@ public class HtmlDocletWriter {
                     // This is a generic type link, use the TypeMirror representation.
 
                     Content link = getLink(new HtmlLinkInfo(configuration, HtmlLinkInfo.Kind.DEFAULT, referencedType));
-                    return new JavaTypeRef(refClass, link.toString());
+                    return new JavaTypeRefBuilder<>(refClass).setText(link.toString()).build();
                 }
 //                labelContent = plainOrCode(isLinkPlain, Text.of(utils.getSimpleName(refClass)));
             }
 //            Content link = getLink(new HtmlLinkInfo(configuration, HtmlLinkInfo.Kind.DEFAULT, refClass)
 //                    .label(labelContent));
-            return new JavaTypeRef(refClass);
+            return new JavaTypeRefBuilder<>(refClass).build();
         } else if (refMem == null) {
             // Must be a member reference since refClass is not null and refMemName is not null.
             // However, refMem is null, so this referenced member does not exist.
@@ -1112,8 +1112,8 @@ public class HtmlDocletWriter {
 //                            ? plainOrCode(isLinkPlain, Text.of(refMemName))
 //                            : labelContent), null, false);
             return labelContent.isEmpty()
-                    ? new JavaMemberRef(refMem, utils)
-                    : new JavaMemberRef(refMem, utils, labelContent.toString());
+                    ? new JavaMemberRefBuilder<>(refMem, utils).build()
+                    : new JavaMemberRefBuilder<>(refMem, utils).setText(labelContent.toString()).build();
         }
     }
 

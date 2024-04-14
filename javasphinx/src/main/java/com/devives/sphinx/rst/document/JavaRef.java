@@ -15,26 +15,19 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.rstdoclet.rst.document;
+package com.devives.sphinx.rst.document;
 
-import com.devives.rst.util.StringUtils;
-import com.sun.javadoc.ClassDoc;
+import com.devives.rst.document.inline.Role;
 
-public class JavaTypeRef extends JavaRef {
 
-    public JavaTypeRef(ClassDoc classDoc) {
-        super(formatUri(classDoc), formatText(classDoc));
+public class JavaRef extends Role {
+
+    public JavaRef(String target) {
+        super("java:ref", target);
     }
 
-    public JavaTypeRef(ClassDoc classDoc, String label) {
-        super(formatUri(classDoc), StringUtils.requireNotNullOrEmpty(label));
+    public JavaRef(String target, String title) {
+        super("java:ref", target, title);
     }
 
-    private static String formatText(ClassDoc classDoc) {
-        return classDoc.name();
-    }
-
-    private static String formatUri(ClassDoc classDoc) {
-        return classDoc.qualifiedTypeName();
-    }
 }

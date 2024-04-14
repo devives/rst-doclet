@@ -29,11 +29,11 @@ import com.devives.rst.Rst;
 import com.devives.rst.document.inline.InlineElement;
 import com.devives.rst.document.inline.Link;
 import com.devives.rst.util.StringUtils;
-import com.devives.rstdoclet.rst.document.JavaMemberRef;
-import com.devives.rstdoclet.rst.document.JavaPackageRef;
-import com.devives.rstdoclet.rst.document.JavaTypeRef;
-import com.devives.rstdoclet.rst.document.Ref;
+import com.devives.rstdoclet.rst.builder.JavaMemberRefBuilder;
+import com.devives.rstdoclet.rst.builder.JavaPackageRefBuilder;
+import com.devives.rstdoclet.rst.builder.JavaTypeRefBuilder;
 import com.devives.sphinx.rst.Rst4Sphinx;
+import com.devives.sphinx.rst.document.Ref;
 import com.sun.source.doctree.*;
 import com.sun.source.doctree.AttributeTree.ValueKind;
 import com.sun.source.doctree.DocTree.Kind;
@@ -588,7 +588,7 @@ public class HtmlDocletWriter {
             targetLink = getCrossPackageLink(packageElement);
         }
         if (targetLink != null) {
-            return new JavaPackageRef(packageElement);
+            return new JavaPackageRefBuilder<>(packageElement).build();
         } else {
             return Rst4Sphinx.elements().text(label.toString());
         }
@@ -1029,7 +1029,7 @@ public class HtmlDocletWriter {
             }
 //            Content link = getLink(new LinkInfoImpl(configuration, LinkInfoImpl.Kind.DEFAULT, refClass)
 //                    .label(label));
-            return new JavaTypeRef(refClass);
+            return new JavaTypeRefBuilder<>(refClass).build();
         } else if (refMem == null) {
             // Must be a member reference since refClass is not null and refMemName is not null.
             // However, refMem is null, so this referenced member does not exist.
@@ -1083,8 +1083,8 @@ public class HtmlDocletWriter {
             }
 
             return label.isEmpty()
-                    ? new JavaMemberRef(refMem, utils)
-                    : new JavaMemberRef(refMem, utils, label.toString());
+                    ? new JavaMemberRefBuilder<>(refMem, utils).build()
+                    : new JavaMemberRefBuilder<>(refMem, utils).setText(label.toString()).build();
         }
     }
 

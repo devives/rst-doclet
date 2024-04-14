@@ -30,7 +30,7 @@ import com.devives.rstdoclet.html2rst.ImportsCollector;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
 import com.devives.rstdoclet.html2rst.jdkloans.HtmlLinkInfo;
-import com.devives.rstdoclet.rst.document.IncludeDocument;
+import com.devives.sphinx.rst.document.IncludeDocument;
 import com.sun.source.doctree.DocTree;
 import jdk.javadoc.internal.doclets.toolkit.Content;
 
