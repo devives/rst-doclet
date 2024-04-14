@@ -18,10 +18,10 @@
 package com.devives.rstdoclet.rst.builder;
 
 
+import com.devives.html2rst.HtmlUtils;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rstdoclet.RstConfiguration;
-import com.devives.rstdoclet.html2rst.HtmlUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.HtmlLinkInfo;
 import jdk.javadoc.internal.doclets.toolkit.Content;
 

@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -86,6 +88,10 @@ public class RstDocletJdk11Test {
 
     @Test
     public void generate_forSamples_noExceptions() throws Exception {
+
+        Matcher m = Pattern.compile("").matcher("");
+        m.replaceAll((x)-> "");
+
         Path testOutputPath = outputPath.resolve("samples");
         deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");

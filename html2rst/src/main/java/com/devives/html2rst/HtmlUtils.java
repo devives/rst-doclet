@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.rstdoclet.html2rst;
+package com.devives.html2rst;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,11 +31,18 @@ public abstract class HtmlUtils {
                 .replaceAll("&lt;", "<")
                 .replaceAll("&gt;", ">")
                 .replaceAll("&amp;", "&")
+                .replaceAll("&#8203;", " ")
                 .replaceAll("&bslash;", "\\\\")
                 ;
         //.replaceAll("\\u00a0", " ") // &NBSP
     }
 
+
+    public static String unescapeBrackets(String text) {
+        return (text == null || text.isEmpty())
+                ? text
+                : unescapeLtRtAmpBSlash(text);
+    }
 
     /**
      * Returns a String with escaped special JavaScript characters.
@@ -112,30 +119,20 @@ public abstract class HtmlUtils {
         return escapedHtmlText;
     }
 
-//    private static final Pattern A_TAG_PATTERN = Pattern.compile("<a .+?>(.+?)</a>");
-//
-//    public static String removeATags(String text) {
-//        return A_TAG_PATTERN.matcher(text).replaceAll((m) -> m.group(1));
-//    }
-//
-//    public static String extractAText(String text) {
-//        return A_TAG_PATTERN.matcher(text).group(1);
-//    }
-//
-//    public static String extractATextOrElse(String text, Supplier<String> getter) {
-//        Matcher matcher = A_TAG_PATTERN.matcher(text);
-//        boolean matches = matcher.matches();
-//        int groupCount = matcher.groupCount();
-//        return matches
-//                ? ((groupCount < 2) ? matcher.group(1) : matcher.group(1) + matcher.group(2))
-//                : getter.get();
-//    }
 
     private static final Pattern A_TAG_PATTERN = Pattern.compile("<a .+?>(.+?)</a>");
     private static final Pattern A_TAG_PATTERN_QUOTED = Pattern.compile("(.*)<a .+?>(.+?)</a>(.*)");
 
     public static String removeATags(String text) {
-        return A_TAG_PATTERN.matcher(text).replaceAll((m) -> m.group(1));
+        Matcher m = A_TAG_PATTERN.matcher(text);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(sb, m.group(1));
+        }
+        m.appendTail(sb);
+        return sb.toString();
+        // java11
+        // return A_TAG_PATTERN.matcher(text).replaceAll((m) -> m.group(1));
     }
 
     public static String extractAText(String text) {
@@ -149,5 +146,4 @@ public abstract class HtmlUtils {
                 ? matcher.group(1) + matcher.group(2) + matcher.group(3)
                 : getter.get();
     }
-
 }

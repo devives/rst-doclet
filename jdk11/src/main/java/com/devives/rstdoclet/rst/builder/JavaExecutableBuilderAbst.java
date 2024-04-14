@@ -17,12 +17,12 @@
  */
 package com.devives.rstdoclet.rst.builder;
 
+import com.devives.html2rst.HtmlUtils;
 import com.devives.rst.builder.BlockQuoteBuilder;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rstdoclet.RstConfiguration;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
-import com.devives.rstdoclet.html2rst.HtmlUtils;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.ContentBuilder;
 import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;

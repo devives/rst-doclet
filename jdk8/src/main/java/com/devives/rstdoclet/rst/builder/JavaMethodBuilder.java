@@ -21,7 +21,7 @@ package com.devives.rstdoclet.rst.builder;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rstdoclet.ConfigurationImpl;
-import com.devives.rstdoclet.html2rst.HtmlUtils;
+import com.devives.html2rst.HtmlUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.MethodDoc;

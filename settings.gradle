@@ -3,7 +3,8 @@ plugins {
 }
 
 rootProject.name = 'rst-doclet'
-include 'javasphinx',
+include 'html2rst',
+        'javasphinx',
         'jdk8',
         'jdk11',
         'jdk17'

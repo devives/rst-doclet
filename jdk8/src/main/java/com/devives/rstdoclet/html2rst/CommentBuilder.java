@@ -17,6 +17,7 @@
  */
 package com.devives.rstdoclet.html2rst;
 
+import com.devives.html2rst.HtmlDocumentReader;
 import com.devives.rst.Rst;
 import com.devives.rst.document.RstDocument;
 import com.devives.rst.document.RstNode;

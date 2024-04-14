@@ -25,7 +25,7 @@ import com.devives.rst.document.directive.Directive;
 import com.devives.rst.document.inline.Text;
 import com.devives.rstdoclet.ConfigurationImpl;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
-import com.devives.rstdoclet.html2rst.HtmlUtils;
+import com.devives.html2rst.HtmlUtils;
 import com.devives.rstdoclet.html2rst.ImportsCollector;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.DocContext;

@@ -22,7 +22,7 @@ import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rstdoclet.ConfigurationImpl;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
-import com.devives.rstdoclet.html2rst.HtmlUtils;
+import com.devives.html2rst.HtmlUtils;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.ContentBuilder;
 import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;

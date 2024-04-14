@@ -39,6 +39,7 @@ dependencies {
     //compileOnly project(path: ':rst-document-for-sphinx')
     compileOnly 'org.jsoup:jsoup:1.15.3'
     compileOnly ':tools:'
+    compileOnly project(path: ':html2rst')
     compileOnly project(path: ':javasphinx')
 
     rstDoclet project(path: ':jdk8')
@@ -49,6 +50,7 @@ dependencies {
     testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
     //testImplementation project(path: ':rst-document-for-sphinx')
     testImplementation ':tools:'
+    testImplementation project(path: ':html2rst')
     testImplementation project(path: ':javasphinx')
     testImplementation 'org.jsoup:jsoup:1.15.3'
     testImplementation platform('org.junit:junit-bom:5.9.1')
