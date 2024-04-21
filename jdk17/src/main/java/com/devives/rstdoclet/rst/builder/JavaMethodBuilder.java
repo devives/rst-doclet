@@ -49,7 +49,7 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
     }
 
     public String formatMethodTypeParameters(ExecutableElement executableElement) {
-        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.configuration, HtmlLinkInfo.Kind.MEMBER_TYPE_PARAMS, executableElement);
+        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.rstConfiguration, HtmlLinkInfo.Kind.MEMBER_TYPE_PARAMS, executableElement);
         linkInfo.linkToSelf = false;
         Content parameterLinks = docContext_.getTypeParameterLinks(linkInfo);
         String result = HtmlUtils.unescapeLtRtAmpBSlash(parameterLinks.toString());
@@ -58,7 +58,7 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
     }
 
     public String formatReturnType(ExecutableElement executableElement) {
-        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.configuration, HtmlLinkInfo.Kind.RETURN_TYPE, executableElement.getReturnType());
+        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.rstConfiguration, HtmlLinkInfo.Kind.RETURN_TYPE, executableElement.getReturnType());
         Content parameterLinks = docContext_.getLink(linkInfo);
         String result = HtmlUtils.unescapeLtRtAmpBSlash(parameterLinks.toString());
         result = collapseNamespaces(result);

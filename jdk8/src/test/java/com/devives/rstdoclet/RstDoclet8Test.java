@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -83,6 +85,19 @@ public class RstDoclet8Test {
     }
 
     @Test
+    public void generate_help_noExceptions() throws Exception {
+        String[] args = new String[]{
+                "-help"
+                , "-package"
+                , "-encoding", "UTF-8"
+                , "-doctitle", "Sample v.0.0.0 Api"
+                , "-doclet", RstDoclet.class.getCanonicalName()
+                , "-docletpath", docletPath.toString()
+        };
+        Assertions.assertEquals(0, Main.execute(args));
+    }
+
+    @Test
     public void generate_forSamples_noExceptions() throws Exception {
         Path testOutputPath = outputPath.resolve("samples");
         deleteDirectoryRecursive(testOutputPath);
@@ -105,6 +120,25 @@ public class RstDoclet8Test {
                 testOutputPath);
     }
 
+    @Test
+    public void generate_forRstDoclet_noExceptions() throws Exception {
+        Path testOutputPath = outputPath.resolve("rst-doclet");
+        deleteDirectoryRecursive(testOutputPath);
+        Path sourcePath = projectRootPath.resolve("src/main/java/");
+        String subPackages = "com.devives.rstdoclet";
+        List<String> args = new ArrayList<>(Arrays.asList(
+                "-d", outputPath.toString()
+                //, "-package"
+                , "-encoding", "UTF-8"
+                , "-doclet", RstDoclet.class.getCanonicalName()
+                , "-docletpath", docletPath.toString()
+                , "-sourcepath", sourcePath.toString()
+                , "-subpackages", subPackages
+                , "-packageindexfilename", "package-index"
+        ));
+        System.out.println("sourcePath = " + sourcePath);
+        Assertions.assertEquals(0, Main.execute(args.toArray(new String[0])));
+    }
 
     @Test
     public void generate_forJavaUtils_noExceptions() throws Exception {

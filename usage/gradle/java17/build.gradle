@@ -64,10 +64,6 @@ List<String> exportsList = [
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED'
 ]
 
-List<String> opensList = [
-        "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED"
-]
-
 tasks.register('clean-javadoc2rst', Delete) {
     group = 'documentation'
     delete file("$docsDir/javadoc2rst")
@@ -86,7 +82,7 @@ tasks.register('javadoc2rst', Javadoc) {
     options.showFromPackage()
     failOnError = false
     (options as CoreJavadocOptions).addStringOption("packageindexfilename", "package-index")
-    (options as CoreJavadocOptions).setJFlags(exportsList + opensList)
+    (options as CoreJavadocOptions).setJFlags(exportsList)
 }
 
 tasks.register('clean-sphinx-source', Delete) {

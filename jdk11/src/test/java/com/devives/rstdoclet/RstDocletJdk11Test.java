@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -87,11 +85,20 @@ public class RstDocletJdk11Test {
     }
 
     @Test
+    public void generate_help_noExceptions() throws Exception {
+        String[] args = new String[]{
+                "-help"
+                , "-package"
+                , "-encoding", "UTF-8"
+                , "-doctitle", "Sample v.0.0.0 Api"
+                , "-doclet", RstDoclet.class.getCanonicalName()
+                , "-docletpath", docletPath.toString()
+        };
+        Assertions.assertEquals(0, Main.execute(args));
+    }
+
+    @Test
     public void generate_forSamples_noExceptions() throws Exception {
-
-        Matcher m = Pattern.compile("").matcher("");
-        m.replaceAll((x)-> "");
-
         Path testOutputPath = outputPath.resolve("samples");
         deleteDirectoryRecursive(testOutputPath);
         Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");
@@ -107,7 +114,7 @@ public class RstDocletJdk11Test {
                 , "-docletpath", docletPath.toString()
                 , "-sourcepath", sourcePath + ";" + source11Path
                 , "-subpackages", subPackages
-                , "-packageIndexFileName", "package-index"
+                , "-packageindexfilename", "package-index"
         ));
         System.out.println("sourcePath = " + sourcePath + ";" + source11Path);
         Assertions.assertEquals(0, Main.execute(args.toArray(String[]::new)));
@@ -136,8 +143,7 @@ public class RstDocletJdk11Test {
             "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED",
             "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED",
             "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED",
-            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED",
-            "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED");
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED");
 
     @Test
     public void generate_forRstDoclet_noExceptions() throws Exception {
@@ -146,7 +152,7 @@ public class RstDocletJdk11Test {
         Path sourcePath = projectRootPath.resolve("src/main/java/");
         String subPackages = "com.devives.rstdoclet";
         List<String> args = new ArrayList<>();
-        exports.forEach(itm -> args.add(itm));
+        args.addAll(exports);
         args.addAll(Arrays.asList(
                 "-d", testOutputPath.toString()
                 //, "-package"
@@ -155,7 +161,7 @@ public class RstDocletJdk11Test {
                 , "-docletpath", docletPath.toString()
                 , "-sourcepath", sourcePath.toString()
                 , "-subpackages", subPackages
-                , "-packageIndexFileName", "package-index"
+                , "-packageindexfilename", "package-index"
         ));
         System.out.println("sourcePath = " + sourcePath);
         Assertions.assertEquals(0, Main.execute(args.toArray(String[]::new)));

@@ -44,7 +44,6 @@ import jdk.javadoc.internal.doclets.toolkit.util.*;
 
 import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.SimpleElementVisitor14;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -163,11 +162,11 @@ public class TagletWriterImpl extends TagletWriter {
         super(context.isFirstSentence);
         this.htmlWriter = htmlWriter;
         this.context = context;
-        configuration = htmlWriter.configuration;
+        configuration = htmlWriter.rstConfiguration;
         options = configuration.getOptions();
         utils = configuration.utils;
-        resources = configuration.getDocResources();
-        contents = configuration.getContents();
+        resources = configuration.getHtmlConfiguration().getDocResources();
+        contents = configuration.getHtmlConfiguration().getContents();
     }
 
     @Override
@@ -436,7 +435,7 @@ public class TagletWriterImpl extends TagletWriter {
 
     @Override
     public BaseConfiguration configuration() {
-        return configuration;
+        return configuration.getHtmlConfiguration();
     }
 
     @Override
@@ -451,61 +450,61 @@ public class TagletWriterImpl extends TagletWriter {
         } else {
             HtmlId id = HtmlIdsHelper.forText(tagText, htmlWriter.indexAnchorTable);
             result = HtmlTree.SPAN(id, HtmlStyle.searchTagResult, Text.of(tagText));
-            if (options.createIndex() && !tagText.isEmpty()) {
-                String holder = new SimpleElementVisitor14<String, Void>() {
-
-                    @Override
-                    public String visitModule(ModuleElement e, Void p) {
-                        return resources.getText("doclet.module")
-                                + " " + utils.getFullyQualifiedName(e);
-                    }
-
-                    @Override
-                    public String visitPackage(PackageElement e, Void p) {
-                        return resources.getText("doclet.package")
-                                + " " + utils.getFullyQualifiedName(e);
-                    }
-
-                    @Override
-                    public String visitType(TypeElement e, Void p) {
-                        return utils.getTypeElementKindName(e, true)
-                                + " " + utils.getFullyQualifiedName(e);
-                    }
-
-                    @Override
-                    public String visitExecutable(ExecutableElement e, Void p) {
-                        return utils.getFullyQualifiedName(utils.getEnclosingTypeElement(e))
-                                + "." + utils.getSimpleName(e)
-                                + utils.flatSignature(e, htmlWriter.getCurrentPageElement());
-                    }
-
-                    @Override
-                    public String visitVariable(VariableElement e, Void p) {
-                        return utils.getFullyQualifiedName(utils.getEnclosingTypeElement(e))
-                                + "." + utils.getSimpleName(e);
-                    }
-
-                    @Override
-                    public String visitUnknown(Element e, Void p) {
-                        if (e instanceof DocletElement de) {
-                            return switch (de.getSubKind()) {
-                                case OVERVIEW -> resources.getText("doclet.Overview");
-                                case DOCFILE -> getHolderName(de);
-                            };
-                        } else {
-                            return super.visitUnknown(e, p);
-                        }
-                    }
-
-                    @Override
-                    protected String defaultAction(Element e, Void p) {
-                        return utils.getFullyQualifiedName(e);
-                    }
-                }.visit(element);
-                //IndexItem item = IndexItem.of(element, tree, tagText, holder, desc,
-                //        new DocLink(htmlWriter.path, id.name()));
-                //configuration.mainIndex.add(item);
-            }
+//            if (options.getHtmlOptions().createIndex() && !tagText.isEmpty()) {
+//                String holder = new SimpleElementVisitor14<String, Void>() {
+//
+//                    @Override
+//                    public String visitModule(ModuleElement e, Void p) {
+//                        return resources.getText("doclet.module")
+//                                + " " + utils.getFullyQualifiedName(e);
+//                    }
+//
+//                    @Override
+//                    public String visitPackage(PackageElement e, Void p) {
+//                        return resources.getText("doclet.package")
+//                                + " " + utils.getFullyQualifiedName(e);
+//                    }
+//
+//                    @Override
+//                    public String visitType(TypeElement e, Void p) {
+//                        return utils.getTypeElementKindName(e, true)
+//                                + " " + utils.getFullyQualifiedName(e);
+//                    }
+//
+//                    @Override
+//                    public String visitExecutable(ExecutableElement e, Void p) {
+//                        return utils.getFullyQualifiedName(utils.getEnclosingTypeElement(e))
+//                                + "." + utils.getSimpleName(e)
+//                                + utils.flatSignature(e, htmlWriter.getCurrentPageElement());
+//                    }
+//
+//                    @Override
+//                    public String visitVariable(VariableElement e, Void p) {
+//                        return utils.getFullyQualifiedName(utils.getEnclosingTypeElement(e))
+//                                + "." + utils.getSimpleName(e);
+//                    }
+//
+//                    @Override
+//                    public String visitUnknown(Element e, Void p) {
+//                        if (e instanceof DocletElement de) {
+//                            return switch (de.getSubKind()) {
+//                                case OVERVIEW -> resources.getText("doclet.Overview");
+//                                case DOCFILE -> getHolderName(de);
+//                            };
+//                        } else {
+//                            return super.visitUnknown(e, p);
+//                        }
+//                    }
+//
+//                    @Override
+//                    protected String defaultAction(Element e, Void p) {
+//                        return utils.getFullyQualifiedName(e);
+//                    }
+//                }.visit(element);
+//                IndexItem item = IndexItem.of(element, tree, tagText, holder, desc,
+//                        new DocLink(htmlWriter.path, id.name()));
+//                configuration.mainIndex.add(item);
+//            }
         }
         return result;
     }

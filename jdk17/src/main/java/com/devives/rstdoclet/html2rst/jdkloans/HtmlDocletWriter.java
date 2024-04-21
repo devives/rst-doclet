@@ -41,7 +41,9 @@ import com.sun.source.doctree.DocTree.Kind;
 import com.sun.source.util.DocTreePath;
 import com.sun.source.util.SimpleDocTreeVisitor;
 import jdk.javadoc.internal.doclets.formats.html.Contents;
+import jdk.javadoc.internal.doclets.formats.html.HtmlConfiguration;
 import jdk.javadoc.internal.doclets.formats.html.HtmlIds;
+import jdk.javadoc.internal.doclets.formats.html.HtmlOptions;
 import jdk.javadoc.internal.doclets.formats.html.markup.ContentBuilder;
 import jdk.javadoc.internal.doclets.formats.html.markup.RawHtml;
 import jdk.javadoc.internal.doclets.formats.html.markup.*;
@@ -112,9 +114,11 @@ public class HtmlDocletWriter {
     /**
      * The global configuration information for this run.
      */
-    public final RstConfiguration configuration;
+    public final HtmlConfiguration configuration;
+    protected final HtmlOptions options;
 
-    protected final RstOptions options;
+    public final RstConfiguration rstConfiguration;
+    protected final RstOptions rstOptions;
 
     protected final Utils utils;
 
@@ -166,21 +170,19 @@ public class HtmlDocletWriter {
      * Creates an {@code HtmlDocletWriter}.
      *
      * @param parentDoc     the owner of context
-     * @param configuration the configuration for this doclet
+     * @param rstConfiguration the configuration for this doclet
      */
-    public HtmlDocletWriter(Element parentDoc, RstConfiguration configuration) {
+    public HtmlDocletWriter(Element parentDoc, RstConfiguration rstConfiguration) {
+        this.parentDoc = parentDoc;
+        this.rstConfiguration = rstConfiguration;
+        this.rstOptions = rstConfiguration.getOptions();
+        this.configuration = rstConfiguration.getHtmlConfiguration();
+        this.options = configuration.getOptions();
         if (parentDoc instanceof PackageElement packageElement) {
             this.path = new DocPaths(configuration.utils).forPackage(packageElement);
-        } else if (parentDoc instanceof ExecutableElement executableElement) {
-            this.path = new DocPaths(configuration.utils).forClass((TypeElement) executableElement.getEnclosingElement());
-        } else if (parentDoc instanceof VariableElement variableElement) {
-            this.path = new DocPaths(configuration.utils).forClass((TypeElement) variableElement.getEnclosingElement());
-        } else {
+        }  else {
             this.path = new DocPaths(configuration.utils).forClass((TypeElement) parentDoc);
         }
-        this.parentDoc = parentDoc;
-        this.configuration = configuration;
-        this.options = configuration.getOptions();
         this.messages = configuration.getMessages();
         this.resources = configuration.docResources;
         this.links = new Links(this.path);
@@ -232,9 +234,9 @@ public class HtmlDocletWriter {
             // append htmlstr up to start of next {@docroot}
             buf.append(htmlstr.substring(prevEnd, match));
             prevEnd = docrootMatcher.end();
-            if (options.docrootParent().length() > 0 && htmlstr.startsWith("/..", prevEnd)) {
+            if (rstOptions.docrootParent().length() > 0 && htmlstr.startsWith("/..", prevEnd)) {
                 // Insert the absolute link if {@docRoot} is followed by "/..".
-                buf.append(options.docrootParent());
+                buf.append(rstOptions.docrootParent());
                 prevEnd += 3;
             } else {
                 // Insert relative path where {@docRoot} was located
@@ -931,7 +933,7 @@ public class HtmlDocletWriter {
         if (utils.isExecutableElement(element)) {
             ExecutableElement ee = (ExecutableElement) element;
             HtmlId id = isProperty ? HtmlIdsHelper.forProperty(ee) : HtmlIdsHelper.forMember(utils, ee);
-            return getLink(new HtmlLinkInfo(configuration, context, typeElement)
+            return getLink(new HtmlLinkInfo(rstConfiguration, context, typeElement)
                     .label(label)
                     .where(id.name())
                     .style(style)
@@ -939,7 +941,7 @@ public class HtmlDocletWriter {
         }
 
         if (utils.isVariableElement(element) || utils.isTypeElement(element)) {
-            return getLink(new HtmlLinkInfo(configuration, context, typeElement)
+            return getLink(new HtmlLinkInfo(rstConfiguration, context, typeElement)
                     .label(label)
                     .where(element.getSimpleName().toString())
                     .style(style)
@@ -1047,7 +1049,7 @@ public class HtmlDocletWriter {
                 if (utils.isGenericType(referencedType)) {
                     // This is a generic type link, use the TypeMirror representation.
 
-                    Content link = getLink(new HtmlLinkInfo(configuration, HtmlLinkInfo.Kind.DEFAULT, referencedType));
+                    Content link = getLink(new HtmlLinkInfo(rstConfiguration, HtmlLinkInfo.Kind.DEFAULT, referencedType));
                     return new JavaTypeRefBuilder<>(refClass).setText(link.toString()).build();
                 }
 //                labelContent = plainOrCode(isLinkPlain, Text.of(utils.getSimpleName(refClass)));
@@ -1407,8 +1409,8 @@ public class HtmlDocletWriter {
                     for (DocTree dt : node.getValue()) {
                         if (utils.isText(dt) && isHRef) {
                             String text = ((TextTree) dt).getBody();
-                            if (text.startsWith("/..") && !options.docrootParent().isEmpty()) {
-                                result.add(options.docrootParent());
+                            if (text.startsWith("/..") && !rstOptions.docrootParent().isEmpty()) {
+                                result.add(rstOptions.docrootParent());
                                 docRootContent = new ContentBuilder();
                                 result.add(textCleanup(text.substring(3), isLastNode));
                             } else {
@@ -1801,7 +1803,7 @@ public class HtmlDocletWriter {
             }
             annotation = new ContentBuilder();
             isAnnotationDocumented = false;
-            HtmlLinkInfo linkInfo = new HtmlLinkInfo(configuration,
+            HtmlLinkInfo linkInfo = new HtmlLinkInfo(rstConfiguration,
                     HtmlLinkInfo.Kind.ANNOTATION, annotationElement);
             Map<? extends ExecutableElement, ? extends AnnotationValue> pairs = aDesc.getElementValues();
             // If the annotation is synthesized, do not print the container.
@@ -1992,7 +1994,7 @@ public class HtmlDocletWriter {
                 return new SimpleTypeVisitor9<Content, Void>() {
                     @Override
                     public Content visitDeclared(DeclaredType t, Void p) {
-                        HtmlLinkInfo linkInfo = new HtmlLinkInfo(configuration,
+                        HtmlLinkInfo linkInfo = new HtmlLinkInfo(rstConfiguration,
                                 HtmlLinkInfo.Kind.ANNOTATION, t);
                         String name = utils.isIncluded(t.asElement())
                                 ? t.asElement().getSimpleName().toString()

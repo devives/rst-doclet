@@ -85,6 +85,19 @@ public class RstDocletJdk17Test {
     }
 
     @Test
+    public void generate_help_noExceptions() throws Exception {
+        String[] args = new String[]{
+                "-help"
+                , "-package"
+                , "-encoding", "UTF-8"
+                , "-doctitle", "Sample v.0.0.0 Api"
+                , "-doclet", RstDoclet.class.getCanonicalName()
+                , "-docletpath", docletPath.toString()
+        };
+        Assertions.assertEquals(0, Main.execute(args));
+    }
+
+    @Test
     public void generate_forSamples_noExceptions() throws Exception {
         Path testOutputPath = outputPath.resolve("samples");
         deleteDirectoryRecursive(testOutputPath);
@@ -101,7 +114,7 @@ public class RstDocletJdk17Test {
                 , "-docletpath", docletPath.toString()
                 , "-sourcepath", sourcePath + ";" + source11Path + ";" + source17Path
                 , "-subpackages", subPackages
-                , "-packageIndexFileName", "package-index"
+                , "-packageindexfilename", "package-index"
         };
         System.out.println("sourcePath = " + sourcePath + ";" + source11Path + ";" + source17Path);
         Assertions.assertEquals(0, Main.execute(args));
@@ -130,8 +143,7 @@ public class RstDocletJdk17Test {
             "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED",
             "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED",
             "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED",
-            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED",
-            "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED");
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED");
 
 
     @Test
@@ -150,10 +162,10 @@ public class RstDocletJdk17Test {
                 , "-docletpath", docletPath.toString()
                 , "-sourcepath", sourcePath.toString()
                 , "-subpackages", subPackages
-                , "-packageIndexFileName", "package-index"
+                , "-packageindexfilename", "package-index"
         ));
         System.out.println("sourcePath = " + sourcePath);
-        Assertions.assertEquals(1, Main.execute(args.toArray(String[]::new)));
+        Assertions.assertEquals(0, Main.execute(args.toArray(String[]::new)));
     }
 
 
@@ -177,7 +189,7 @@ public class RstDocletJdk17Test {
                 //, sourceFiles
         };
         System.out.println("sourcePath = " + sourcePath);
-        Assertions.assertEquals(0, Main.execute(args));
+        Assertions.assertEquals(1, Main.execute(args));
     }
 
     @Test

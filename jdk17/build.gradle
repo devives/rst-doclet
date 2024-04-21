@@ -200,7 +200,8 @@ List<String> exportsList = [
 ]
 
 List<String> opensList = [
-        "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED",
+//        "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED",
+//        "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED"
 ]
 
 test {

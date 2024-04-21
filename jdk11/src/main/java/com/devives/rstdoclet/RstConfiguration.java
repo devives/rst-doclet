@@ -23,8 +23,8 @@ import jdk.javadoc.internal.doclets.toolkit.BaseConfiguration;
 import jdk.javadoc.internal.doclets.toolkit.Resources;
 import jdk.javadoc.internal.doclets.toolkit.util.Utils;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RstConfiguration {
 
@@ -40,17 +40,43 @@ public class RstConfiguration {
         htmlConfiguration_ = htmlConfiguration;
     }
 
+    private String formatOptionNames(Doclet.Option opt) {
+        return String.join(" ", opt.getNames());
+    }
+
     public Set<Doclet.Option> getSupportedOptions() {
-        Set<Doclet.Option> options = htmlConfiguration_.getSupportedOptions();
+        Map<String, Doclet.Option> superOptions = htmlConfiguration_.getSupportedOptions().stream()
+                .collect(Collectors.toMap(this::formatOptionNames, option -> option));
+
         Resources resources = htmlConfiguration_.getResources();
-        options.add(new BaseConfiguration.Option(resources, "-packageIndexFileName", 1) {
-            @Override
-            public boolean process(String opt, List<String> args) {
-                packageIndexFileName = args.get(0);
-                return true;
-            }
-        });
-        return options;
+
+        List<Doclet.Option> options = List.of(
+                new BaseConfiguration.Option(resources, "-packageindexfilename", 1) {
+                    @Override
+                    public boolean process(String opt, List<String> args) {
+                        packageIndexFileName = args.get(0);
+                        return true;
+                    }
+                },
+                // For compatibility with gradle javadoc task.
+                new BaseConfiguration.Option(resources, "-windowtitle", 1) {
+
+                    @Override
+                    public boolean process(String option, List<String> arguments) {
+                        return true;
+                    }
+
+                    @Override
+                    public Kind getKind() {
+                        return Kind.OTHER;
+                    }
+                }
+        );
+
+        Set<Doclet.Option> allOptions = new TreeSet<>(options);
+        baseOptionFilter.forEach(name -> allOptions.add(superOptions.get(name)));
+        htmlOptionFilter.forEach(name -> allOptions.add(superOptions.get(name)));
+        return allOptions;
     }
 
     public HtmlConfiguration getHtmlConfiguration() {
@@ -64,4 +90,70 @@ public class RstConfiguration {
         return packageIndexFileName;
     }
 
+
+    private final Set<String> baseOptionFilter = new HashSet<>(Arrays.asList(
+//                "--allow-script-in-comments",
+//                "--disable-javafx-strict-checks",
+            "--dump-on-error",
+//                "--javafx -javafx",
+//                "--link-platform-properties",
+//                "--no-platform-links",
+//                "--override-methods",
+//                "--show-taglets",
+//                "--since",
+//                "--since-label",
+//                "-author",
+            "-d",
+            "-docencoding",
+//                "-docfilessubdirs",
+            "-encoding",
+//                "-excludedocfilessubdir",
+//                "-group",
+//                "-keywords",
+            "-link",
+            "-linkoffline",
+            "-linksource",
+//            "-nocomment",
+            "-nodeprecated",
+//            "-noqualifier",
+            "-nosince",
+            "-notimestamp",
+            "-quiet"
+//                "-serialwarn",
+//                "-sourcetab",
+//                "-tag",
+//                "-taglet",
+//                "-tagletpath",
+//                "-version"
+    ));
+
+    private final Set<String> htmlOptionFilter = new HashSet<>(Arrays.asList(
+//                "--add-stylesheet",
+//                "--legal-notices",
+//                "--main-stylesheet -stylesheetfile",
+//                "--no-frames",
+//                "-Xdoclint",
+//                "-Xdoclint/package:",
+//                "-Xdoclint:",
+            "-Xdocrootparent",
+//                "-bottom",
+            "-charset",
+            "-doctitle"
+//                "-footer",
+//                "-header",
+//                "-helpfile",
+//                "-html5",
+//                "-nodeprecatedlist",
+//                "-nohelp",
+//                "-noindex",
+//                "-nonavbar",
+//                "-nooverview",
+//                "-notree",
+//                "-overview",
+//                "-packagesheader",
+//                "-splitindex",
+//                "-top",
+//                "-use",
+//                "-windowtitle"
+    ));
 }

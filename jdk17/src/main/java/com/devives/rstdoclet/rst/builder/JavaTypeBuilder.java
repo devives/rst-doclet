@@ -102,7 +102,7 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
 
     private String formatTypeName(TypeElement classDoc) {
         String result = classDoc_.getSimpleName().toString();
-        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.configuration, HtmlLinkInfo.Kind.CLASS_SIGNATURE, classDoc);
+        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.rstConfiguration, HtmlLinkInfo.Kind.CLASS_SIGNATURE, classDoc);
         linkInfo.linkToSelf = false;
         Content content = docContext_.getTypeParameterLinks(linkInfo);
         result += HtmlUtils.unescapeLtRtAmpBSlash(content.toString());
@@ -118,7 +118,7 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                 && classDoc.getSuperclass() != null
                 && !classDoc.getSuperclass().toString().equals(Object.class.getCanonicalName())) {
             result += "extends ";
-            HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.configuration, HtmlLinkInfo.Kind.CLASS_SIGNATURE_PARENT_NAME, classDoc.getSuperclass());
+            HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.rstConfiguration, HtmlLinkInfo.Kind.CLASS_SIGNATURE_PARENT_NAME, classDoc.getSuperclass());
             linkInfo.linkToSelf = false;
             String content = docContext_.getLink(linkInfo).toString();
             String className = HtmlUtils.extractATextOrElse(content, () -> content);
@@ -135,7 +135,7 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                 result += classDoc.getKind().isInterface() ? "extends " : "implements ";
                 result += classDoc.getInterfaces().stream()
                         .map(interfaceDoc -> {
-                            HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.configuration, HtmlLinkInfo.Kind.IMPLEMENTED_INTERFACES, interfaceDoc);
+                            HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.rstConfiguration, HtmlLinkInfo.Kind.IMPLEMENTED_INTERFACES, interfaceDoc);
                             String content = docContext_.getLink(linkInfo).toString();
                             String className = HtmlUtils.removeATags(content);
                             return collapseNamespaces(HtmlUtils.unescapeLtRtAmpBSlash(className));

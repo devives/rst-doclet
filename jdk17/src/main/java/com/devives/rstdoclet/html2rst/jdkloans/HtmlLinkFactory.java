@@ -200,7 +200,7 @@ public class HtmlLinkFactory extends LinkFactory {
      * @return the link
      */
     protected Content getTypeParameterLink(LinkInfo linkInfo, TypeMirror typeParam) {
-        HtmlLinkInfo typeLinkInfo = new HtmlLinkInfo(m_writer.configuration,
+        HtmlLinkInfo typeLinkInfo = new HtmlLinkInfo(m_writer.rstConfiguration,
                 ((HtmlLinkInfo) linkInfo).getContext(), typeParam).skipPreview(true);
         typeLinkInfo.excludeTypeBounds = linkInfo.excludeTypeBounds;
         typeLinkInfo.excludeTypeParameterLinks = linkInfo.excludeTypeParameterLinks;

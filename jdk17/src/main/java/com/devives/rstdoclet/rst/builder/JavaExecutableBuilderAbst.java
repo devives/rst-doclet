@@ -184,7 +184,7 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
         tree.add(docContext_.getSpace());
         //todo
         //tree.add(rcvrType.typeName());
-        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.configuration,
+        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.rstConfiguration,
                 HtmlLinkInfo.Kind.CLASS_SIGNATURE, rcvrType);
         tree.add(docContext_.getTypeParameterLinks(linkInfo));
         tree.add(docContext_.getSpace());

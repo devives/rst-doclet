@@ -196,9 +196,14 @@ List<String> exportsList = [
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED'
 ]
 
+List<String> opensList = [
+//        "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED",
+//        "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED"
+]
+
 test {
     useJUnitPlatform()
-    jvmArgs += exportsList
+    jvmArgs += exportsList + opensList
 }
 
 tasks.withType(JavaCompile).configureEach {
