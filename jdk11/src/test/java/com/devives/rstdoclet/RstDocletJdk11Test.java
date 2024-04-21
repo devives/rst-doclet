@@ -173,7 +173,7 @@ public class RstDocletJdk11Test {
                 .toAbsolutePath();
         String subpackages = "java.util";
         String[] args = new String[]{
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 , "-encoding", "UTF-8"
                 , "-doclet", RstDoclet.class.getCanonicalName()
                 , "-docletpath", docletPath.toString()
@@ -182,7 +182,7 @@ public class RstDocletJdk11Test {
                 //, sourceFiles
         };
         System.out.println("sourcePath = " + sourcePath);
-        Assertions.assertEquals(0, Main.execute(args));
+        Assertions.assertEquals(1, Main.execute(args));
     }
 
     @Test

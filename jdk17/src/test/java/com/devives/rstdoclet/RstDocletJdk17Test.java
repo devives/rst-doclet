@@ -162,7 +162,7 @@ public class RstDocletJdk17Test {
     public void generate_forJavaUtils_noExceptions() throws Exception {
         Path testOutputPath = outputPath.resolve("java-util");
         deleteDirectoryRecursive(testOutputPath);
-        Path sourcePath = Paths.get(System.getenv("JAVA_HOME_11"))
+        Path sourcePath = Paths.get(System.getenv("JAVA_HOME_17"))
                 .resolve("lib").resolve("src")
                 .resolve("java.base")
                 .toAbsolutePath();

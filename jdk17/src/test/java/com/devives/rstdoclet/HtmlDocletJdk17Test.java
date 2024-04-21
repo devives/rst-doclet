@@ -105,13 +105,14 @@ public class HtmlDocletJdk17Test {
     @Test
     @Disabled // Test exists for debugging purposes.
     public void generate_forJavaUtils_noExceptions() throws Exception {
+        Path testOutputPath = outputPath.resolve("java-util");
         Path sourcePath = Paths.get(System.getenv("JAVA_HOME_17"))
                 .resolve("lib").resolve("src")
                 .resolve("java.base")
                 .toAbsolutePath();
         String subpackages = "java.util";
         String[] args = new String[]{
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 , "-encoding", "UTF-8"
                 , "-sourcepath", sourcePath + "/" + ";"
                 , "-subpackages", subpackages

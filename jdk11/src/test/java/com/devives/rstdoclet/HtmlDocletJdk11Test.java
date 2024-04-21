@@ -89,13 +89,15 @@ public class HtmlDocletJdk11Test {
     @Test
     @Disabled // Test exists for debugging purposes.
     public void generate_forSamples_noExceptions() throws Exception {
-        Path sourcePath = projectRootPath.resolve("../samples/src/main/java/");
+        Path testOutputPath = outputPath.resolve("samples");
+        Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");
+        Path source11Path = projectRootPath.resolve("../samples/src/main/java11/");
         String subPackages = "com.devives.samples";
         String[] args = new String[]{
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 , "-package"
                 , "-encoding", "UTF-8"
-                , "-sourcepath", sourcePath.toString()
+                , "-sourcepath", sourcePath + ";" + source11Path
                 , "-subpackages", subPackages
         };
         Assertions.assertEquals(0, Main.execute(args));
@@ -105,13 +107,14 @@ public class HtmlDocletJdk11Test {
     @Test
     @Disabled // Test exists for debugging purposes.
     public void generate_forJavaUtils_noExceptions() throws Exception {
+        Path testOutputPath = outputPath.resolve("java-util");
         Path sourcePath = Paths.get(System.getenv("JAVA_HOME_11"))
                 .resolve("lib").resolve("src")
                 .resolve("java.base")
                 .toAbsolutePath();
         String subpackages = "java.util";
         String[] args = new String[]{
-                "-d", outputPath.toString()
+                "-d", testOutputPath.toString()
                 , "-encoding", "UTF-8"
                 , "-sourcepath", sourcePath + "/" + ";"
                 , "-subpackages", subpackages
