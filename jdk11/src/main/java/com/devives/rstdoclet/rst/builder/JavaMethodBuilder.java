@@ -22,6 +22,7 @@ import com.devives.html2rst.HtmlUtils;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rstdoclet.RstConfiguration;
+import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
 import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;
 
 import javax.lang.model.element.ExecutableElement;
@@ -32,8 +33,8 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
 
     private final ExecutableElement executableElement_;
 
-    public JavaMethodBuilder(ExecutableElement executableElement, RstConfiguration configuration) {
-        super(new Directive.Type("java:method"), executableElement, configuration);
+    public JavaMethodBuilder(ExecutableElement executableElement, HtmlDocletWriter docContext) {
+        super(new Directive.Type("java:method"), executableElement, docContext);
         executableElement_ = executableElement;
     }
 
@@ -48,7 +49,7 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
     }
 
     public String formatMethodTypeParameters(ExecutableElement executableElement) {
-        LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_.getHtmlConfiguration(), LinkInfoImpl.Kind.MEMBER_TYPE_PARAMS, executableElement);
+        LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.configuration, LinkInfoImpl.Kind.MEMBER_TYPE_PARAMS, executableElement);
         linkInfo.linkToSelf = false;
         String content = docContext_.getTypeParameterLinks(linkInfo).toString();
         String className =  HtmlUtils.extractATextOrElse(content, () -> content);
@@ -58,7 +59,7 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
     }
 
     public String formatReturnType(ExecutableElement executableElement) {
-        LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_.getHtmlConfiguration(), LinkInfoImpl.Kind.RETURN_TYPE, executableElement.getReturnType());
+        LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.configuration, LinkInfoImpl.Kind.RETURN_TYPE, executableElement.getReturnType());
         String content = docContext_.getLink(linkInfo).toString();
         String className =  HtmlUtils.extractATextOrElse(content, () -> content);
         String result = HtmlUtils.unescapeLtRtAmpBSlash(className);

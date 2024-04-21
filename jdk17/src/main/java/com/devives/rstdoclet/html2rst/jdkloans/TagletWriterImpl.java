@@ -502,9 +502,9 @@ public class TagletWriterImpl extends TagletWriter {
                         return utils.getFullyQualifiedName(e);
                     }
                 }.visit(element);
-                IndexItem item = IndexItem.of(element, tree, tagText, holder, desc,
-                        new DocLink(htmlWriter.path, id.name()));
-                configuration.mainIndex.add(item);
+                //IndexItem item = IndexItem.of(element, tree, tagText, holder, desc,
+                //        new DocLink(htmlWriter.path, id.name()));
+                //configuration.mainIndex.add(item);
             }
         }
         return result;

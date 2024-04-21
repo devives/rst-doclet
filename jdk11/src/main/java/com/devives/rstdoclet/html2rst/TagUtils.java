@@ -32,17 +32,16 @@ import jdk.javadoc.internal.doclets.toolkit.util.Utils;
 import javax.lang.model.element.Element;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public class TagUtils {
 
     private final Utils utils_;
-    private final RstConfiguration configuration_;
     private final HtmlDocletWriter docContext_;
 
-    public TagUtils(RstConfiguration configuration, HtmlDocletWriter docContext) {
-        configuration_ = configuration;
-        utils_ = configuration.utils;
-        docContext_ = docContext;
+    public TagUtils(HtmlDocletWriter docContext) {
+        docContext_ = Objects.requireNonNull(docContext);
+        utils_ = docContext.configuration.utils;
     }
 
     public enum TagName {
@@ -81,11 +80,11 @@ public class TagUtils {
         return builder;
     }
 
-    public RstElementBuilder<?, ?, ?> appendAuthorTags(BodyBuilders<?, ?, ?, ?> builder, Element doc) {
-        List<? extends DocTree> tags = utils_.getBlockTags(doc, DocTree.Kind.AUTHOR);
+    public RstElementBuilder<?, ?, ?> appendAuthorTags(BodyBuilders<?, ?, ?, ?> builder, Element element) {
+        List<? extends DocTree> tags = utils_.getBlockTags(element, DocTree.Kind.AUTHOR);
         return builder.ifTrue(tags.size() > 0, () -> {
             for (DocTree tag : tags) {
-                String text = new CommentBuilder(tag, doc, configuration_).build().serialize();
+                String text = new CommentBuilder(tag, element, docContext_).build().serialize();
                 if (StringUtils.notNullOrEmpty(text)) {
                     builder.directive(Directives.SectionAuthor, text);
                 }
@@ -93,11 +92,11 @@ public class TagUtils {
         });
     }
 
-    public RstElementBuilder<?, ?, ?> appendSinceTags(BodyBuilders<?, ?, ?, ?> builder, Element doc) {
-        List<? extends DocTree> tags = utils_.getBlockTags(doc, DocTree.Kind.SINCE);
+    public RstElementBuilder<?, ?, ?> appendSinceTags(BodyBuilders<?, ?, ?, ?> builder, Element element) {
+        List<? extends DocTree> tags = utils_.getBlockTags(element, DocTree.Kind.SINCE);
         return builder.ifTrue(tags.size() > 0, () -> {
             for (DocTree tag : tags) {
-                String text = new CommentBuilder(tag, doc, configuration_).build().serialize();
+                String text = new CommentBuilder(tag, element, docContext_).build().serialize();
                 if (StringUtils.notNullOrEmpty(text)) {
                     builder.directive(Directives.VersionAdded, text);
                 }
@@ -105,11 +104,11 @@ public class TagUtils {
         });
     }
 
-    public RstElementBuilder<?, ?, ?> appendVersionTags(BodyBuilders<?, ?, ?, ?> builder, Element doc) {
-        List<? extends DocTree> tags = utils_.getBlockTags(doc, DocTree.Kind.VERSION);
+    public RstElementBuilder<?, ?, ?> appendVersionTags(BodyBuilders<?, ?, ?, ?> builder, Element element) {
+        List<? extends DocTree> tags = utils_.getBlockTags(element, DocTree.Kind.VERSION);
         return builder.ifTrue(tags.size() > 0, () -> {
             for (DocTree tag : tags) {
-                String text = new CommentBuilder(tag, doc, configuration_).build().serialize();
+                String text = new CommentBuilder(tag, element, docContext_).build().serialize();
                 if (StringUtils.notNullOrEmpty(text)) {
                     builder.directive(Directives.VersionChanged, text);
                 }
@@ -117,11 +116,11 @@ public class TagUtils {
         });
     }
 
-    public RstElementBuilder<?, ?, ?> appendDeprecatedTags(BodyBuilders<?, ?, ?, ?> builder, Element doc) {
-        List<? extends DocTree> tags = utils_.getBlockTags(doc, DocTree.Kind.DEPRECATED);
+    public RstElementBuilder<?, ?, ?> appendDeprecatedTags(BodyBuilders<?, ?, ?, ?> builder, Element element) {
+        List<? extends DocTree> tags = utils_.getBlockTags(element, DocTree.Kind.DEPRECATED);
         return builder.ifTrue(tags.size() > 0, () -> {
             for (DocTree tag : tags) {
-                String text = new CommentBuilder(tag, doc, configuration_).build().serialize();
+                String text = new CommentBuilder(tag, element, docContext_).build().serialize();
                 if (StringUtils.notNullOrEmpty(text)) {
                     builder.directive(Directives.Deprecated, text);
                 }

@@ -46,16 +46,14 @@ public abstract class JavaMemberBuilderAbst<
         extends DirectiveBuilderAbst<PARENT, Directive, SELF> {
 
     private final Element memberDoc_;
-    protected final RstConfiguration configuration_;
     protected final Map<String, TypeElement> imports_;
     protected final HtmlDocletWriter docContext_;
 
-    public JavaMemberBuilderAbst(Directive.Type type, Element element, RstConfiguration configuration) {
+    public JavaMemberBuilderAbst(Directive.Type type, Element element, HtmlDocletWriter docContext) {
         super(type);
-        this.memberDoc_ = element;
-        this.configuration_ = configuration;
-        this.docContext_ = new HtmlDocletWriter(element.getEnclosingElement(), configuration.getHtmlConfiguration());
-        this.imports_ = new ImportsCollector(configuration.utils).collect(element).getImportsMap();
+        this.memberDoc_ = Objects.requireNonNull(element);
+        this.docContext_ = Objects.requireNonNull(docContext);
+        this.imports_ = new ImportsCollector(docContext_.configuration.utils).collect(element).getImportsMap();
     }
 
     public JavaMemberBuilderAbst<PARENT, SELF> fillImports(Map<String, TypeElement> imports) {
@@ -74,7 +72,7 @@ public abstract class JavaMemberBuilderAbst<
                 .map(Text::new)
                 .collect(Collectors.toList()));
 
-        directive.getOptions().put("outertype", configuration_.utils.getSimpleName(memberDoc_.getEnclosingElement()));
+        directive.getOptions().put("outertype", docContext_.configuration.utils.getSimpleName(memberDoc_.getEnclosingElement()));
 
         BlockQuoteBuilder<?> bodyBuilder = new BlockQuoteBuilderImpl<>();
         fillElements(bodyBuilder);
@@ -84,18 +82,17 @@ public abstract class JavaMemberBuilderAbst<
     protected abstract void fillArguments(List<String> argumentList);
 
     protected void fillElements(BlockQuoteBuilder<?> bodyBuilder) {
-        List<? extends DocTree> tags = configuration_.utils.getBody(memberDoc_);
-        List<? extends DocTree> inlineTags = configuration_.utils.getBlockTags(memberDoc_, DocTree.Kind.UNKNOWN_INLINE_TAG);
+        List<? extends DocTree> tags = docContext_.configuration.utils.getBody(memberDoc_);
+        List<? extends DocTree> inlineTags = docContext_.configuration.utils.getBlockTags(memberDoc_, DocTree.Kind.UNKNOWN_INLINE_TAG);
         bodyBuilder
                 .ifTrue(inlineTags.size() > 0, shiftBuilder -> {
-                    new TagUtils(configuration_, docContext_).appendTags(bodyBuilder, memberDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
+                    new TagUtils(docContext_).appendTags(bodyBuilder, memberDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
                 })
                 .ifTrue(tags.size() > 0, quoteBuilder -> {
                     IncludeDocument includeDocument = new IncludeDocument();
                     includeDocument.getChildren().add(new CommentBuilder(
                             memberDoc_,
-                            memberDoc_,
-                            configuration_).build());
+                            docContext_).build());
                     quoteBuilder.addChild(includeDocument);
                 });
     }
@@ -103,7 +100,7 @@ public abstract class JavaMemberBuilderAbst<
     protected String collapseNamespaces(String content) {
         String[] values = new String[]{content};
         imports_.forEach((name, classDoc) -> {
-            values[0] = values[0].replace(name, configuration_.utils.getSimpleName(classDoc));
+            values[0] = values[0].replace(name, docContext_.configuration.utils.getSimpleName(classDoc));
         });
         return values[0];
     }

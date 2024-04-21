@@ -21,14 +21,9 @@ import jdk.javadoc.internal.doclets.toolkit.util.Utils;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.TypeVariable;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DocUtils {
@@ -40,11 +35,14 @@ public class DocUtils {
     private static String doFormatTypeName(TypeMirror type, Supplier<String> nameGetter, Utils utils) {
         String result = type.toString();
         if (!type.getKind().isPrimitive()) {
-            Map<String, TypeElement> refClasses = new HashMap<>();
-            refClasses.put(utils.getQualifiedTypeName(type), utils.asTypeElement(type));
-            refClasses.putAll(new ImportsCollector(utils).collect(utils.asTypeElement(type)).getImportsMap());
-            for (Map.Entry<String, TypeElement> entry : refClasses.entrySet()) {
-                result = result.replace(entry.getKey(), entry.getValue().getSimpleName().toString());
+            TypeElement typeElement = utils.asTypeElement(type);
+            if (typeElement != null){
+                Map<String, TypeElement> refClasses = new HashMap<>();
+                refClasses.put(utils.getQualifiedTypeName(type), typeElement);
+                refClasses.putAll(new ImportsCollector(utils).collect(typeElement).getImportsMap());
+                for (Map.Entry<String, TypeElement> entry : refClasses.entrySet()) {
+                    result = result.replace(entry.getKey(), entry.getValue().getSimpleName().toString());
+                }
             }
         }
         return result;

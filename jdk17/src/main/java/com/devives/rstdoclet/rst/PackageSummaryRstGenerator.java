@@ -58,15 +58,14 @@ public class PackageSummaryRstGenerator implements Supplier<String> {
                 .addChild(new JavaPackageBuilder<>(packageDoc_, configuration_).build())
                 .ifTrue(tags.size() > 0, (builder) -> {
                     BlockQuoteBuilder<?> bodyBuilder = new BlockQuoteBuilderImpl<>();
-                    new TagUtils(configuration_, docContext_).appendTags(bodyBuilder, packageDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
+                    new TagUtils(docContext_).appendTags(bodyBuilder, packageDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
                     bodyBuilder.build().getChildren().forEach(builder::addChild);
                 })
                 .ifTrue(body.size() > 0, (builder) -> {
                     IncludeDocument includeDocument = new IncludeDocument();
                     includeDocument.getChildren().add(new CommentBuilder(
                             packageDoc_,
-                            packageDoc_,
-                            configuration_).build());
+                            docContext_).build());
                     builder.addChild(includeDocument);
                 })
                 .tocTree(tocTreeBuilder -> tocTreeBuilder

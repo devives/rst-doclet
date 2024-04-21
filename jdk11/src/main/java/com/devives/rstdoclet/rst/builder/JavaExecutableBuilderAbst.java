@@ -25,6 +25,7 @@ import com.devives.rstdoclet.RstConfiguration;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.html2rst.jdkloans.ContentBuilder;
+import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
 import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.doctree.ParamTree;
@@ -44,15 +45,15 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
         extends JavaMemberBuilderAbst<PARENT, SELF> {
     private final ExecutableElement executableElement_;
 
-    public JavaExecutableBuilderAbst(Directive.Type type, ExecutableElement memberDoc, RstConfiguration configuration) {
-        super(type, memberDoc, configuration);
+    public JavaExecutableBuilderAbst(Directive.Type type, ExecutableElement memberDoc, HtmlDocletWriter docContext) {
+        super(type, memberDoc, docContext);
         this.executableElement_ = memberDoc;
     }
 
     @Override
     protected void fillElements(BlockQuoteBuilder<?> bodyBuilder) {
         super.fillElements(bodyBuilder);
-        List<? extends DocTree> tags = configuration_.utils.getBlockTags(executableElement_);
+        List<? extends DocTree> tags = docContext_.configuration.utils.getBlockTags(executableElement_);
         //ParamTree[] paramTags = docCommentTree.paramTags();
         ParamTree[] paramTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.PARAM).toArray(ParamTree[]::new);
         //ThrowsTree[] throwsTags = executableMemberDoc_.throwsTags();
@@ -65,8 +66,8 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
                 flb.item("param " + formatParameterName(tag), ib ->
                         new CommentBuilder(
                                 tag,
-                                executableElement_.getEnclosingElement(),
-                                configuration_).buildBody().forEach(ib::addChild));
+                                executableElement_,
+                                docContext_).buildBody().forEach(ib::addChild));
             }
 
             for (TypeParameterElement typeParameterElement : executableElement_.getTypeParameters()) {
@@ -87,18 +88,18 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
                 flb.item("throws " + tag.getExceptionName(), ib ->
                         new CommentBuilder(
                                 tag,
-                                executableElement_.getEnclosingElement(),
-                                configuration_).buildBody().forEach(ib::addChild));
+                                executableElement_,
+                                docContext_).buildBody().forEach(ib::addChild));
             }
             for (ReturnTree tag : returnTags) {
                 flb.item("return", ib ->
                         new CommentBuilder(
                                 tag,
-                                executableElement_.getEnclosingElement(),
-                                configuration_).buildBody().forEach(ib::addChild));
+                                executableElement_,
+                                docContext_).buildBody().forEach(ib::addChild));
             }
         }).ifTrue(tags.size() > 0, shiftBuilder -> {
-            new TagUtils(configuration_, docContext_).appendTags(bodyBuilder, executableElement_, Arrays.asList(TagUtils.TagName.Author, TagUtils.TagName.See));
+            new TagUtils(docContext_).appendTags(bodyBuilder, executableElement_, Arrays.asList(TagUtils.TagName.Author, TagUtils.TagName.See));
         });
     }
 
@@ -113,7 +114,7 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
     }
 
     protected String formatThrows(ExecutableElement execMemberDoc) {
-        List<? extends DocTree> tags = configuration_.utils.getBlockTags(executableElement_);
+        List<? extends DocTree> tags = docContext_.configuration.utils.getBlockTags(executableElement_);
         ThrowsTree[] throwsTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.THROWS).toArray(ThrowsTree[]::new);
 
         if (throwsTags.length > 0) {
@@ -127,7 +128,7 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
 
     protected String formatNameWithParameters(ExecutableElement member, boolean includeAnnotations) {
         Content htmltree = new ContentBuilder();
-        htmltree.addContent(configuration_.utils.getSimpleName(member));
+        htmltree.addContent(docContext_.configuration.utils.getSimpleName(member));
         htmltree.addContent("(");
         String sep = "";
         List<? extends VariableElement> params = member.getParameters();
@@ -150,7 +151,7 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
                         htmltree.addContent(" ");
                     }
                 }
-                htmltree.addContent(formatExecutableMemberParam(param, configuration_.utils, (paramstart == params.size() - 1) && member.isVarArgs()));
+                htmltree.addContent(formatExecutableMemberParam(param, docContext_.configuration.utils, (paramstart == params.size() - 1) && member.isVarArgs()));
                 break;
             }
         }
@@ -163,7 +164,7 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
                     htmltree.addContent(" ");
                 }
             }
-            htmltree.addContent(formatExecutableMemberParam(params.get(i), configuration_.utils, (i == params.size() - 1) && member.isVarArgs()));
+            htmltree.addContent(formatExecutableMemberParam(params.get(i), docContext_.configuration.utils, (i == params.size() - 1) && member.isVarArgs()));
         }
         htmltree.addContent(")");
         String result = HtmlUtils.unescapeLtRtAmpBSlash(htmltree.toString());
@@ -185,7 +186,7 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
         tree.addContent(docContext_.getSpace());
         //todo
         //tree.add(rcvrType.typeName());
-        LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_.getHtmlConfiguration(),
+        LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.configuration,
                 LinkInfoImpl.Kind.CLASS_SIGNATURE, rcvrType);
         tree.addContent(docContext_.getTypeParameterLinks(linkInfo));
         tree.addContent(docContext_.getSpace());

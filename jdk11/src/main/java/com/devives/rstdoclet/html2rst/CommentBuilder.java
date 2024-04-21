@@ -21,7 +21,6 @@ import com.devives.html2rst.HtmlDocumentReader;
 import com.devives.rst.Rst;
 import com.devives.rst.document.RstDocument;
 import com.devives.rst.document.RstNode;
-import com.devives.rstdoclet.RstConfiguration;
 import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
 import com.sun.source.doctree.*;
 import jdk.javadoc.internal.doclets.toolkit.Content;
@@ -36,28 +35,28 @@ import java.util.stream.Collectors;
  */
 public class CommentBuilder {
 
-    private final Element doc;
+    private final Element element_;
     private final DocTree holderTag;
     private final HtmlDocletWriter docContext_;
 
-    public CommentBuilder(Element doc, Element parentDoc, RstConfiguration configuration) {
-        this.docContext_ = new HtmlDocletWriter(parentDoc, configuration.getHtmlConfiguration());
-        this.doc = Objects.requireNonNull(doc);
+    public CommentBuilder(Element element, HtmlDocletWriter docContext) {
+        this.element_ = Objects.requireNonNull(element);
+        this.docContext_ = Objects.requireNonNull(docContext);
         this.holderTag = null;
     }
 
-    public CommentBuilder(DocTree holderTag, Element parentDoc, RstConfiguration configuration) {
-        this.docContext_ = new HtmlDocletWriter(parentDoc, configuration.getHtmlConfiguration());
-        this.doc = null;
+    public CommentBuilder(DocTree holderTag, Element element, HtmlDocletWriter docContext) {
         this.holderTag = Objects.requireNonNull(holderTag);
+        this.element_ = Objects.requireNonNull(element);
+        this.docContext_ = Objects.requireNonNull(docContext);
     }
 
     public RstDocument build() {
-        List<? extends DocTree> tags = doc != null
-                ? docContext_.configuration.utils.getBody(doc)
-                : getDescription(holderTag);
+        List<? extends DocTree> tags = holderTag != null
+                ? getDescription(holderTag)
+                : docContext_.configuration.utils.getBody(element_);
         //DocTree[] tags = doc != null ? doc.inlineTags() : holderTag.inlineTags();
-        Content content = docContext_.commentTagsToContent(holderTag, docContext_.parentDoc, tags, false);
+        Content content = docContext_.commentTagsToContent(holderTag, element_, tags, false);
         String htmlText = content.toString();
         if (!htmlText.trim().isEmpty()) {
             RstDocumentWriter visitor = new RstDocumentWriter();

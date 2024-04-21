@@ -23,6 +23,7 @@ import com.devives.rst.document.RstDocument;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rstdoclet.RstConfiguration;
 import com.devives.rstdoclet.html2rst.DocUtils;
+import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
 import com.devives.rstdoclet.rst.builder.*;
 
 import javax.lang.model.element.ExecutableElement;
@@ -38,10 +39,12 @@ public class ClassRstGenerator implements Supplier<String> {
     private final TypeElement classDoc_;
     private final RstConfiguration configuration_;
     private final Map<String, TypeElement> imports_ = new HashMap<>();
+    private final HtmlDocletWriter docContext_;
 
     public ClassRstGenerator(TypeElement classDoc, RstConfiguration configuration) {
         this.classDoc_ = classDoc;
         this.configuration_ = configuration;
+        this.docContext_ = new HtmlDocletWriter(classDoc, configuration);
     }
 
     @Override
@@ -51,6 +54,7 @@ public class ClassRstGenerator implements Supplier<String> {
         List<VariableElement> fields = configuration_.utils.getFields(classDoc_);
         List<ExecutableElement> constructors = configuration_.utils.getConstructors(classDoc_);
         List<ExecutableElement> methods = configuration_.utils.getMethods(classDoc_);
+
         classContentBuilder
                 .addChild(new JavaPackageBuilder<>(ElementUtils.getPackageOfType(classDoc_), configuration_)
                         .setNoIndex(true)
@@ -61,7 +65,7 @@ public class ClassRstGenerator implements Supplier<String> {
                         builder.paragraph(annotations);
                     });
                 })
-                .addChild(new JavaTypeBuilder<>(classDoc_, configuration_).fillImports(imports_).build())
+                .addChild(new JavaTypeBuilder<>(classDoc_, docContext_).fillImports(imports_).build())
                 .ifTrue( enumConstants.size() > 0, (textBuilder) -> {
                     textBuilder.subTitle("Enum Constants");
                     VariableElement[] sortedFieldDocs = enumConstants.stream()
@@ -69,20 +73,20 @@ public class ClassRstGenerator implements Supplier<String> {
                             .toArray(VariableElement[]::new);
                     for (VariableElement fieldDoc : sortedFieldDocs) {
                         textBuilder.title(configuration_.utils.getSimpleName(fieldDoc), 3)
-                                .addChild(new JavaFieldBuilder<>(fieldDoc, configuration_).fillImports(imports_).build());
+                                .addChild(new JavaFieldBuilder<>(fieldDoc, docContext_).fillImports(imports_).build());
                     }
                 }).ifTrue(fields.size() > 0, (documentBuilder) -> {
                     documentBuilder.subTitle("Fields");
                     VariableElement[] sortedFieldDocs = fields.stream().sorted(Comparator.comparing(e -> configuration_.utils.getSimpleName(e))).toArray(VariableElement[]::new);
                     for (VariableElement fieldDoc : sortedFieldDocs) {
                         documentBuilder.title(configuration_.utils.getSimpleName(fieldDoc), 3)
-                                .addChild(new JavaFieldBuilder<>(fieldDoc, configuration_).fillImports(imports_).build());
+                                .addChild(new JavaFieldBuilder<>(fieldDoc, docContext_).fillImports(imports_).build());
                     }
                 }).ifTrue(constructors.size() > 0, (documentBuilder) -> {
                     documentBuilder.subTitle("Constructors");
                     for (ExecutableElement constructorDoc : constructors) {
                         documentBuilder.title(configuration_.utils.getSimpleName(constructorDoc), 3)
-                                .addChild(new JavaConstructorBuilder<>(constructorDoc, configuration_).fillImports(imports_).build());
+                                .addChild(new JavaConstructorBuilder<>(constructorDoc, docContext_).fillImports(imports_).build());
                     }
                 }).ifTrue(methods.size() > 0, (documentBuilder) -> {
                     documentBuilder.subTitle("Methods");
@@ -91,7 +95,7 @@ public class ClassRstGenerator implements Supplier<String> {
                             .toArray(ExecutableElement[]::new);
                     for (ExecutableElement methodDoc : sortedMethodDocs) {
                         documentBuilder.title(configuration_.utils.getSimpleName(methodDoc), 3)
-                                .addChild(new JavaMethodBuilder<>(methodDoc, configuration_).fillImports(imports_).build());
+                                .addChild(new JavaMethodBuilder<>(methodDoc, docContext_).fillImports(imports_).build());
                     }
                 });
         Map<String, TypeElement> filteredImports = imports_.entrySet().stream()
