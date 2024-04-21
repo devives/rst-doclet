@@ -34,6 +34,31 @@ SampleClass
 Methods
 -------
 
+codeSampleWithUnderlinesInComment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void codeSampleWithUnderlinesInComment()
+   :outertype: SampleClass
+
+   Code sample with underlines.
+
+   .. parsed-literal::
+
+      private T _field;
+       private T field\_;
+       public T _get_Field(){
+           if (_field == null){
+               _field = new T();
+           }
+           return _field;
+       }
+       public T get_Field\_(){
+           if (field\_ == null){
+               field\_ = new T();
+           }
+           return field\_;
+       }
+
 inlineAnchorExample
 ^^^^^^^^^^^^^^^^^^^
 

@@ -17,6 +17,8 @@
  */
 package com.devives.html2rst;
 
+import com.devives.rst.util.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -42,6 +44,22 @@ public abstract class HtmlUtils {
         return (text == null || text.isEmpty())
                 ? text
                 : unescapeLtRtAmpBSlash(text);
+    }
+
+    private static final Pattern UNDERLINE_PATTERN = Pattern.compile("(\\w*)_(\\W)");
+
+    public static String escapeUnderlines(String text) {
+        if (StringUtils.isNullOrEmpty(text)) {
+            return text;
+        } else {
+            Matcher m = UNDERLINE_PATTERN.matcher(text);
+            StringBuffer sb = new StringBuffer();
+            while (m.find()) {
+                m.appendReplacement(sb, "$1" + Matcher.quoteReplacement("\\_") + "$2");
+            }
+            m.appendTail(sb);
+            return sb.toString();
+        }
     }
 
     /**

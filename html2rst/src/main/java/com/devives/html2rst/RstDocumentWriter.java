@@ -35,8 +35,9 @@ import com.devives.rst.util.StringUtils;
 
 import java.util.Stack;
 
-import static com.devives.rst.util.StringUtils.*;
+import static com.devives.html2rst.HtmlUtils.escapeUnderlines;
 import static com.devives.html2rst.HtmlUtils.unescapeLtRtAmpBSlash;
+import static com.devives.rst.util.StringUtils.*;
 
 public class RstDocumentWriter implements HtmlVisitor {
     private final RstDocumentBuilder<?> docBuilder_ = Rst.builders().document();
@@ -232,10 +233,10 @@ public class RstDocumentWriter implements HtmlVisitor {
     @Override
     public void visitCode(String text) {
         if (isIn(ParsedLiteralBlockBuilder.class)) {
-            getTextBuilder().text(unescapeLtRtAmpBSlash(text));
+            getTextBuilder().text(escapeUnderlines(unescapeLtRtAmpBSlash(text)));
         } else {
             // Literal can not have beginning or ending spaces.
-            getTextBuilder().literal(unescapeLtRtAmpBSlash(text).trim());
+            getTextBuilder().literal(escapeUnderlines(unescapeLtRtAmpBSlash(text)).trim());
         }
     }
 
@@ -442,13 +443,13 @@ public class RstDocumentWriter implements HtmlVisitor {
     private String escapeRstEmphasis(String text) {
         if (text == null || text.isEmpty()) return text;
         if (text.trim().startsWith(".. ")) return text;
-        return text
+        text = text
                 .replaceAll("\\\\", "\\\\\\\\")
-                .replaceAll("_", "\\\\_")
                 .replaceAll("\\*", "\\\\*")
-                //.replaceAll("_", "\\\\_")
-                //.replaceAll("`", "\\\\`") // Проблема с :ref:`link`
-                ;
+        //.replaceAll("`", "\\\\`") // Проблема с :ref:`link`
+        ;
+        text = HtmlUtils.escapeUnderlines(text);
+        return text;
     }
 
 }

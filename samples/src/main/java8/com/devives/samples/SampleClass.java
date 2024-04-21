@@ -137,4 +137,26 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
     public void linkTagsInComment() {
     }
 
+    /**
+     * Code sample with underlines.
+     * <pre>{@code
+     * private T _field;
+     * private T field_;
+     * public T _get_Field(){
+     *     if (_field == null){
+     *         _field = new T();
+     *     }
+     *     return _field;
+     * }
+     * public T get_Field_(){
+     *     if (field_ == null){
+     *         field_ = new T();
+     *     }
+     *     return field_;
+     * }
+     * }</pre>
+     */
+    public void codeSampleWithUnderlinesInComment() {
+    }
+
 }
