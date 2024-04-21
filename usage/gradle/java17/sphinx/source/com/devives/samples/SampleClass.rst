@@ -34,6 +34,31 @@ SampleClass
 Methods
 -------
 
+codeSampleWithUnderlinesInComment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void codeSampleWithUnderlinesInComment()
+   :outertype: SampleClass
+
+   Code sample with underlines.
+
+   .. parsed-literal::
+
+      private T _field;
+       private T field\_;
+       public T _get_Field(){
+           if (_field == null){
+               _field = new T();
+           }
+           return _field;
+       }
+       public T get_Field\_(){
+           if (field\_ == null){
+               field\_ = new T();
+           }
+           return field\_;
+       }
+
 inlineAnchorExample
 ^^^^^^^^^^^^^^^^^^^
 
@@ -61,6 +86,23 @@ inlineCodeExamples
 
    ``@Getter``
    ``List<Integer> nums = new ArrayList<>();``
+
+linkTagsInComment
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void linkTagsInComment()
+   :outertype: SampleClass
+
+   Forth equals lines is correct. See tags illustrate different formats of references.
+
+   * :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`This is multiline
+     label for reference <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
+   * :java:ref:`com.devives.samples <com.devives.samples>`
+   * :java:ref:`ArrayList <java.util.ArrayList>`
 
 multilineCodeExamples
 ^^^^^^^^^^^^^^^^^^^^^

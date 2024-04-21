@@ -42,8 +42,6 @@ codeSampleWithUnderlinesInComment
 
    Code sample with underlines.
 
-
-
    .. parsed-literal::
 
       private T _field;
