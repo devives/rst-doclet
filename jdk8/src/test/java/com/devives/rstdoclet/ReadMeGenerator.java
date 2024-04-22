@@ -59,10 +59,6 @@ public class ReadMeGenerator implements Constants {
                         .text("The ")
                         .link("https://bronto-javasphinx.readthedocs.io/en/latest/", "javasphinx")
                         .text(" extension must be installed in Sphinx.")))
-                .beginDirective(Directives.Contents).setArguments("Overview").options(opts -> opts.item("depth", 2))
-                .end()
-                .subTitle("Limitations")
-                .paragraph(p -> p.bold("Current version works only with Java 8, because require %JAVA_HOME%\\lib\\tools.jar for extracting javadoc comments."))
                 .subTitle("Quick Start")
                 .numberedList(list -> list
                         .item(itm -> itm
@@ -76,12 +72,22 @@ public class ReadMeGenerator implements Constants {
                                         "    rstDoclet\n" +
                                         "}"))
                         .item(itm -> itm
-                                .paragraph("Add library to dependencies:")
+                                .paragraph("Add the library of required java version to the dependencies:")
+                                .paragraph("Java 8")
                                 .code("gradle", "dependencies {\n" +
-                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.2.1')\n" +
+                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.3.0')\n" +
+                                        "}")
+                                .paragraph("Java 11")
+                                .code("gradle", "dependencies {\n" +
+                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk11-all:0.3.0')\n" +
+                                        "}")
+                                .paragraph("Java 17")
+                                .code("gradle", "dependencies {\n" +
+                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk17-all:0.3.0')\n" +
                                         "}"))
                         .item(itm -> itm
-                                .paragraph(p -> p.text("Register gradle task ").literal("javadoc2rst").text(":"))
+                                .paragraph(p -> p.text("Register gradle task ").literal("javadoc2rst").text("depends java version:"))
+                                .paragraph("Java 8")
                                 .code("gradle", "tasks.register('javadoc2rst', Javadoc) {\n" +
                                         "    description = 'Generate rst files based on javadoc comments in code.'\n" +
                                         "    group = 'documentation'\n" +
@@ -94,11 +100,91 @@ public class ReadMeGenerator implements Constants {
                                         "    options.encoding = \"UTF-8\"\n" +
                                         "    options.showFromPackage()\n" +
                                         "    (options as CoreJavadocOptions).addStringOption(\"packageindexfilename\", \"package-index\")\n" +
+                                        "}")
+                                .paragraph("Java 11")
+                                .code("gradle", "List<String> exportsList = [\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED\",\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED',\n" +
+                                        "]\n" +
+                                        "\n" +
+                                        "tasks.register('javadoc2rst', Javadoc) {\n" +
+                                        "    description = 'Generate rst files based on javadoc comments in code.'\n" +
+                                        "    group = 'documentation'\n" +
+                                        "    source = sourceSets.main.allJava\n" +
+                                        "    classpath = configurations.compileClasspath\n" +
+                                        "    destinationDir = file(\"$docsDir/javadoc2rst\")\n" +
+                                        "    failOnError = true\n" +
+                                        "    options.docletpath = configurations.rstDoclet.files as List\n" +
+                                        "    options.doclet = \"com.devives.rstdoclet.RstDoclet\"\n" +
+                                        "    options.encoding = \"UTF-8\"\n" +
+                                        "    options.showFromPackage()\n" +
+                                        "    (options as CoreJavadocOptions).addStringOption(\"packageindexfilename\", \"package-index\")\n" +
+                                        "    (options as CoreJavadocOptions).setJFlags(exportsList)\n" +
+                                        "}")
+                                .paragraph("Java 17")
+                                .code("gradle", "List<String> exportsList = [\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED\",\n" +
+                                        "        \"--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED\",\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclint=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED'\n" +
+                                        "]\n" +
+                                        "\n" +
+                                        "tasks.register('javadoc2rst', Javadoc) {\n" +
+                                        "    description = 'Generate rst files based on javadoc comments in code.'\n" +
+                                        "    group = 'documentation'\n" +
+                                        "    source = sourceSets.main.allJava\n" +
+                                        "    classpath = configurations.compileClasspath\n" +
+                                        "    destinationDir = file(\"$docsDir/javadoc2rst\")\n" +
+                                        "    options.docletpath = configurations.rstDoclet.files.asType(List)\n" +
+                                        "    options.doclet = \"com.devives.rstdoclet.RstDoclet\"\n" +
+                                        "    options.encoding = \"UTF-8\"\n" +
+                                        "    options.windowTitle(null)\n" +
+                                        "    options.showFromPackage()\n" +
+                                        "    failOnError = false\n" +
+                                        "    (options as CoreJavadocOptions).addStringOption(\"packageindexfilename\", \"package-index\")\n" +
+                                        "    (options as CoreJavadocOptions).setJFlags(exportsList)\n" +
                                         "}"))
                         .item("Reload All Gradle Projects.")
                         .item(itm -> itm.paragraph(p -> p.text("Execute gradle task ").literal("documentation \\ javadoc2rst").text(".")))
                         .item(itm -> itm.paragraph(p -> p.text("Find generated files at ").literal("$project.build/docs/javadoc2rst/").text(".")))
                 )
+                .subTitle("Complete example projects")
+                .paragraph(p -> p
+                        .text("Are placed at ").link("https://github.com/devives/rst-doclet/tree/main/usage/gradle", "GitHub").text("."))
                 .subTitle("License")
                 .paragraph(p -> p
                         .text("The code of project distributed under the GNU General Public License version 2 only. ").lineBreak()
