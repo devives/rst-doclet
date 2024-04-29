@@ -17,25 +17,50 @@
  */
 package com.devives.rstdoclet.html2rst;
 
-
 import com.devives.html2rst.HtmlUtils;
 import com.devives.sphinx.rst.document.JavaRef;
 import com.devives.sphinx.rst.document.Ref;
 
+import java.util.Map;
+
+import static com.devives.html2rst.HtmlUtils.escapeUnderlines;
+import static com.devives.html2rst.HtmlUtils.unescapeLtRtAmpBSlash;
+
 public class RstDocumentWriter extends com.devives.html2rst.RstDocumentWriter {
 
+    private final HrefConverter linkResolver;
+
+    public RstDocumentWriter(HrefConverter linkResolver) {
+        this.linkResolver = linkResolver;
+    }
+
     @Override
-    public void visitLink(String href, String label) {
+    public void doVisitAnchor(String href, Map<String, String> attributes, String text) {
         if (href.startsWith("#")) {
             // ссылка на якорь в документе
-            getTextBuilder().addChild(new Ref(href.substring(1), HtmlUtils.unescapeBrackets(label)));
+            getTextBuilder().addChild(new Ref(href.substring(1), HtmlUtils.unescapeBrackets(text)));
             //getTextBuilder().role("ref", href.substring(1), unescapeBrackets(label));
         } else if (href.startsWith("@")) {
-            getTextBuilder().addChild(new JavaRef(href.substring(1), HtmlUtils.unescapeBrackets(label)));
+            getTextBuilder().addChild(new JavaRef(href.substring(1), HtmlUtils.unescapeBrackets(text)));
             //getTextBuilder().role("java:ref", href.substring(1), );
         } else {
-            getTextBuilder().anonymousLink(href, label);
+            //getTextBuilder().anonymousLink(href, label);
+            super.doVisitAnchor(href, attributes, text);
         }
     }
 
+    @Override
+    protected void doVisitLink(String href, Map<String, String> attributes, String text) {
+        getTextBuilder().addChild(linkResolver.resolve(href, attributes, text));
+    }
+
+    @Override
+    public void visitCode(String text) {
+        if (text != null && text.startsWith(":java:")) {
+            getTextBuilder().text(escapeUnderlines(unescapeLtRtAmpBSlash(text)));
+        } else {
+            super.visitCode(text);
+        }
+
+    }
 }

@@ -21,8 +21,8 @@ package com.devives.samples;
  * Sample class.
  * <ul>
  *     <li> <a href="package-index.html">HTML ссылка на индекс пакета.</a>
- *     <li> <a href="#internal_sphinx_anchor">Sphinx ссылка на якорь в описании пакета.</a>
- *     <li> <a href="#internal_sphinx_anchor_native">Native Sphinx ссылка на якорь в описании пакета.</a>
+ *     <li> <a href="internal_sphinx_anchor">Sphinx ссылка на якорь в описании пакета.</a>
+ *     <li> <a href="internal_sphinx_anchor_native">Native Sphinx ссылка на якорь в описании пакета.</a>
  * </ul>
  *
  * @see SampleInterface

@@ -17,12 +17,10 @@
  */
 package com.devives.rstdoclet;
 
-import com.devives.rst.Rst;
 import com.devives.rst.util.TextFileWriter;
 import com.devives.rstdoclet.rst.ClassRstGenerator;
 import com.devives.rstdoclet.rst.PackageSummaryRstGenerator;
 import com.devives.sphinx.java.doc.PackagesIndexRstGenerator;
-import com.devives.sphinx.rst.document.JavaDocRstElementFactoryImpl;
 import com.sun.javadoc.*;
 import com.sun.tools.doclets.internal.toolkit.Configuration;
 import com.sun.tools.doclets.internal.toolkit.util.ClassTree;
@@ -45,19 +43,11 @@ import java.util.Arrays;
  *
  * @author ivvlev
  */
-public final class RstDoclet extends AbstractDoclet {
+public final class RstDoclet extends AbstractRstDoclet {
+
+    private static final RstDoclet INSTANCE = new RstDoclet();
     // An instance will be created by validOptions, and used by start.
     private static RstDoclet docletToStart = null;
-
-    public RstDoclet() {
-        configuration = new ConfigurationImpl();
-        Rst.setElementFactory(new JavaDocRstElementFactoryImpl());
-    }
-
-    /**
-     * The global configuration information for this run.
-     */
-    public final ConfigurationImpl configuration;
 
     /**
      * The "start" method as required by Javadoc.
@@ -74,7 +64,7 @@ public final class RstDoclet extends AbstractDoclet {
             doclet = docletToStart;
             docletToStart = null;
         } else {
-            doclet = new RstDoclet();
+            doclet = INSTANCE;
         }
         return doclet.start(doclet, root);
     }
@@ -102,10 +92,10 @@ public final class RstDoclet extends AbstractDoclet {
                 final PackageDoc packageDoc = curr.containingPackage();
                 final String packageName = packageDoc.name();
                 final Path packageDirectory = getPackageDirectory(packageName);
-                configuration.root.printNotice("Generates documentation for " + curr.name());
+                // configuration.root.printNotice("Generates documentation for " + curr.name());
                 String fileName = curr.name().replace(".", "-");
                 File file = packageDirectory.resolve(fileName + ".rst").toFile();
-                new TextFileWriter(file, new ClassRstGenerator(curr, configuration)).write();
+                new TextFileWriter(file, new ClassRstGenerator(rstConfiguration, classTree, curr)).write();
             } catch (FatalError fe) {
                 throw fe;
             } catch (DocletAbortException de) {
@@ -141,13 +131,12 @@ public final class RstDoclet extends AbstractDoclet {
      * @throws IOException If any error occurs while creating file or directories.
      */
     private void generatePackagesIndex(final PackageDoc[] packages) throws IOException {
-        configuration.root.printNotice("Generates packages index.");
         File file = Paths.get(configuration.destDirName).resolve("packages.rst").toFile();
         String[] packageNames = Arrays.stream(packages).map(Doc::name).toArray(String[]::new);
         new TextFileWriter(file,
                 new PackagesIndexRstGenerator(packageNames)
                         .setTitle(configuration.doctitle)
-                        .setPackageIndexFileName(configuration.packageIndexFileName)
+                        .setPackageIndexFileName(rstConfiguration.packageIndexFileName)
         ).write();
     }
 
@@ -160,15 +149,14 @@ public final class RstDoclet extends AbstractDoclet {
      */
     private Path generatePackage(final PackageDoc packageDoc) throws IOException {
         final String name = packageDoc.name();
-        configuration.root.printNotice("Generates package documentation for " + name);
         if (!name.isEmpty()) {
             final Path directoryPath = getPackageDirectory(name);
             if (!Files.exists(directoryPath)) {
                 Files.createDirectories(directoryPath);
             }
 
-            File file = directoryPath.resolve(configuration.packageIndexFileName + ".rst").toFile();
-            new TextFileWriter(file, new PackageSummaryRstGenerator(packageDoc, configuration)).write();
+            File file = directoryPath.resolve(rstConfiguration.packageIndexFileName + ".rst").toFile();
+            new TextFileWriter(file, new PackageSummaryRstGenerator(packageDoc, rstConfiguration)).write();
             return directoryPath;
         }
         return Paths.get(".");
@@ -191,9 +179,6 @@ public final class RstDoclet extends AbstractDoclet {
         }
     }
 
-    public static final ConfigurationImpl sharedInstanceForOptions =
-            new ConfigurationImpl();
-
     /**
      * Check for doclet added options here.
      *
@@ -201,8 +186,7 @@ public final class RstDoclet extends AbstractDoclet {
      * option not known.  Negative value means error occurred.
      */
     public static int optionLength(String option) {
-        // Construct temporary configuration for check
-        return sharedInstanceForOptions.optionLength(option);
+        return INSTANCE.rstConfiguration.optionLength(option);
     }
 
     /**
@@ -218,8 +202,8 @@ public final class RstDoclet extends AbstractDoclet {
      */
     public static boolean validOptions(String[][] options,
                                        DocErrorReporter reporter) {
-        docletToStart = new RstDoclet();
-        return docletToStart.configuration.validOptions(options, reporter);
+        docletToStart = INSTANCE;
+        return docletToStart.rstConfiguration.validOptions(options, reporter);
     }
 
 }

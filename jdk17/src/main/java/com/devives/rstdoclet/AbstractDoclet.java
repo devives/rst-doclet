@@ -50,7 +50,7 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 public abstract class AbstractDoclet implements Doclet {
 
     private final HtmlDoclet htmlDoclet_;
-    protected RstConfiguration configuration;
+    protected RstConfigurationImpl configuration;
     protected HtmlConfiguration htmlConfiguration;
     protected Messages messages;
     protected Utils utils;
@@ -64,7 +64,7 @@ public abstract class AbstractDoclet implements Doclet {
     public void init(Locale locale, Reporter reporter) {
         htmlDoclet_.init(locale, new ReporterFilter(reporter));
         htmlConfiguration = htmlDoclet_.getConfiguration();
-        configuration = new RstConfiguration(htmlConfiguration);
+        configuration = new RstConfigurationImpl(htmlConfiguration);
         messages = htmlDoclet_.getConfiguration().getMessages();
     }
 
@@ -156,7 +156,7 @@ public abstract class AbstractDoclet implements Doclet {
      *
      * @return the configuration of the doclet.
      */
-    public RstConfiguration getConfiguration() {
+    public RstConfigurationImpl getConfiguration() {
         return configuration;
     }
 
@@ -188,29 +188,9 @@ public abstract class AbstractDoclet implements Doclet {
 
         ElementListWriter.generate(htmlConfiguration);
         generatePackageFiles(classtree);
-        generateModuleFiles();
 
-        generateOtherFiles(classtree);
         htmlConfiguration.tagletManager.printReport();
     }
-
-    /**
-     * Generate additional documentation that is added to the API documentation.
-     *
-     * @param classtree the data structure representing the class tree
-     * @throws DocletException if there is a problem while generating the documentation
-     */
-    protected void generateOtherFiles(ClassTree classtree) throws DocletException {
-
-    }
-
-    /**
-     * Generate the module documentation.
-     *
-     * @throws DocletException if there is a problem while generating the documentation
-     *
-     */
-    protected abstract void generateModuleFiles() throws DocletException;
 
     /**
      * Generate the package documentation.

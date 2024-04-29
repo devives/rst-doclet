@@ -66,7 +66,7 @@ public class RstDocletJdk17Test {
 
     private static final Path projectRootPath = Paths.get("").toAbsolutePath();
     private static final Path docletPath = projectRootPath.resolve("build/classes/java/main/");
-    private static final Path outputPath = projectRootPath.resolve("build/test-results/javadoc2rst");
+    private static final Path outputPath = projectRootPath.resolve("build/test-results/javadoc4sphinx");
 
     @BeforeAll
     public static void beforeAll() throws Exception {

@@ -28,8 +28,6 @@ import jdk.javadoc.internal.doclets.formats.html.HtmlConfiguration;
 import jdk.javadoc.internal.doclets.formats.html.HtmlDoclet;
 import jdk.javadoc.internal.doclets.toolkit.DocletException;
 import jdk.javadoc.internal.doclets.toolkit.Messages;
-import jdk.javadoc.internal.doclets.toolkit.builders.AbstractBuilder;
-import jdk.javadoc.internal.doclets.toolkit.builders.BuilderFactory;
 import jdk.javadoc.internal.doclets.toolkit.util.*;
 
 import javax.lang.model.SourceVersion;
@@ -44,7 +42,7 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 abstract class AbstractRstDoclet implements Doclet {
 
     private final HtmlDoclet htmlDoclet_;
-    protected RstConfiguration rstConfiguration;
+    protected RstConfigurationImpl rstConfiguration;
     protected HtmlConfiguration configuration;
     protected final Messages messages;
     protected Utils utils;
@@ -59,7 +57,7 @@ abstract class AbstractRstDoclet implements Doclet {
     @Override
     public void init(Locale locale, Reporter reporter) {
         htmlDoclet_.init(locale, new ReporterFilter(reporter));
-        rstConfiguration = new RstConfiguration(htmlDoclet_.getConfiguration());
+        rstConfiguration = new RstConfigurationImpl(htmlDoclet_.getConfiguration());
     }
 
     @Override
@@ -146,7 +144,7 @@ abstract class AbstractRstDoclet implements Doclet {
      *
      * @return the configuration of the doclet.
      */
-    public RstConfiguration getConfiguration() {
+    public RstConfigurationImpl getConfiguration() {
         return rstConfiguration;
     }
 
@@ -178,34 +176,9 @@ abstract class AbstractRstDoclet implements Doclet {
 
         ElementListWriter.generate(configuration);
         generatePackageFiles(classtree);
-        generateModuleFiles();
 
-        generateOtherFiles(docEnv, classtree);
         configuration.tagletManager.printReport();
     }
-
-    /**
-     * Generate additional documentation that is added to the API documentation.
-     *
-     * @param docEnv    the DocletEnvironment
-     * @param classtree the data structure representing the class tree
-     * @throws DocletException if there is a problem while generating the documentation
-     */
-    protected void generateOtherFiles(DocletEnvironment docEnv, ClassTree classtree)
-            throws DocletException {
-        BuilderFactory builderFactory = configuration.getBuilderFactory();
-        AbstractBuilder constantsSummaryBuilder = builderFactory.getConstantsSummaryBuilder();
-        constantsSummaryBuilder.build();
-        AbstractBuilder serializedFormBuilder = builderFactory.getSerializedFormBuilder();
-        serializedFormBuilder.build();
-    }
-
-    /**
-     * Generate the module documentation.
-     *
-     * @throws DocletException if there is a problem while generating the documentation
-     */
-    protected abstract void generateModuleFiles() throws DocletException;
 
     /**
      * Generate the package documentation.

@@ -20,7 +20,7 @@ package com.devives.rstdoclet.rst.builder;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.builder.directive.DirectiveBuilderAbst;
 import com.devives.rst.document.directive.Directive;
-import com.devives.rstdoclet.RstConfiguration;
+import com.devives.rstdoclet.RstConfigurationImpl;
 
 import javax.lang.model.element.PackageElement;
 import java.util.Objects;
@@ -29,9 +29,9 @@ public class JavaPackageBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
         extends DirectiveBuilderAbst<PARENT, Directive, JavaPackageBuilder<PARENT>> {
 
     private final PackageElement packageDoc_;
-    private final RstConfiguration configuration_;
+    private final RstConfigurationImpl configuration_;
 
-    public JavaPackageBuilder(PackageElement packageDoc, RstConfiguration configuration) {
+    public JavaPackageBuilder(PackageElement packageDoc, RstConfigurationImpl configuration) {
         super(new Directive.Type("java:package"));
         packageDoc_ = Objects.requireNonNull(packageDoc);
         configuration_ = Objects.requireNonNull(configuration);

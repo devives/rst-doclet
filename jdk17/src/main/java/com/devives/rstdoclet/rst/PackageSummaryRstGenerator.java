@@ -19,10 +19,11 @@ package com.devives.rstdoclet.rst;
 
 import com.devives.rst.builder.BlockQuoteBuilder;
 import com.devives.rst.builder.BlockQuoteBuilderImpl;
-import com.devives.rstdoclet.RstConfiguration;
+import com.devives.rstdoclet.RstConfigurationImpl;
+import com.devives.rstdoclet.html.HtmlDocletWriter;
+import com.devives.rstdoclet.html.PackageHtmlWriterImpl;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
 import com.devives.rstdoclet.html2rst.TagUtils;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
 import com.devives.rstdoclet.rst.builder.JavaPackageBuilder;
 import com.devives.sphinx.rst.Rst4Sphinx;
 import com.devives.sphinx.rst.document.IncludeDocument;
@@ -39,13 +40,17 @@ import java.util.function.Supplier;
 public class PackageSummaryRstGenerator implements Supplier<String> {
 
     private final PackageElement packageDoc_;
-    private final RstConfiguration configuration_;
-    private final HtmlDocletWriter docContext_;
+    private final RstConfigurationImpl configuration_;
+    private final PackageHtmlWriterImpl htmlPackageWriter_;
+    private final HtmlDocletWriter htmlDocletWriter_;
+    private final RstGeneratorContext docContext_;
 
-    public PackageSummaryRstGenerator(PackageElement packageDoc, RstConfiguration configuration) {
+    public PackageSummaryRstGenerator(PackageElement packageDoc, RstConfigurationImpl configuration) {
         this.packageDoc_ = packageDoc;
         this.configuration_ = configuration;
-        this.docContext_ = new HtmlDocletWriter(packageDoc_, configuration_);
+        this.htmlPackageWriter_ = new PackageHtmlWriterImpl(configuration.getHtmlConfiguration(), packageDoc_);
+        this.htmlDocletWriter_ = new HtmlDocletWriter(htmlPackageWriter_);
+        this.docContext_ = new RstGeneratorContextImpl(configuration, htmlDocletWriter_);
     }
 
     @Override

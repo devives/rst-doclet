@@ -23,11 +23,10 @@ import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.builder.directive.DirectiveBuilderAbst;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rst.document.inline.Text;
-import com.devives.rstdoclet.ConfigurationImpl;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
 import com.devives.rstdoclet.html2rst.ImportsCollector;
 import com.devives.rstdoclet.html2rst.TagUtils;
-import com.devives.rstdoclet.html2rst.jdkloans.DocContext;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.devives.sphinx.rst.document.IncludeDocument;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MemberDoc;
@@ -47,15 +46,13 @@ public abstract class JavaMemberBuilderAbst<
         extends DirectiveBuilderAbst<PARENT, Directive, SELF> {
 
     private final MemberDoc memberDoc_;
-    protected final ConfigurationImpl configuration_;
     protected final Map<String, ClassDoc> imports_;
-    protected final DocContext docContext_;
+    protected final RstGeneratorContext docContext_;
 
-    public JavaMemberBuilderAbst(Directive.Type type, MemberDoc memberDoc, ConfigurationImpl configuration) {
+    public JavaMemberBuilderAbst(Directive.Type type, MemberDoc memberDoc, RstGeneratorContext docContext) {
         super(type);
         this.memberDoc_ = memberDoc;
-        this.configuration_ = configuration;
-        this.docContext_ = new DocContext(memberDoc.containingClass(), configuration);
+        this.docContext_ = docContext;
         this.imports_ = new ImportsCollector().collect(memberDoc).getImportsMap();
     }
 
@@ -87,14 +84,14 @@ public abstract class JavaMemberBuilderAbst<
     protected void fillElements(BlockQuoteBuilder<?> bodyBuilder) {
         bodyBuilder
                 .ifTrue(memberDoc_.tags().length > 0, shiftBuilder -> {
-                    TagUtils.appendTags(bodyBuilder, memberDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
+                    new TagUtils(docContext_).appendTags(bodyBuilder, memberDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
                 })
                 .ifTrue(memberDoc_.inlineTags().length > 0, quoteBuilder -> {
                     IncludeDocument includeDocument = new IncludeDocument();
-                    includeDocument.getChildren().add(new CommentBuilder(
-                            memberDoc_,
-                            memberDoc_.containingClass(),
-                            configuration_).build());
+                    includeDocument.getChildren().add(
+                            new CommentBuilder(
+                                    docContext_,
+                                    memberDoc_).build());
                     quoteBuilder.addChild(includeDocument);
                 });
     }

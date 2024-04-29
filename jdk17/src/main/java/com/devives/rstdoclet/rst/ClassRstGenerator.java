@@ -21,10 +21,12 @@ import com.devives.rst.Rst;
 import com.devives.rst.builder.RstDocumentBuilder;
 import com.devives.rst.document.RstDocument;
 import com.devives.rst.document.directive.Directive;
-import com.devives.rstdoclet.RstConfiguration;
+import com.devives.rstdoclet.RstConfigurationImpl;
+import com.devives.rstdoclet.html.ClassHtmlWriterImpl;
+import com.devives.rstdoclet.html.HtmlDocletWriter;
 import com.devives.rstdoclet.html2rst.DocUtils;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
 import com.devives.rstdoclet.rst.builder.*;
+import jdk.javadoc.internal.doclets.toolkit.util.ClassTree;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -33,18 +35,21 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-
 public class ClassRstGenerator implements Supplier<String> {
 
     private final TypeElement classDoc_;
-    private final RstConfiguration configuration_;
+    private final RstConfigurationImpl configuration_;
     private final Map<String, TypeElement> imports_ = new HashMap<>();
-    private final HtmlDocletWriter docContext_;
+    private final ClassHtmlWriterImpl htmlClassWriter_;
+    private final HtmlDocletWriter htmlDocletWriter_;
+    private final RstGeneratorContext docContext_;
 
-    public ClassRstGenerator(TypeElement classDoc, RstConfiguration configuration) {
-        this.classDoc_ = classDoc;
+    public ClassRstGenerator(RstConfigurationImpl configuration, TypeElement typeElement, ClassTree classTree) {
+        this.classDoc_ = Objects.requireNonNull(typeElement);
         this.configuration_ = configuration;
-        this.docContext_ = new HtmlDocletWriter(classDoc, configuration);
+        this.htmlClassWriter_ = new ClassHtmlWriterImpl(configuration.getHtmlConfiguration(), typeElement, classTree);
+        this.htmlDocletWriter_ = new HtmlDocletWriter(htmlClassWriter_);
+        this.docContext_ = new RstGeneratorContextImpl(configuration, htmlDocletWriter_);
     }
 
     @Override
@@ -66,10 +71,11 @@ public class ClassRstGenerator implements Supplier<String> {
                     });
                 })
                 .addChild(new JavaTypeBuilder<>(classDoc_, docContext_).fillImports(imports_).build())
-                .ifTrue( enumConstants.size() > 0, (textBuilder) -> {
+                .ifTrue(enumConstants.size() > 0, (textBuilder) -> {
                     textBuilder.subTitle("Enum Constants");
                     VariableElement[] sortedFieldDocs = enumConstants.stream()
                             .sorted(Comparator.comparing(e -> configuration_.utils.getSimpleName(e)))
+                            .map(it -> (VariableElement) it)
                             .toArray(VariableElement[]::new);
                     for (VariableElement fieldDoc : sortedFieldDocs) {
                         textBuilder.title(configuration_.utils.getSimpleName(fieldDoc), 3)
@@ -103,7 +109,7 @@ public class ClassRstGenerator implements Supplier<String> {
                         && !entry.getKey().startsWith(Object.class.getPackage().getName())
                         && entry.getValue().getEnclosingElement() != null
                         && !entry.getValue().getEnclosingElement().equals(classDoc_.getEnclosingElement())
-                        && !entry.getValue().getEnclosingElement().getSimpleName().isEmpty()
+                        && (entry.getValue().getEnclosingElement().getSimpleName().length() != 0)
                 ))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 

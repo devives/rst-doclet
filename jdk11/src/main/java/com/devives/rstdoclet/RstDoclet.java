@@ -31,7 +31,6 @@ import jdk.javadoc.internal.doclets.toolkit.util.SimpleDocletException;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,11 +41,6 @@ import java.util.SortedSet;
 
 
 public class RstDoclet extends AbstractRstDoclet {
-
-    @Override
-    protected void generateModuleFiles() throws DocletException {
-
-    }
 
     /**
      * {@inheritDoc}
@@ -76,7 +70,6 @@ public class RstDoclet extends AbstractRstDoclet {
      * @throws IOException If any error occurs while creating file or directories.
      */
     private void generatePackagesIndex(final PackageElement[] packages) throws IOException {
-        configuration.reporter.print(Diagnostic.Kind.NOTE, "Generates packages index.");
         File file = Paths.get(configuration.destDirName).resolve("packages.rst").toFile();
         String[] packageNames = Arrays.stream(packages).map(p -> p.getQualifiedName().toString()).toArray(String[]::new);
         new TextFileWriter(file,
@@ -112,7 +105,6 @@ public class RstDoclet extends AbstractRstDoclet {
     private Path generatePackage(final PackageElement packageDoc) {
         try {
             final String name = packageDoc.getQualifiedName().toString();
-            configuration.reporter.print(Diagnostic.Kind.NOTE, "Generates package documentation for " + name);
             if (!name.isEmpty()) {
                 final Path directoryPath = getPackageDirectory(name);
                 if (!Files.exists(directoryPath)) {
@@ -138,19 +130,18 @@ public class RstDoclet extends AbstractRstDoclet {
 
     @Override
     protected void generateClassFiles(SortedSet<TypeElement> typeElems, ClassTree classTree) throws DocletException {
-        for (TypeElement te : typeElems) {
-            if (utils.hasHiddenTag(te) ||
-                    !(configuration.isGeneratedDoc(te) && utils.isIncluded(te))) {
+        for (TypeElement typeElement : typeElems) {
+            if (utils.hasHiddenTag(typeElement) ||
+                    !(configuration.isGeneratedDoc(typeElement) && utils.isIncluded(typeElement))) {
                 continue;
             }
             try {
-                final PackageElement packageDoc = getPackageOfType(te);
+                final PackageElement packageDoc = getPackageOfType(typeElement);
                 final String packageName = packageDoc.getQualifiedName().toString();
                 final Path packageDirectory = getPackageDirectory(packageName);
-                configuration.reporter.print(Diagnostic.Kind.NOTE, "Generates documentation for " + te.getQualifiedName().toString());
-                String fileName = utils.getSimpleName(te).replace(".", "-");
+                String fileName = utils.getSimpleName(typeElement).replace(".", "-");
                 File file = packageDirectory.resolve(fileName + ".rst").toFile();
-                new TextFileWriter(file, new ClassRstGenerator(te, rstConfiguration)).write();
+                new TextFileWriter(file, new ClassRstGenerator(rstConfiguration, typeElement, classTree)).write();
             } catch (IOException e) {
                 throw new SimpleDocletException(e.getMessage(), e);
             } catch (FatalError fe) {

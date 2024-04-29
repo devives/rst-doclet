@@ -21,10 +21,12 @@ import com.devives.rst.Rst;
 import com.devives.rst.builder.RstDocumentBuilder;
 import com.devives.rst.document.RstDocument;
 import com.devives.rst.document.directive.Directive;
-import com.devives.rstdoclet.RstConfiguration;
+import com.devives.rstdoclet.RstConfigurationImpl;
+import com.devives.rstdoclet.html.ClassHtmlWriterImpl;
+import com.devives.rstdoclet.html.HtmlDocletWriter;
 import com.devives.rstdoclet.html2rst.DocUtils;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
 import com.devives.rstdoclet.rst.builder.*;
+import jdk.javadoc.internal.doclets.toolkit.util.ClassTree;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -34,19 +36,21 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-
 public class ClassRstGenerator implements Supplier<String> {
 
     private final TypeElement classDoc_;
-    private final RstConfiguration configuration_;
+    private final RstConfigurationImpl configuration_;
     private final Map<String, TypeElement> imports_ = new HashMap<>();
-    private final HtmlDocletWriter docContext_;
+    private final ClassHtmlWriterImpl htmlClassWriter_;
+    private final HtmlDocletWriter htmlDocletWriter_;
+    private final RstGeneratorContext docContext_;
 
-    public ClassRstGenerator(TypeElement classDoc, RstConfiguration configuration) {
-        this.classDoc_ = classDoc;
+    public ClassRstGenerator(RstConfigurationImpl configuration, TypeElement typeElement, ClassTree classTree) {
+        this.classDoc_ = Objects.requireNonNull(typeElement);
         this.configuration_ = configuration;
-        this.docContext_ = new HtmlDocletWriter(classDoc, configuration.getHtmlConfiguration());
-
+        this.htmlClassWriter_ = new ClassHtmlWriterImpl(configuration.getHtmlConfiguration(), typeElement, classTree);
+        this.htmlDocletWriter_ = new HtmlDocletWriter(htmlClassWriter_);
+        this.docContext_ = new RstGeneratorContextImpl(configuration, htmlDocletWriter_);
     }
 
     @Override

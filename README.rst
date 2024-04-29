@@ -40,7 +40,7 @@ Quick Start
    .. code:: gradle
 
       dependencies {
-          rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.3.0')
+          rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.4.0')
       }
 
    Java 11
@@ -48,7 +48,7 @@ Quick Start
    .. code:: gradle
 
       dependencies {
-          rstDoclet('com.devives:devive-rst-doclet-jdk11-all:0.3.0')
+          rstDoclet('com.devives:devive-rst-doclet-jdk11-all:0.4.0')
       }
 
    Java 17
@@ -56,20 +56,20 @@ Quick Start
    .. code:: gradle
 
       dependencies {
-          rstDoclet('com.devives:devive-rst-doclet-jdk17-all:0.3.0')
+          rstDoclet('com.devives:devive-rst-doclet-jdk17-all:0.4.0')
       }
-#. Register gradle task ``javadoc2rst``depends java version:
+#. Register gradle task ``javadoc4sphinx``depends java version:
 
    Java 8
 
    .. code:: gradle
 
-      tasks.register('javadoc2rst', Javadoc) {
+      tasks.register('javadoc4sphinx', Javadoc) {
           description = 'Generate rst files based on javadoc comments in code.'
           group = 'documentation'
           source = sourceSets.main.allJava
           classpath = configurations.compileClasspath
-          destinationDir = file("$docsDir/javadoc2rst")
+          destinationDir = file("$docsDir/javadoc4sphinx")
           failOnError = true
           options.docletpath = configurations.rstDoclet.files as List
           options.doclet = "com.devives.rstdoclet.RstDoclet"
@@ -83,32 +83,20 @@ Quick Start
    .. code:: gradle
 
       List<String> exportsList = [
-              "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-              '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+              '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',
-              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED',
-              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED',
       ]
 
-      tasks.register('javadoc2rst', Javadoc) {
+      tasks.register('javadoc4sphinx', Javadoc) {
           description = 'Generate rst files based on javadoc comments in code.'
           group = 'documentation'
           source = sourceSets.main.allJava
           classpath = configurations.compileClasspath
-          destinationDir = file("$docsDir/javadoc2rst")
+          destinationDir = file("$docsDir/javadoc4sphinx")
           failOnError = true
           options.docletpath = configurations.rstDoclet.files as List
           options.doclet = "com.devives.rstdoclet.RstDoclet"
@@ -123,36 +111,20 @@ Quick Start
    .. code:: gradle
 
       List<String> exportsList = [
-              "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-              "--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED",
-              '--add-exports=jdk.javadoc/jdk.javadoc.internal=ALL-UNNAMED',
-              '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
-              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclint=ALL-UNNAMED',
+              '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',
-              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED',
-              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED',
-              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED'
       ]
 
-      tasks.register('javadoc2rst', Javadoc) {
+      tasks.register('javadoc4sphinx', Javadoc) {
           description = 'Generate rst files based on javadoc comments in code.'
           group = 'documentation'
           source = sourceSets.main.allJava
           classpath = configurations.compileClasspath
-          destinationDir = file("$docsDir/javadoc2rst")
+          destinationDir = file("$docsDir/javadoc4sphinx")
           options.docletpath = configurations.rstDoclet.files.asType(List)
           options.doclet = "com.devives.rstdoclet.RstDoclet"
           options.encoding = "UTF-8"
@@ -163,8 +135,8 @@ Quick Start
           (options as CoreJavadocOptions).setJFlags(exportsList)
       }
 #. Reload All Gradle Projects.
-#. Execute gradle task ``documentation \ javadoc2rst``.
-#. Find generated files at ``$project.build/docs/javadoc2rst/``.
+#. Execute gradle task ``documentation \ javadoc4sphinx``.
+#. Find generated files at ``$project.build/docs/javadoc4sphinx/``.
 
 Complete example projects
 -------------------------

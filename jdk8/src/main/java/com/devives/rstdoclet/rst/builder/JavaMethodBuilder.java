@@ -18,14 +18,14 @@
 package com.devives.rstdoclet.rst.builder;
 
 
+import com.devives.html2rst.HtmlUtils;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
-import com.devives.rstdoclet.ConfigurationImpl;
-import com.devives.html2rst.HtmlUtils;
-import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Type;
+import com.sun.tools.doclets.formats.html.LinkInfoImpl;
 import com.sun.tools.doclets.internal.toolkit.Content;
 
 import java.util.List;
@@ -35,8 +35,8 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
 
     private final MethodDoc methodDoc_;
 
-    public JavaMethodBuilder(MethodDoc methodDoc, ConfigurationImpl configuration) {
-        super(new Directive.Type("java:method"), methodDoc, configuration);
+    public JavaMethodBuilder(MethodDoc methodDoc, RstGeneratorContext docContext) {
+        super(new Directive.Type("java:method"), methodDoc, docContext);
         methodDoc_ = methodDoc;
     }
 
@@ -51,10 +51,11 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
     }
 
     public String formatMethodTypeParameters(ExecutableMemberDoc methodDoc) {
-        LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.MEMBER_TYPE_PARAMS, methodDoc);
+        LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.getHtmlConfiguration(), LinkInfoImpl.Kind.MEMBER_TYPE_PARAMS, methodDoc);
         linkInfo.linkToSelf = false;
-        Content parameterLinks = docContext_.getTypeParameterLinks(linkInfo);
-        String result = HtmlUtils.unescapeLtRtAmpBSlash(parameterLinks.toString());
+        Content content = docContext_.getHtmlDocletWriter().getTypeParameterLinks(linkInfo);
+        String className = HtmlUtils.removeATags(content.toString());
+        String result = HtmlUtils.unescapeLtRtAmpBSlash(className);
         result = collapseNamespaces(result);
         return result;
     }
@@ -69,9 +70,10 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
         } else if (returnType.asTypeVariable() != null) {
             result = returnType.qualifiedTypeName();
         } else if (returnType.asParameterizedType() != null) {
-            LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.RETURN_TYPE, methodDoc.returnType());
-            Content parameterLinks = docContext_.getLink(linkInfo);
-            result = HtmlUtils.unescapeLtRtAmpBSlash(parameterLinks.toString());
+            LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.getHtmlConfiguration(), LinkInfoImpl.Kind.RETURN_TYPE, methodDoc.returnType());
+            Content content = docContext_.getHtmlDocletWriter().getLink(linkInfo);
+            String className = HtmlUtils.removeATags(content.toString());
+            result = HtmlUtils.unescapeLtRtAmpBSlash(className);
         } else {
             result = returnType.qualifiedTypeName();
         }

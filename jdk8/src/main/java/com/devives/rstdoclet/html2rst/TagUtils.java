@@ -17,27 +17,29 @@
  */
 package com.devives.rstdoclet.html2rst;
 
+import com.devives.html2rst.HtmlUtils;
 import com.devives.rst.builder.BodyBuilders;
 import com.devives.rst.builder.RstElementBuilder;
+import com.devives.rst.document.Paragraph;
 import com.devives.rst.document.inline.InlineElement;
-import com.devives.rst.document.inline.Link;
 import com.devives.rst.util.StringUtils;
-import com.devives.rstdoclet.rst.builder.JavaMemberRefBuilder;
-import com.devives.rstdoclet.rst.builder.JavaPackageRefBuilder;
-import com.devives.rstdoclet.rst.builder.JavaTypeRefBuilder;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.devives.sphinx.rst.Rst4Sphinx;
-import com.devives.sphinx.rst.document.Ref;
 import com.devives.sphinx.rst.document.directive.Directives;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.Tag;
 
 import java.util.Collection;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Objects;
 
 public class TagUtils {
+
+    private final RstGeneratorContext docContext_;
+
+    public TagUtils(RstGeneratorContext docContext) {
+        docContext_ = Objects.requireNonNull(docContext);
+    }
 
     public enum TagName {
         Since,
@@ -50,7 +52,7 @@ public class TagUtils {
     /**
      * @see <a href="https://www.tutorialspoint.com/java/java_documentation.htm">The javadoc Tags</a>
      */
-    public static RstElementBuilder<?, ?, ?> appendTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc, Collection<TagName> tagNames) {
+    public RstElementBuilder<?, ?, ?> appendTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc, Collection<TagName> tagNames) {
         // Tag[] valueTags = doc.tags("@value");
         // Tag[] serialTags = doc.tags("@serial");
         tagNames.forEach(tagName -> {
@@ -75,7 +77,7 @@ public class TagUtils {
         return builder;
     }
 
-    public static RstElementBuilder<?, ?, ?> appendAuthorTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
+    public RstElementBuilder<?, ?, ?> appendAuthorTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
         Tag[] tags = doc.tags("@author");
         return builder.ifTrue(tags.length > 0, () -> {
             for (Tag tag : tags) {
@@ -86,7 +88,7 @@ public class TagUtils {
         });
     }
 
-    public static RstElementBuilder<?, ?, ?> appendSinceTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
+    public RstElementBuilder<?, ?, ?> appendSinceTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
         Tag[] tags = doc.tags("@since");
         return builder.ifTrue(tags.length > 0, () -> {
             for (Tag tag : tags) {
@@ -97,7 +99,7 @@ public class TagUtils {
         });
     }
 
-    public static RstElementBuilder<?, ?, ?> appendVersionTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
+    public RstElementBuilder<?, ?, ?> appendVersionTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
         Tag[] tags = doc.tags("@version");
         return builder.ifTrue(tags.length > 0, () -> {
             for (Tag tag : tags) {
@@ -108,7 +110,7 @@ public class TagUtils {
         });
     }
 
-    public static RstElementBuilder<?, ?, ?> appendDeprecatedTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
+    public RstElementBuilder<?, ?, ?> appendDeprecatedTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
         Tag[] tags = doc.tags("@deprecated");
         return builder.ifTrue(tags.length > 0, () -> {
             for (Tag tag : tags) {
@@ -119,14 +121,14 @@ public class TagUtils {
         });
     }
 
-    public static RstElementBuilder<?, ?, ?> appendSeeTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
+    public RstElementBuilder<?, ?, ?> appendSeeTags(BodyBuilders<?, ?, ?, ?> builder, Doc doc) {
         Tag[] tags = doc.tags("@see");
         return builder.ifTrue(tags.length > 0, () -> {
             builder.directive(Directives.SeeAlso, seeAlsoBuilder -> {
                 seeAlsoBuilder.lineBlock(lineBlockBuilder -> {
                     for (Tag tag : tags) {
                         if (StringUtils.notNullOrEmpty(tag.text())) {
-                            lineBlockBuilder.item(ib -> ib.addChild(TagUtils.seeTagToJavaRef((SeeTag) tag)));
+                            lineBlockBuilder.item(ib -> ib.addChild(seeTagToJavaRef(doc, (SeeTag) tag)));
                         }
                     }
                 });
@@ -134,62 +136,23 @@ public class TagUtils {
         });
     }
 
-    public static InlineElement seeTagToJavaRef(SeeTag see) {
-        String text = see.text().trim();
-        String label = see.label().trim();
-        if (text.contains("<a")) {
-            return hrefToLink(text);
-        } else if (text.startsWith("\"")) {
-            return Rst4Sphinx.elements().text("\\ " + StringUtils.dequote(text, '\"') + "\\ ");
-        } else if (see.referencedMember() != null) {
-            return (label.isEmpty())
-                    ? new JavaMemberRefBuilder<>(see.referencedMember()).build()
-                    : new JavaMemberRefBuilder<>(see.referencedMember()).setText(label).build();
-        } else if (see.referencedClass() != null) {
-            return (label.isEmpty())
-                    ? new JavaTypeRefBuilder<>(see.referencedClass()).build()
-                    : new JavaTypeRefBuilder<>(see.referencedClass()).setText(label).build();
-        } else if (see.referencedPackage() != null) {
-            return (label.isEmpty())
-                    ? new JavaPackageRefBuilder<>(see.referencedPackage()).build()
-                    : new JavaPackageRefBuilder<>(see.referencedPackage()).setText(label).build();
+    public InlineElement seeTagToJavaRef(Doc doc, SeeTag see) {
+        String seeText = docContext_.getHtmlDocletWriter().replaceDocRootDir(see.text());
+        InlineElement result;
+        if (seeText.startsWith("<")) {
+            result = HtmlUtils.hrefToLink(seeText);
+        } else if (seeText.startsWith("\"")) {
+            result = Rst4Sphinx.elements().text("\\ " + StringUtils.dequote(seeText, '\"') + "\\ ");
         } else {
-            return Rst4Sphinx.elements().text("\\ " + text + "\\ ");
+            result = new CommentBuilder(docContext_, doc, new Tag[]{see}).buildBody().stream()
+                    .filter(Paragraph.class::isInstance).findFirst()
+                    .map(Paragraph.class::cast).orElse(Rst4Sphinx.elements().paragraph())
+                    .getChildren().stream().findFirst().orElse(Rst4Sphinx.elements().text(""));
+
+            // InlineElement result = docContext_.getHtmlDocletWriter().seeTagToContent(element, holderTag, see);
         }
-    }
-
-    /**
-     * <a href="http://google.ru"/>
-     * <a href="http://google.ru"></a>
-     * <a href="http://google.ru">Google</a>
-     */
-    private static final Pattern PATTERN_A_HREF = Pattern.compile("href\\s*=\\s*\\\"(.*?)\\\"");
-    private static final Pattern PATTERN_A_TEXT = Pattern.compile("<\\s*a\\s+.*?>(.*?)</\\s*a\\s*>");
-
-    /**
-     * @param a "<a href="url">Text</a>" tag.
-     * @return Instance of {@link Link}
-     */
-    public static InlineElement hrefToLink(String a) {
-        Matcher hrefMatcher = PATTERN_A_HREF.matcher(a);
-        Matcher textMatcher = PATTERN_A_TEXT.matcher(a);
-
-        String href = hrefMatcher.find() ? hrefMatcher.group(1) : a;
-        String text = textMatcher.find() ? textMatcher.group(1) : null;
-
-        String relativeLinkLowerCase = href.toLowerCase(Locale.US);
-        if (relativeLinkLowerCase.startsWith("mailto:") ||
-                relativeLinkLowerCase.startsWith("http:") ||
-                relativeLinkLowerCase.startsWith("https:") ||
-                relativeLinkLowerCase.startsWith("file:") ||
-                relativeLinkLowerCase.startsWith("#") ||
-                relativeLinkLowerCase.contains(".html")) {
-            return new Link(href, StringUtils.findFirstNotNullOrEmpty(text, href));
-        } else {
-            return new Ref(href, StringUtils.findFirstNotNullOrEmpty(text, href));
-        }
+        return result;
 
     }
-
 
 }

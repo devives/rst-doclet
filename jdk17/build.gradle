@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.devives'
 archivesBaseName = "devive-rst-doclet-jdk17"
-version = '0.3.0'
+version = '0.4.0'
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -40,6 +40,7 @@ dependencies {
     //compileOnly project(path: ':rst-document-for-sphinx')
     compileOnly project(path: ':html2rst')
     compileOnly project(path: ':javasphinx')
+    compileOnly project(path: ':jdkxx')
     compileOnly 'org.jsoup:jsoup:1.15.3'
 
     rstDoclet project(path: ':jdk17')
@@ -50,6 +51,7 @@ dependencies {
     //testImplementation project(path: ':rst-document-for-sphinx')
     testImplementation project(path: ':html2rst')
     testImplementation project(path: ':javasphinx')
+    testImplementation project(path: ':jdkxx')
     testImplementation 'org.jsoup:jsoup:1.15.3'
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -116,7 +118,6 @@ sourcesJar {
 license {
     header project.file('./../codequality/HEADER')
     strictCheck true
-    exclude("**/com/devives/rstdoclet/html2rst/jdkloans/**")
 }
 
 publishing {
@@ -175,42 +176,28 @@ signing {
 
 
 List<String> exportsList = [
-        "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
         "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.doclint=ALL-UNNAMED",
-        '--add-exports=jdk.javadoc/jdk.javadoc.internal=ALL-UNNAMED',
-        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
-        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclint=ALL-UNNAMED',
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',
-        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED',
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED',
-        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED',
-        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util.links=ALL-UNNAMED'
+]
+
+List<String> testExportsList = [
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
 ]
 
 List<String> opensList = [
-//        "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED",
-//        "--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED"
 ]
 
 test {
     useJUnitPlatform()
-    jvmArgs += exportsList + opensList
+    jvmArgs += exportsList + testExportsList + opensList
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += exportsList
+    options.compilerArgs += exportsList + testExportsList
 }
 
 tasks.withType(Javadoc).configureEach {
@@ -219,12 +206,12 @@ tasks.withType(Javadoc).configureEach {
     }
 }
 
-tasks.register('javadoc2rst', Javadoc) {
+tasks.register('javadoc4sphinx', Javadoc) {
     description = 'Generate rst files based on javadoc comments in code.'
     group = 'documentation'
     source = sourceSets.main.allJava
     classpath = configurations.compileClasspath
-    destinationDir = file("$docsDir/javadoc2rst")
+    destinationDir = file("$docsDir/javadoc4sphinx")
     failOnError = true
     options.docletpath = configurations.rstDoclet.files as List
     options.doclet = "com.devives.rstdoclet.RstDoclet"

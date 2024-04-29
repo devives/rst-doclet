@@ -48,11 +48,6 @@ public class RstOptions {
     private String docTitle = "";
 
     /**
-     * Argument for command-line option {@code -Xdocrootparent}.
-     */
-    private String docrootParent = "";
-
-    /**
      * Argument for hidden command-line option {@code --dump-on-error}.
      */
     private boolean dumpOnError = false;
@@ -88,10 +83,6 @@ public class RstOptions {
 
     public String docTitle() {
         return docTitle;
-    }
-
-    public String docrootParent() {
-        return docrootParent;
     }
 
     private class LocalBaseOptions extends jdk.javadoc.internal.doclets.toolkit.BaseOptions {
@@ -148,14 +139,6 @@ public class RstOptions {
                         public boolean process(String opt, List<String> args) {
                             boolean result = super.process(opt, args);
                             docTitle = args.get(0);
-                            return result;
-                        }
-                    },
-                    new OverrideOption(resources, superHtmlOptions.get("-Xdocrootparent")) {
-                        @Override
-                        public boolean process(String opt, List<String> args) {
-                            boolean result = super.process(opt, args);
-                            docrootParent = args.get(0);
                             return result;
                         }
                     },
@@ -263,7 +246,7 @@ public class RstOptions {
 //                "-Xdoclint",
 //                "-Xdoclint/package:",
 //                "-Xdoclint:",
-//                "-Xdocrootparent",
+                "-Xdocrootparent",
 //                "-bottom",
                 "-charset"
 //                "-doctitle",

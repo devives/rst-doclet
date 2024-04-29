@@ -17,9 +17,16 @@
  */
 package com.devives.html2rst;
 
+import com.devives.rst.document.inline.InlineElement;
+import com.devives.rst.document.inline.Link;
+import com.devives.rst.document.inline.Role;
 import com.devives.rst.util.StringUtils;
+import com.devives.sphinx.rst.Rst4Sphinx;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -118,8 +125,40 @@ public abstract class HtmlUtils {
                 .collect(Collectors.joining());
     }
 
+//    private static DocumentBuilder builder = null;
+//
+//    private static DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+//        if (builder == null) {
+//            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+//        }
+//        return builder;
+//    }
+
+    public static org.jsoup.nodes.Element parseAnchorTag(String anchorHtmlTag) {
+        try {
+            return (Element) Jsoup.parseBodyFragment(anchorHtmlTag).body().childNode(0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+//    public static Element parseAnchorTag(String anchorHtmlTag) {
+//        try {
+//            //Document document = getDocumentBuilder().parse(new ByteArrayInputStream(anchorHtmlTag.getBytes(StandardCharsets.UTF_8)));
+//            return (Element) document.getFirstChild();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
     private static final Pattern unescapePattern = Pattern.compile("&#(d?);");
 
+    /**
+     * Преобразует Unicode-последовательности в текст.
+     *
+     * @param htmlText html-текст с unicode-последовательностями.
+     * @return Строка без unicode-последовательностей.
+     */
     public String unescapeHTML(String htmlText) {
         Matcher matcher = unescapePattern.matcher(htmlText);
         HashMap<String, String> map = new HashMap<>();
@@ -153,6 +192,20 @@ public abstract class HtmlUtils {
         // return A_TAG_PATTERN.matcher(text).replaceAll((m) -> m.group(1));
     }
 
+    private static final Pattern CODE_TAG_PATTERN = Pattern.compile("<code>([\\w\\W\\s\\n]+?)</code>");
+    //private static final Pattern CODE_TAG_PATTERN = Pattern.compile("&lt;code&gt;(.+?)&lt;/code&gt;");
+    public static String removeCodeTags(String text) {
+        Matcher m = CODE_TAG_PATTERN.matcher(text);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(sb, m.group(1));
+        }
+        m.appendTail(sb);
+        return sb.toString();
+        // java11
+        // return CODE_TAG_PATTERN.matcher(text).replaceAll((m) -> m.group(1));
+    }
+
     public static String extractAText(String text) {
         return A_TAG_PATTERN.matcher(text).group(1);
     }
@@ -164,4 +217,49 @@ public abstract class HtmlUtils {
                 ? matcher.group(1) + matcher.group(2) + matcher.group(3)
                 : getter.get();
     }
+
+
+    /**
+     * <a href="http://google.ru"/>
+     * <a href="http://google.ru"></a>
+     * <a href="http://google.ru">Google</a>
+     */
+    private static final Pattern PATTERN_A_HREF = Pattern.compile("href\\s*=\\s*\\\"(.*?)\\\"");
+    private static final Pattern PATTERN_A_TEXT = Pattern.compile("<\\s*a\\s+.*?>(.*?)</\\s*a\\s*>");
+
+    /**
+     * @param a "<a href="url">Text</a>" tag.
+     * @return Instance of {@link Link}
+     */
+    public static InlineElement hrefToLink(String a) {
+        Matcher hrefMatcher = PATTERN_A_HREF.matcher(a);
+        Matcher textMatcher = PATTERN_A_TEXT.matcher(a);
+
+        String href = hrefMatcher.find() ? hrefMatcher.group(1) : a;
+        String text = textMatcher.find() ? textMatcher.group(1) : null;
+
+        return hrefToLink(href, text);
+    }
+
+    public static InlineElement hrefToLink(HtmlTag htmlTag) {
+        String href = htmlTag.getAttributes().get("href");
+        String text = htmlTag.getText();
+        return hrefToLink(href, text);
+    }
+
+    public static InlineElement hrefToLink(String href, String text) {
+        String relativeLinkLowerCase = href.toLowerCase(Locale.US);
+        if (relativeLinkLowerCase.startsWith("mailto:") ||
+                relativeLinkLowerCase.startsWith("http:") ||
+                relativeLinkLowerCase.startsWith("https:") ||
+                relativeLinkLowerCase.startsWith("file:") ||
+                relativeLinkLowerCase.contains(".html")) {
+            return Rst4Sphinx.elements().anonymousLink(href, StringUtils.findFirstNotNullOrEmpty(text, href));
+        } else if (relativeLinkLowerCase.startsWith("#")) {
+            return Rst4Sphinx.elements().link(href.substring(1), StringUtils.findFirstNotNullOrEmpty(text, href.substring(1)));
+        } else {
+            return new Role("ref", href, StringUtils.findFirstNotNullOrEmpty(text, href));
+        }
+    }
+
 }

@@ -8,11 +8,8 @@ Welcome to Example's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   com/devives/samples/package-index.rst
-   com/devives/samples/inners/package-index.rst
-   com/devives/samples/vehicles/package-index.rst
+   javadoc/packages.rst
 
 
 Indices and tables

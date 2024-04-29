@@ -24,14 +24,13 @@ import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.builder.directive.DirectiveBuilderAbst;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rst.document.inline.Text;
-import com.devives.rstdoclet.ConfigurationImpl;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
 import com.devives.rstdoclet.html2rst.ImportsCollector;
 import com.devives.rstdoclet.html2rst.TagUtils;
-import com.devives.rstdoclet.html2rst.jdkloans.DocContext;
-import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.devives.sphinx.rst.document.IncludeDocument;
 import com.sun.javadoc.ClassDoc;
+import com.sun.tools.doclets.formats.html.LinkInfoImpl;
 import com.sun.tools.doclets.internal.toolkit.Content;
 
 import java.util.Arrays;
@@ -44,15 +43,13 @@ import static com.devives.rst.util.Constants.SPACE;
 
 public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends DirectiveBuilderAbst<PARENT, Directive, JavaTypeBuilder<PARENT>> {
     private final ClassDoc classDoc_;
-    private final ConfigurationImpl configuration_;
-    private final DocContext docContext_;
+    private final RstGeneratorContext docContext_;
     private final Map<String, ClassDoc> imports_;
 
-    public JavaTypeBuilder(ClassDoc classDoc, ConfigurationImpl configuration) {
+    public JavaTypeBuilder(ClassDoc classDoc, RstGeneratorContext docContext) {
         super(new Directive.Type("java:type"));
         classDoc_ = Objects.requireNonNull(classDoc);
-        configuration_ = Objects.requireNonNull(configuration);
-        docContext_ = new DocContext(classDoc_, configuration_);
+        docContext_ = docContext;
         imports_ = new ImportsCollector().collect(classDoc_, true).getImportsMap();
     }
 
@@ -79,30 +76,31 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
         }
         if (classDoc_.tags().length > 0) {
             BlockQuoteBuilder<?> bodyBuilder = new BlockQuoteBuilderImpl<>();
-            TagUtils.appendTags(bodyBuilder, classDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
+            new TagUtils(docContext_).appendTags(bodyBuilder, classDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
             bodyBuilder.build().getChildren().forEach(directive.getChildren()::add);
         }
         if (classDoc_.inlineTags().length > 0) {
             IncludeDocument includeDocument = new IncludeDocument();
             includeDocument.getChildren().add(new CommentBuilder(
-                    classDoc_,
-                    classDoc_,
-                    configuration_).build());
+                    docContext_,
+                    classDoc_
+                    ).build());
             directive.getChildren().add(includeDocument);
         }
         if (classDoc_.tags().length > 0) {
             BlockQuoteBuilder<?> bodyBuilder = new BlockQuoteBuilderImpl<>();
-            TagUtils.appendTags(bodyBuilder, classDoc_, Arrays.asList(TagUtils.TagName.Author, TagUtils.TagName.See));
+            new TagUtils(docContext_).appendTags(bodyBuilder, classDoc_, Arrays.asList(TagUtils.TagName.Author, TagUtils.TagName.See));
             bodyBuilder.build().getChildren().forEach(directive.getChildren()::add);
         }
     }
 
     private String formatTypeName(ClassDoc classDoc) {
         String result = classDoc_.simpleTypeName();
-        LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.CLASS_SIGNATURE, classDoc);
+        LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.getHtmlConfiguration(), LinkInfoImpl.Kind.CLASS_SIGNATURE, classDoc);
         linkInfo.linkToSelf = false;
-        Content content = docContext_.getTypeParameterLinks(linkInfo);
-        result += HtmlUtils.unescapeLtRtAmpBSlash(content.toString());
+        Content content = docContext_.getHtmlDocletWriter().getTypeParameterLinks(linkInfo);
+        String className = HtmlUtils.removeATags(content.toString());
+        result += HtmlUtils.unescapeLtRtAmpBSlash(className);
         result = collapseNamespaces(result);
         return result;
     }
@@ -114,10 +112,11 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                 && classDoc.superclass() != null
                 && !classDoc.superclass().qualifiedTypeName().equals(Object.class.getCanonicalName())) {
             result += "extends ";
-            LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.CLASS_SIGNATURE_PARENT_NAME, classDoc.superclassType());
+            LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.getHtmlConfiguration(), LinkInfoImpl.Kind.CLASS_SIGNATURE_PARENT_NAME, classDoc.superclassType());
             linkInfo.linkToSelf = false;
-            Content content = docContext_.getLink(linkInfo);
-            result += HtmlUtils.unescapeLtRtAmpBSlash(content.toString());
+            Content content = docContext_.getHtmlDocletWriter().getLink(linkInfo);
+            String className = HtmlUtils.removeATags(content.toString());
+            result += HtmlUtils.unescapeLtRtAmpBSlash(className);
             result = collapseNamespaces(result);
         }
         return result;
@@ -130,9 +129,10 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                 result += classDoc.isInterface() ? "extends " : "implements ";
                 result += Arrays.stream(classDoc.interfaceTypes())
                         .map(interfaceType -> {
-                            LinkInfoImpl linkInfo = new LinkInfoImpl(configuration_, LinkInfoImpl.Kind.IMPLEMENTED_INTERFACES, interfaceType);
-                            Content content = docContext_.getLink(linkInfo);
-                            return collapseNamespaces(HtmlUtils.unescapeLtRtAmpBSlash(content.toString()));
+                            LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.getHtmlConfiguration(), LinkInfoImpl.Kind.IMPLEMENTED_INTERFACES, interfaceType);
+                            Content content = docContext_.getHtmlDocletWriter().getLink(linkInfo);
+                            String className = HtmlUtils.removeATags(content.toString());
+                            return collapseNamespaces(HtmlUtils.unescapeLtRtAmpBSlash(className));
 
                         })
                         .collect(Collectors.joining(", "));

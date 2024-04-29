@@ -24,14 +24,14 @@ import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.builder.directive.DirectiveBuilderAbst;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rst.document.inline.Text;
-import com.devives.rstdoclet.RstConfiguration;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
 import com.devives.rstdoclet.html2rst.ImportsCollector;
 import com.devives.rstdoclet.html2rst.TagUtils;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
-import com.devives.rstdoclet.html2rst.jdkloans.LinkInfoImpl;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.devives.sphinx.rst.document.IncludeDocument;
 import com.sun.source.doctree.DocTree;
+import jdk.javadoc.internal.doclets.formats.html.LinkInfoImpl;
+import jdk.javadoc.internal.doclets.toolkit.Content;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -48,14 +48,14 @@ import static com.devives.rst.util.Constants.SPACE;
 
 public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends DirectiveBuilderAbst<PARENT, Directive, JavaTypeBuilder<PARENT>> {
     private final TypeElement classDoc_;
-    private final HtmlDocletWriter docContext_;
+    private final RstGeneratorContext docContext_;
     private final Map<String, TypeElement> imports_;
 
-    public JavaTypeBuilder(TypeElement classDoc, HtmlDocletWriter docContext) {
+    public JavaTypeBuilder(TypeElement classDoc, RstGeneratorContext docContext) {
         super(new Directive.Type("java:type"));
         classDoc_ = Objects.requireNonNull(classDoc);
         docContext_ = Objects.requireNonNull(docContext);
-        imports_ = new ImportsCollector(docContext_.configuration.utils).collect(classDoc_, true).getImportsMap();
+        imports_ = new ImportsCollector(docContext_.getHtmlConfiguration().utils).collect(classDoc_, true).getImportsMap();
     }
 
     public JavaTypeBuilder<PARENT> fillImports(Map<String, TypeElement> imports) {
@@ -77,15 +77,15 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                         .map(Text::new)
                         .collect(Collectors.toList()));
         if (classDoc_.getNestingKind() == NestingKind.MEMBER) {
-            directive.getOptions().put("outertype", docContext_.configuration.utils.getSimpleName(docContext_.configuration.utils.getEnclosingTypeElement(classDoc_)));
+            directive.getOptions().put("outertype", docContext_.getHtmlConfiguration().utils.getSimpleName(docContext_.getHtmlConfiguration().utils.getEnclosingTypeElement(classDoc_)));
         }
-        List<? extends DocTree> tags = docContext_.configuration.utils.getBlockTags(classDoc_);
+        List<? extends DocTree> tags = docContext_.getHtmlConfiguration().utils.getBlockTags(classDoc_);
         if (!tags.isEmpty()) {
             BlockQuoteBuilder<?> bodyBuilder = new BlockQuoteBuilderImpl<>();
             new TagUtils(docContext_).appendTags(bodyBuilder, classDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
             bodyBuilder.build().getChildren().forEach(directive.getChildren()::add);
         }
-        List<? extends DocTree> inlineTags = docContext_.configuration.utils.getBody(classDoc_);
+        List<? extends DocTree> inlineTags = docContext_.getHtmlConfiguration().utils.getBody(classDoc_);
         if (!inlineTags.isEmpty()) {
             IncludeDocument includeDocument = new IncludeDocument();
             includeDocument.getChildren().add(new CommentBuilder(
@@ -102,10 +102,10 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
 
     private String formatTypeName(TypeElement classDoc) {
         String result = classDoc_.getSimpleName().toString();
-        LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.configuration, LinkInfoImpl.Kind.CLASS_SIGNATURE, classDoc);
+        LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.getHtmlConfiguration(), LinkInfoImpl.Kind.CLASS_SIGNATURE, classDoc);
         linkInfo.linkToSelf = false;
-        String content = docContext_.getTypeParameterLinks(linkInfo).toString();
-        String className =  HtmlUtils.removeATags(content);
+        Content content = docContext_.getHtmlDocletWriter().getTypeParameterLinks(linkInfo);
+        String className = HtmlUtils.removeATags(content.toString());
         result += HtmlUtils.unescapeLtRtAmpBSlash(className);
         result = collapseNamespaces(result);
         return result;
@@ -119,10 +119,10 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                 && classDoc.getSuperclass() != null
                 && !classDoc.getSuperclass().toString().equals(Object.class.getCanonicalName())) {
             result += "extends ";
-            LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.configuration, LinkInfoImpl.Kind.CLASS_SIGNATURE_PARENT_NAME, classDoc.getSuperclass());
+            LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.getHtmlConfiguration(), LinkInfoImpl.Kind.CLASS_SIGNATURE_PARENT_NAME, classDoc.getSuperclass());
             linkInfo.linkToSelf = false;
-            String content = docContext_.getLink(linkInfo).toString();
-            String className = HtmlUtils.extractATextOrElse(content, () -> content);
+            Content content = docContext_.getHtmlDocletWriter().getLink(linkInfo);
+            String className = HtmlUtils.removeATags(content.toString());
             result += HtmlUtils.unescapeLtRtAmpBSlash(className);
             result = collapseNamespaces(result);
         }
@@ -136,11 +136,10 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                 result += classDoc.getKind().isInterface() ? "extends " : "implements ";
                 result += classDoc.getInterfaces().stream()
                         .map(interfaceDoc -> {
-                            LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.configuration, LinkInfoImpl.Kind.IMPLEMENTED_INTERFACES, interfaceDoc);
-                            String content = docContext_.getLink(linkInfo).toString();
-                            String className = HtmlUtils.extractATextOrElse(content, () -> content);
+                            LinkInfoImpl linkInfo = new LinkInfoImpl(docContext_.getHtmlConfiguration(), LinkInfoImpl.Kind.IMPLEMENTED_INTERFACES, interfaceDoc);
+                            Content content = docContext_.getHtmlDocletWriter().getLink(linkInfo);
+                            String className = HtmlUtils.removeATags(content.toString());
                             return collapseNamespaces(HtmlUtils.unescapeLtRtAmpBSlash(className));
-
                         })
                         .collect(Collectors.joining(", "));
             }

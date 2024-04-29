@@ -17,26 +17,24 @@
  */
 package com.devives.rstdoclet.rst.builder;
 
-import com.devives.rst.Rst;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.builder.directive.DirectiveBuilderAbst;
 import com.devives.rst.document.directive.Directive;
-import com.devives.rstdoclet.ConfigurationImpl;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.sun.javadoc.PackageDoc;
 
-import java.util.Collections;
 import java.util.Objects;
 
 public class JavaPackageBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
         extends DirectiveBuilderAbst<PARENT, Directive, JavaPackageBuilder<PARENT>> {
 
     private final PackageDoc packageDoc_;
-    private final ConfigurationImpl configuration_;
+    private final RstGeneratorContext docContext_;
 
-    public JavaPackageBuilder(PackageDoc packageDoc, ConfigurationImpl configuration) {
+    public JavaPackageBuilder(PackageDoc packageDoc, RstGeneratorContext docContext) {
         super(new Directive.Type("java:package"));
         packageDoc_ = Objects.requireNonNull(packageDoc);
-        configuration_ = Objects.requireNonNull(configuration);
+        docContext_ = Objects.requireNonNull(docContext);
     }
 
     public JavaPackageBuilder<PARENT> setNoIndex(boolean noIndex) {

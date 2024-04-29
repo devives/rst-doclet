@@ -33,6 +33,7 @@ import com.devives.rst.document.RstElement;
 import com.devives.rst.document.RstNode;
 import com.devives.rst.util.StringUtils;
 
+import java.util.Map;
 import java.util.Stack;
 
 import static com.devives.html2rst.HtmlUtils.escapeUnderlines;
@@ -197,21 +198,35 @@ public class RstDocumentWriter implements HtmlVisitor {
     }
 
     @Override
-    public void visitAnchor(String name, String label) {
-        boolean isInParagraph = isIn(ParagraphBuilder.class);
-        InlineBuilders<?, ?, ?, ?> inlineBuilder = getTextBuilder();
-        if (isInParagraph) {
-            getBodyBuilder(inlineBuilder).target(name);
-            appendText(inlineBuilder, label);
-        } else {
-            getBodyBuilder(inlineBuilder).target(name);
-            appendText(inlineBuilder, label);
+    public void visitAnchor(Map<String, String> attributes, String text) {
+        if (attributes.containsKey("id")) {
+            // "id" соответствует стандарту html5
+            String id = attributes.get("id");
+            doVisitAnchor(id, attributes, text);
+        } else if (attributes.containsKey("name")) {
+            // "name" соответствует стандарту html4
+            String name = attributes.get("name");
+            doVisitAnchor(name, attributes, text);
+        } else if (attributes.containsKey("href")) {
+            String target = attributes.get("href");
+            doVisitLink(target, attributes, text);
         }
     }
 
-    @Override
-    public void visitLink(String href, String label) {
-        getTextBuilder().anonymousLink(href, label);
+    protected void doVisitAnchor(String id, Map<String, String> attributes, String text) {
+        boolean isInParagraph = isIn(ParagraphBuilder.class);
+        InlineBuilders<?, ?, ?, ?> inlineBuilder = getTextBuilder();
+        if (isInParagraph) {
+            getBodyBuilder(inlineBuilder).target(id);
+            appendText(inlineBuilder, text);
+        } else {
+            getBodyBuilder(inlineBuilder).target(id);
+            appendText(inlineBuilder, text);
+        }
+    }
+
+    protected void doVisitLink(String href, Map<String, String> attributes, String text) {
+        getTextBuilder().anonymousLink(href, text);
     }
 
     @Override

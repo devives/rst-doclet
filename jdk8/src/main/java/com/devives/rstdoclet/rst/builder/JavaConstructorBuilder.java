@@ -20,7 +20,7 @@ package com.devives.rstdoclet.rst.builder;
 
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
-import com.devives.rstdoclet.ConfigurationImpl;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.sun.javadoc.ConstructorDoc;
 
 import java.util.List;
@@ -29,8 +29,8 @@ public class JavaConstructorBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
         extends JavaExecutableBuilderAbst<PARENT, JavaConstructorBuilder<PARENT>> {
     private final ConstructorDoc constructorDoc_;
 
-    public JavaConstructorBuilder(ConstructorDoc constructorDoc, ConfigurationImpl configuration) {
-        super(new Directive.Type("java:constructor"), constructorDoc, configuration);
+    public JavaConstructorBuilder(ConstructorDoc constructorDoc, RstGeneratorContext docContext) {
+        super(new Directive.Type("java:constructor"), constructorDoc, docContext);
         constructorDoc_ = constructorDoc;
     }
 

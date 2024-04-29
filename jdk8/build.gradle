@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.devives'
 archivesBaseName = "devive-rst-doclet-jdk8"
-version = '0.3.0'
+version = '0.4.0'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -181,12 +181,12 @@ test {
 }
 
 
-tasks.register('javadoc2rst', Javadoc) {
+tasks.register('javadoc4sphinx', Javadoc) {
     description = 'Generate rst files based on javadoc comments in code.'
     group = 'documentation'
     source = sourceSets.main.allJava
     classpath = configurations.compileClasspath
-    destinationDir = file("$docsDir/javadoc2rst")
+    destinationDir = file("$docsDir/javadoc4sphinx")
     failOnError = true
     options.docletpath = configurations.rstDoclet.files as List
     options.doclet = "com.devives.rstdoclet.RstDoclet"

@@ -20,7 +20,7 @@ package com.devives.rstdoclet.rst.builder;
 
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 
 import javax.lang.model.element.ExecutableElement;
 import java.util.List;
@@ -29,7 +29,7 @@ public class JavaConstructorBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
         extends JavaExecutableBuilderAbst<PARENT, JavaConstructorBuilder<PARENT>> {
     private final ExecutableElement constructorDoc_;
 
-    public JavaConstructorBuilder(ExecutableElement constructorDoc, HtmlDocletWriter docContext) {
+    public JavaConstructorBuilder(ExecutableElement constructorDoc, RstGeneratorContext docContext) {
         super(new Directive.Type("java:constructor"), constructorDoc, docContext);
         constructorDoc_ = constructorDoc;
     }

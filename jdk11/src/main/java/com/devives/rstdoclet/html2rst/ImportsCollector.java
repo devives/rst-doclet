@@ -136,35 +136,26 @@ public class ImportsCollector {
     }
 
     public ImportsCollector collect(TypeElement typeElement, boolean withSuperClasses) {
-//        String fullyQualifiedName = typeElement.getQualifiedName().toString();
-//        if (processingNames_.contains(fullyQualifiedName)) {
-//            // Prevent stack overflow on `java.lang.Enum<E extends java.lang.Enum<E>>`
-//            return this;
-//        }
-//        processingNames_.add(fullyQualifiedName);
-//        try {
-            map_.put(typeElement.getQualifiedName().toString(), typeElement);
-            for (AnnotationMirror pAnnotationMirror : typeElement.getAnnotationMirrors()) {
-                collect(pAnnotationMirror.getAnnotationType());
-            }
+        map_.put(typeElement.getQualifiedName().toString(), typeElement);
+        for (AnnotationMirror pAnnotationMirror : typeElement.getAnnotationMirrors()) {
+            collect(pAnnotationMirror.getAnnotationType());
+        }
 
-            List<? extends TypeParameterElement> typeParameters = typeElement.getTypeParameters();
+        List<? extends TypeParameterElement> typeParameters = typeElement.getTypeParameters();
 
-            for (TypeParameterElement pType : typeParameters) {
-                utils_.getBounds(pType).forEach(this::collect);
-            }
+        for (TypeParameterElement pType : typeParameters) {
+            utils_.getBounds(pType).forEach(this::collect);
+        }
 
-            if (withSuperClasses) {
-                for (TypeMirror superTypeMirror : typeElement.getInterfaces()) {
-                    collect(superTypeMirror);
-                }
-                if (typeElement.getSuperclass() != null) {
-                    collect(typeElement.getSuperclass());
-                }
+        if (withSuperClasses) {
+            for (TypeMirror superTypeMirror : typeElement.getInterfaces()) {
+                collect(superTypeMirror);
             }
-//        } finally {
-//            processingNames_.remove(fullyQualifiedName);
-//        }
+            if (typeElement.getSuperclass() != null) {
+                collect(typeElement.getSuperclass());
+            }
+        }
+
         return this;
     }
 

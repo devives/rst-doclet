@@ -21,7 +21,7 @@ import com.devives.rst.builder.BlockQuoteBuilder;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rstdoclet.html2rst.TagUtils;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.sun.source.doctree.DocTree;
 
 import javax.lang.model.element.Element;
@@ -34,7 +34,7 @@ public class JavaFieldBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
 
     private final VariableElement variableElement_;
 
-    public JavaFieldBuilder(VariableElement variableElement, HtmlDocletWriter docContext) {
+    public JavaFieldBuilder(VariableElement variableElement, RstGeneratorContext docContext) {
         super(new Directive.Type("java:field"), variableElement, docContext);
         this.variableElement_ = variableElement;
     }
@@ -50,7 +50,7 @@ public class JavaFieldBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
     @Override
     protected void fillElements(BlockQuoteBuilder<?> bodyBuilder) {
         super.fillElements(bodyBuilder);
-        List<? extends DocTree> tags = docContext_.configuration.utils.getBlockTags(variableElement_);
+        List<? extends DocTree> tags = docContext_.getHtmlConfiguration().utils.getBlockTags(variableElement_);
         if (tags.size() > 0) {
             new TagUtils(docContext_).appendTags(bodyBuilder, variableElement_, Arrays.asList(TagUtils.TagName.Author, TagUtils.TagName.See));
         }

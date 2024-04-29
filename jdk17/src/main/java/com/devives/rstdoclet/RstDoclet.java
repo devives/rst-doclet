@@ -31,7 +31,6 @@ import jdk.javadoc.internal.doclets.toolkit.util.SimpleDocletException;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -51,13 +50,7 @@ import java.util.SortedSet;
 public final class RstDoclet extends AbstractDoclet {
 
     @Override
-    protected void generateModuleFiles() throws DocletException {
-
-    }
-
-    @Override
     protected void generatePackageFiles(ClassTree classtree) throws DocletException {
-        RstOptions options = configuration.getOptions();
         HtmlOptions htmlOptions = htmlConfiguration.getOptions();
         // if -nodeprecated option is set and the package is marked as
         // deprecated, do not generate the package-summary.html, package-frame.html
@@ -83,7 +76,6 @@ public final class RstDoclet extends AbstractDoclet {
      * @throws IOException If any error occurs while creating file or directories.
      */
     private void generatePackagesIndex(final PackageElement[] packages) throws IOException {
-        htmlConfiguration.reporter.print(Diagnostic.Kind.NOTE, "Generates packages index.");
         File file = Paths.get(configuration.getOptions().destDirName()).resolve("packages.rst").toFile();
         String[] packageNames = Arrays.stream(packages).map(p -> p.getQualifiedName().toString()).toArray(String[]::new);
         new TextFileWriter(file,
@@ -120,7 +112,6 @@ public final class RstDoclet extends AbstractDoclet {
     private Path generatePackage(final PackageElement packageDoc) {
         try {
             final String name = packageDoc.getQualifiedName().toString();
-            htmlConfiguration.reporter.print(Diagnostic.Kind.NOTE, "Generates package documentation for " + name);
             if (!name.isEmpty()) {
                 final Path directoryPath = getPackageDirectory(name);
                 if (!Files.exists(directoryPath)) {
@@ -155,10 +146,9 @@ public final class RstDoclet extends AbstractDoclet {
                 final PackageElement packageDoc = getPackageOfType(te);
                 final String packageName = packageDoc.getQualifiedName().toString();
                 final Path packageDirectory = getPackageDirectory(packageName);
-                htmlConfiguration.reporter.print(Diagnostic.Kind.NOTE, "Generates documentation for " + te.getQualifiedName().toString());
                 String fileName = utils.getSimpleName(te).replace(".", "-");
                 File file = packageDirectory.resolve(fileName + ".rst").toFile();
-                new TextFileWriter(file, new ClassRstGenerator(te, configuration)).write();
+                new TextFileWriter(file, new ClassRstGenerator(configuration, te, classTree)).write();
             } catch (IOException e) {
                 throw new SimpleDocletException(e.getMessage(), e);
             } catch (FatalError fe) {

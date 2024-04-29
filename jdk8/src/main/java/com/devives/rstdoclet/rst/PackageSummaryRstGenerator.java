@@ -19,7 +19,9 @@ package com.devives.rstdoclet.rst;
 
 import com.devives.rst.builder.BlockQuoteBuilder;
 import com.devives.rst.builder.BlockQuoteBuilderImpl;
-import com.devives.rstdoclet.ConfigurationImpl;
+import com.devives.rstdoclet.RstConfigurationImpl;
+import com.devives.rstdoclet.html.HtmlDocletWriter;
+import com.devives.rstdoclet.html.PackageHtmlWriterImpl;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.rst.builder.JavaPackageBuilder;
@@ -29,6 +31,7 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.Type;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.Supplier;
@@ -36,29 +39,34 @@ import java.util.function.Supplier;
 public class PackageSummaryRstGenerator implements Supplier<String> {
 
     private final PackageDoc packageDoc_;
-    private final ConfigurationImpl configuration_;
+    private final RstConfigurationImpl configuration_;
+    private final PackageHtmlWriterImpl htmlPackageWriter_;
+    private final HtmlDocletWriter htmlDocletWriter_;
+    private final RstGeneratorContext docContext_;
 
-    public PackageSummaryRstGenerator(PackageDoc packageDoc, ConfigurationImpl configuration) {
+    public PackageSummaryRstGenerator(PackageDoc packageDoc, RstConfigurationImpl configuration) throws IOException {
         this.packageDoc_ = packageDoc;
         this.configuration_ = configuration;
+        this.htmlPackageWriter_ = new PackageHtmlWriterImpl(configuration.getHtmlConfiguration(), packageDoc_, null, null);
+        this.htmlDocletWriter_ = new HtmlDocletWriter(htmlPackageWriter_);
+        this.docContext_ = new RstGeneratorContextImpl(configuration, htmlDocletWriter_);
     }
 
     @Override
     public String get() {
         return Rst4Sphinx.builders().document()
                 .title(packageDoc_.name())
-                .addChild(new JavaPackageBuilder<>(packageDoc_, configuration_).build())
+                .addChild(new JavaPackageBuilder<>(packageDoc_, docContext_).build())
                 .ifTrue(packageDoc_.tags().length > 0, (builder) -> {
                     BlockQuoteBuilder<?> bodyBuilder = new BlockQuoteBuilderImpl<>();
-                    TagUtils.appendTags(bodyBuilder, packageDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
+                    new TagUtils(docContext_).appendTags(bodyBuilder, packageDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
                     bodyBuilder.build().getChildren().forEach(builder::addChild);
                 })
                 .ifTrue(packageDoc_.inlineTags().length > 0, (builder) -> {
                     IncludeDocument includeDocument = new IncludeDocument();
                     includeDocument.getChildren().add(new CommentBuilder(
-                            packageDoc_,
-                            packageDoc_,
-                            configuration_).build());
+                            docContext_,
+                            packageDoc_).build());
                     builder.addChild(includeDocument);
                 })
                 .tocTree(tocTreeBuilder -> tocTreeBuilder

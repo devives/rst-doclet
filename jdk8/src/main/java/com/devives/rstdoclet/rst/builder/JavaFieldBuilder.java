@@ -20,8 +20,8 @@ package com.devives.rstdoclet.rst.builder;
 import com.devives.rst.builder.BlockQuoteBuilder;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
-import com.devives.rstdoclet.ConfigurationImpl;
 import com.devives.rstdoclet.html2rst.TagUtils;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.sun.javadoc.FieldDoc;
 
 import java.util.Arrays;
@@ -32,8 +32,8 @@ public class JavaFieldBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
 
     private final FieldDoc fieldDoc_;
 
-    public JavaFieldBuilder(FieldDoc fieldDoc, ConfigurationImpl configuration) {
-        super(new Directive.Type("java:field"), fieldDoc, configuration);
+    public JavaFieldBuilder(FieldDoc fieldDoc, RstGeneratorContext docContext) {
+        super(new Directive.Type("java:field"), fieldDoc, docContext);
         this.fieldDoc_ = fieldDoc;
     }
 
@@ -49,7 +49,7 @@ public class JavaFieldBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
     protected void fillElements(BlockQuoteBuilder<?> bodyBuilder) {
         super.fillElements(bodyBuilder);
         if (fieldDoc_.tags().length > 0) {
-            TagUtils.appendTags(bodyBuilder, fieldDoc_, Arrays.asList(TagUtils.TagName.Author, TagUtils.TagName.See));
+            new TagUtils(docContext_).appendTags(bodyBuilder, fieldDoc_, Arrays.asList(TagUtils.TagName.Author, TagUtils.TagName.See));
         }
     }
 

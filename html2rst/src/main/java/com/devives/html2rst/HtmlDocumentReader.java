@@ -19,12 +19,14 @@ package com.devives.html2rst;
 
 import com.devives.rst.util.Constants;
 import com.devives.rst.util.StringUtils;
+import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.devives.rst.util.StringUtils.stripStart;
 
@@ -133,19 +135,11 @@ public class HtmlDocumentReader implements Constants {
                 acceptDefinitionList(node, visitor);
                 break;
             case "a":
-                if (node.hasAttr("id")) {
-                    String name = node.attr("id");
-                    String label = _compress_whitespace(getInnerText(node).trim(), " ", true);
-                    visitor.visitAnchor(name, label);
-                } else if (node.hasAttr("name")) {
-                    String name = node.attr("name");
-                    String label = _compress_whitespace(getInnerText(node).trim(), " ", true);
-                    visitor.visitAnchor(name, label);
-                } else if (node.hasAttr("href")) {
-                    String target = node.attr("href");
-                    String label = _compress_whitespace(getInnerText(node).trim(), " ", true);
-                    visitor.visitLink(target, label);
-                }
+                String textContent = _compress_whitespace(getInnerText(node).trim(), " ", true);
+                visitor.visitAnchor(
+                        node.attributes().asList().stream()
+                                .collect(Collectors.toMap(Attribute::getKey, Attribute::getValue)),
+                        textContent);
                 break;
             case "ol":
                 visitor.beginOrderedList();

@@ -21,8 +21,8 @@ package com.devives.rstdoclet.rst.builder;
 import com.devives.html2rst.HtmlUtils;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlLinkInfo;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
+import jdk.javadoc.internal.doclets.formats.html.HtmlLinkInfo;
 import jdk.javadoc.internal.doclets.toolkit.Content;
 
 import javax.lang.model.element.ExecutableElement;
@@ -33,7 +33,7 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
 
     private final ExecutableElement executableElement_;
 
-    public JavaMethodBuilder(ExecutableElement executableElement, HtmlDocletWriter docContext) {
+    public JavaMethodBuilder(ExecutableElement executableElement, RstGeneratorContext docContext) {
         super(new Directive.Type("java:method"), executableElement, docContext);
         executableElement_ = executableElement;
     }
@@ -49,18 +49,20 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
     }
 
     public String formatMethodTypeParameters(ExecutableElement executableElement) {
-        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.rstConfiguration, HtmlLinkInfo.Kind.MEMBER_TYPE_PARAMS, executableElement);
+        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.getHtmlConfiguration(), HtmlLinkInfo.Kind.MEMBER_TYPE_PARAMS, executableElement);
         linkInfo.linkToSelf = false;
-        Content parameterLinks = docContext_.getTypeParameterLinks(linkInfo);
-        String result = HtmlUtils.unescapeLtRtAmpBSlash(parameterLinks.toString());
+        Content content = docContext_.getHtmlDocletWriter().getTypeParameterLinks(linkInfo);
+        String className = HtmlUtils.removeATags(content.toString());
+        String result = HtmlUtils.unescapeLtRtAmpBSlash(className);
         result = collapseNamespaces(result);
         return result;
     }
 
     public String formatReturnType(ExecutableElement executableElement) {
-        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.rstConfiguration, HtmlLinkInfo.Kind.RETURN_TYPE, executableElement.getReturnType());
-        Content parameterLinks = docContext_.getLink(linkInfo);
-        String result = HtmlUtils.unescapeLtRtAmpBSlash(parameterLinks.toString());
+        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.getHtmlConfiguration(), HtmlLinkInfo.Kind.RETURN_TYPE, executableElement.getReturnType());
+        Content content = docContext_.getHtmlDocletWriter().getLink(linkInfo);
+        String className = HtmlUtils.removeATags(content.toString());
+        String result = HtmlUtils.unescapeLtRtAmpBSlash(className);
         result = collapseNamespaces(result);
         return reformatCommas(result);
     }

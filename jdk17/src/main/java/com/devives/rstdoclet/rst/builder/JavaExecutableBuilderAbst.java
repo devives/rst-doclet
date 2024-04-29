@@ -23,14 +23,17 @@ import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
 import com.devives.rstdoclet.html2rst.TagUtils;
-import com.devives.rstdoclet.html2rst.jdkloans.ContentBuilder;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlLinkInfo;
-import com.sun.source.doctree.*;
-import jdk.javadoc.internal.doclets.toolkit.Content;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
+import com.sun.source.doctree.DocTree;
+import com.sun.source.doctree.ParamTree;
+import com.sun.source.doctree.ReturnTree;
+import com.sun.source.doctree.ThrowsTree;
 import jdk.javadoc.internal.doclets.toolkit.util.Utils;
 
-import javax.lang.model.element.*;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +44,7 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
         extends JavaMemberBuilderAbst<PARENT, SELF> {
     private final ExecutableElement executableElement_;
 
-    public JavaExecutableBuilderAbst(Directive.Type type, ExecutableElement memberDoc, HtmlDocletWriter docContext) {
+    public JavaExecutableBuilderAbst(Directive.Type type, ExecutableElement memberDoc, RstGeneratorContext docContext) {
         super(type, memberDoc, docContext);
         this.executableElement_ = memberDoc;
     }
@@ -49,14 +52,13 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
     @Override
     protected void fillElements(BlockQuoteBuilder<?> bodyBuilder) {
         super.fillElements(bodyBuilder);
-        DocCommentTree docCommentTree = docContext_.configuration.utils.getDocCommentTree(executableElement_);
-        List<? extends DocTree> tags = docContext_.configuration.utils.getBlockTags(docCommentTree);
-        //ParamTree[] paramTags = docCommentTree.paramTags();
-        ParamTree[] paramTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.PARAM).toArray(ParamTree[]::new);
-        //ThrowsTree[] throwsTags = executableMemberDoc_.throwsTags();
-        ThrowsTree[] throwsTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.THROWS).toArray(ThrowsTree[]::new);
-        //DocTree[] returnTags = executableMemberDoc_.tags("@return");
-        ReturnTree[] returnTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.RETURN).toArray(ReturnTree[]::new);
+        List<? extends DocTree> tags = docContext_.getHtmlConfiguration().utils.getBlockTags(executableElement_);
+        ParamTree[] paramTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.PARAM)
+                .map(ParamTree.class::cast).toArray(ParamTree[]::new);
+        ThrowsTree[] throwsTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.THROWS)
+                .map(ThrowsTree.class::cast).toArray(ThrowsTree[]::new);
+        ReturnTree[] returnTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.RETURN)
+                .map(ReturnTree.class::cast).toArray(ReturnTree[]::new);
 
         bodyBuilder.fieldList(flb -> {
             for (ParamTree tag : paramTags) {
@@ -67,19 +69,19 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
                                 docContext_).buildBody().forEach(ib::addChild));
             }
 
-            for (TypeParameterElement typeParameterElement : executableElement_.getTypeParameters()) {
+//            for (TypeParameterElement typeParameterElement : executableElement_.getTypeParameters()) {
 //                flb.item("param " + "<" + typeParameterElement.getSimpleName() + ">", ib ->
 //                        new CommentBuilder(
 //                                tag,
 //                                executableMemberDoc_.getEnclosingElement(),
-//                                docContext_.configuration.).buildBody().forEach(ib::addChild));
-            }
+//                                configuration_).buildBody().forEach(ib::addChild));
+//            }
 //            for (ParamTree tag : executableMemberDoc_.typeParamTags()) {
 //                flb.item("param " + "<" + tag.parameterName() + ">", ib ->
 //                        new CommentBuilder(
 //                                tag,
 //                                executableMemberDoc_.containingClass(),
-//                                docContext_.configuration.).buildBody().forEach(ib::addChild));
+//                                configuration_).buildBody().forEach(ib::addChild));
 //            }
             for (ThrowsTree tag : throwsTags) {
                 flb.item("throws " + tag.getExceptionName(), ib ->
@@ -111,9 +113,9 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
     }
 
     protected String formatThrows(ExecutableElement execMemberDoc) {
-        DocCommentTree docCommentTree = docContext_.configuration.utils.getDocCommentTree(executableElement_);
-        List<? extends DocTree> tags = docContext_.configuration.utils.getBlockTags(docCommentTree);
-        ThrowsTree[] throwsTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.THROWS).toArray(ThrowsTree[]::new);
+        List<? extends DocTree> tags = docContext_.getHtmlConfiguration().utils.getBlockTags(executableElement_);
+        ThrowsTree[] throwsTags = tags.stream().filter(tag -> tag.getKind() == DocTree.Kind.THROWS)
+                .map(ThrowsTree.class::cast).toArray(ThrowsTree[]::new);
 
         if (throwsTags.length > 0) {
             return "throws " + Arrays.stream(throwsTags)
@@ -125,70 +127,50 @@ public abstract class JavaExecutableBuilderAbst<PARENT extends RstNodeBuilder<?,
     }
 
     protected String formatNameWithParameters(ExecutableElement member, boolean includeAnnotations) {
-        Content htmltree = new ContentBuilder();
-        htmltree.add(docContext_.configuration.utils.getSimpleName(member));
-        htmltree.add("(");
+        StringBuilder htmltree = new StringBuilder();
+        htmltree.append(docContext_.getHtmlConfiguration().utils.getSimpleName(member));
+        htmltree.append("(");
         String sep = "";
         List<? extends VariableElement> params = member.getParameters();
         TypeMirror rcvrType = member.getReceiverType();
         if (includeAnnotations && rcvrType != null) {
             List<? extends AnnotationMirror> descList = rcvrType.getAnnotationMirrors();
             if (descList.size() > 0) {
-                addReceiverAnnotations(member, rcvrType, descList, htmltree);
+                docContext_.getHtmlDocletWriter().addReceiverAnnotations(rcvrType, descList, htmltree);
                 sep = ", ";
             }
         }
         int paramstart;
         for (paramstart = 0; paramstart < params.size(); paramstart++) {
-            htmltree.add(sep);
+            htmltree.append(sep);
             VariableElement param = params.get(paramstart);
             if (!param.getSimpleName().toString().startsWith("this$")) {
                 if (includeAnnotations) {
-                    boolean foundAnnotations = docContext_.addAnnotationInfo(0, member, param, htmltree);
+                    boolean foundAnnotations = docContext_.getHtmlDocletWriter().addAnnotationInfo(param, htmltree);
                     if (foundAnnotations) {
-                        htmltree.add(" ");
+                        htmltree.append(" ");
                     }
                 }
-                htmltree.add(formatExecutableMemberParam(param, docContext_.configuration.utils, (paramstart == params.size() - 1) && member.isVarArgs()));
+                htmltree.append(formatExecutableMemberParam(param, docContext_.getHtmlConfiguration().utils, (paramstart == params.size() - 1) && member.isVarArgs()));
                 break;
             }
         }
 
         for (int i = paramstart + 1; i < params.size(); i++) {
-            htmltree.add(", ");
+            htmltree.append(", ");
             if (includeAnnotations) {
-                boolean foundAnnotations = docContext_.addAnnotationInfo(0, member, params.get(i), htmltree);
+                boolean foundAnnotations = docContext_.getHtmlDocletWriter().addAnnotationInfo(params.get(i), htmltree);
                 if (foundAnnotations) {
-                    htmltree.add(" ");
+                    htmltree.append(" ");
                 }
             }
-            htmltree.add(formatExecutableMemberParam(params.get(i), docContext_.configuration.utils, (i == params.size() - 1) && member.isVarArgs()));
+            htmltree.append(formatExecutableMemberParam(params.get(i), docContext_.getHtmlConfiguration().utils, (i == params.size() - 1) && member.isVarArgs()));
         }
-        htmltree.add(")");
+        htmltree.append(")");
         String result = HtmlUtils.unescapeLtRtAmpBSlash(htmltree.toString());
+        result = HtmlUtils.removeATags(result);
         result = collapseNamespaces(result);
         return result;
-    }
-
-    /**
-     * Add the receiver annotations information.
-     *
-     * @param member   the member to write receiver annotations for.
-     * @param rcvrType the receiver type.
-     * @param descList list of annotation description.
-     * @param tree     the content tree to which the information will be added.
-     */
-    protected void addReceiverAnnotations(ExecutableElement member, TypeMirror rcvrType,
-                                          List<? extends AnnotationMirror> descList, Content tree) {
-        docContext_.addReceiverAnnotationInfo(member, descList, tree);
-        tree.add(docContext_.getSpace());
-        //todo
-        //tree.add(rcvrType.typeName());
-        HtmlLinkInfo linkInfo = new HtmlLinkInfo(docContext_.rstConfiguration,
-                HtmlLinkInfo.Kind.CLASS_SIGNATURE, rcvrType);
-        tree.add(docContext_.getTypeParameterLinks(linkInfo));
-        tree.add(docContext_.getSpace());
-        tree.add("this");
     }
 
 

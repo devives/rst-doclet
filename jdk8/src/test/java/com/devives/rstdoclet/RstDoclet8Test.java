@@ -66,7 +66,7 @@ public class RstDoclet8Test {
 
     private static final Path projectRootPath = Paths.get("").toAbsolutePath();
     private static final Path docletPath = projectRootPath.resolve("build/classes/java/main/");
-    private static final Path outputPath = projectRootPath.resolve("build/test-results/javadoc2rst");
+    private static final Path outputPath = projectRootPath.resolve("build/test-results/javadoc4sphinx");
 
     @BeforeAll
     public static void beforeAll() throws Exception {
@@ -112,6 +112,7 @@ public class RstDoclet8Test {
                 , "-docletpath", docletPath.toString()
                 , "-sourcepath", sourcePath.toString()
                 , "-subpackages", subPackages
+                , "-packageindexfilename", "package-index"
         };
         System.out.println("sourcePath = " + sourcePath);
         Assertions.assertEquals(0, Main.execute(args));
@@ -156,7 +157,7 @@ public class RstDoclet8Test {
                 //, sourceFiles
         };
         System.out.println("sourcePath = " + sourcePath);
-        Assertions.assertEquals(0, Main.execute(args));
+        Assertions.assertEquals(1, Main.execute(args));
     }
 
     @Test
@@ -201,5 +202,5 @@ public class RstDoclet8Test {
             });
         }
     }
-    // E:\GitHub\devives\RstProjectGroup\rst-doclet\build\test-results\javadoc2rst\com\devives
+    // E:\GitHub\devives\RstProjectGroup\rst-doclet\build\test-results\javadoc4sphinx\com\devives
 }

@@ -87,7 +87,7 @@ public class HtmlDocletJdk11Test {
     }
 
     @Test
-    @Disabled // Test exists for debugging purposes.
+    //@Disabled // Test exists for debugging purposes.
     public void generate_forSamples_noExceptions() throws Exception {
         Path testOutputPath = outputPath.resolve("samples");
         Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");

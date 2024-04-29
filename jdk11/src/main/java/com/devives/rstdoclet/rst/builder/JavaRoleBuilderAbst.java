@@ -17,10 +17,10 @@
  */
 package com.devives.rstdoclet.rst.builder;
 
-import com.devives.rst.Rst;
 import com.devives.rst.builder.RstElementBuilderAbst;
 import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.document.inline.Role;
+import com.devives.sphinx.rst.Rst4Sphinx;
 
 public abstract class JavaRoleBuilderAbst<
         PARENT extends RstNodeBuilder<?, ?, ?, ?>,
@@ -31,7 +31,7 @@ public abstract class JavaRoleBuilderAbst<
 
     @Override
     protected Role createRstElement() {
-        return Rst.elements().role(formatName(), formatTarget(), formatText());
+        return Rst4Sphinx.elements().role(formatName(), formatTarget(), formatText());
     }
 
     protected abstract String formatName();

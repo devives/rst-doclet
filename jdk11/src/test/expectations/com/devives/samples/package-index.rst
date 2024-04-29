@@ -20,6 +20,7 @@ Sample classes package. This is inline anchor.
 .. toctree::
    :maxdepth: 1
 
+   SampleAnnotatedClass.rst
    SampleAnnotation.rst
    SampleClass.rst
    SampleClass11.rst

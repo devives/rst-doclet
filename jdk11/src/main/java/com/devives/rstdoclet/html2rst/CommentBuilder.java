@@ -21,9 +21,9 @@ import com.devives.html2rst.HtmlDocumentReader;
 import com.devives.rst.Rst;
 import com.devives.rst.document.RstDocument;
 import com.devives.rst.document.RstNode;
-import com.devives.rstdoclet.html2rst.jdkloans.HtmlDocletWriter;
-import com.sun.source.doctree.*;
-import jdk.javadoc.internal.doclets.toolkit.Content;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
+import com.sun.source.doctree.DocTree;
+import com.sun.source.doctree.SeeTree;
 import org.jsoup.Jsoup;
 
 import javax.lang.model.element.Element;
@@ -31,35 +31,41 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * {@link HtmlDocletWriter#commentTagsToContent(DocTree, Element, List, boolean)}
+ * {@link jdk.javadoc.internal.doclets.formats.html.HtmlDocletWriter#commentTagsToContent(DocTree, Element, List, boolean)}
  */
 public class CommentBuilder {
 
     private final Element element_;
     private final DocTree holderTag;
-    private final HtmlDocletWriter docContext_;
+    private final RstGeneratorContext docContext_;
+    private final List<? extends DocTree> tags_;
 
-    public CommentBuilder(Element element, HtmlDocletWriter docContext) {
+    public CommentBuilder(Element element, RstGeneratorContext docContext) {
         this.element_ = Objects.requireNonNull(element);
         this.docContext_ = Objects.requireNonNull(docContext);
         this.holderTag = null;
+        this.tags_ = docContext.getHtmlConfiguration().utils.getBody(element_);
     }
 
-    public CommentBuilder(DocTree holderTag, Element element, HtmlDocletWriter docContext) {
+    public CommentBuilder(DocTree holderTag, Element element, RstGeneratorContext docContext) {
         this.holderTag = Objects.requireNonNull(holderTag);
         this.element_ = Objects.requireNonNull(element);
         this.docContext_ = Objects.requireNonNull(docContext);
+        this.tags_ = getDescription(holderTag);
+    }
+
+    public CommentBuilder(RstGeneratorContext docContext, Element element, SeeTree seeTag) {
+        this.docContext_ = Objects.requireNonNull(docContext);
+        this.element_ = Objects.requireNonNull(element);
+        this.tags_ = Collections.singletonList(Objects.requireNonNull(seeTag));
+        this.holderTag = null;
     }
 
     public RstDocument build() {
-        List<? extends DocTree> tags = holderTag != null
-                ? getDescription(holderTag)
-                : docContext_.configuration.utils.getBody(element_);
-        //DocTree[] tags = doc != null ? doc.inlineTags() : holderTag.inlineTags();
-        Content content = docContext_.commentTagsToContent(holderTag, element_, tags, false);
-        String htmlText = content.toString();
+        String htmlText = docContext_.getHtmlDocletWriter().commentTagsToContent(holderTag, element_, tags_, false).toString();
         if (!htmlText.trim().isEmpty()) {
-            RstDocumentWriter visitor = new RstDocumentWriter();
+            HrefConverter hrefConverter = new HrefConverterImpl(docContext_);
+            RstDocumentWriter visitor = new RstDocumentWriter(hrefConverter);
             new HtmlDocumentReader(Jsoup.parse(htmlText)).accept(visitor);
             return visitor.getDocument();
         } else {
@@ -76,26 +82,6 @@ public class CommentBuilder {
     }
 
     private List<? extends DocTree> getDescription(DocTree docTree) {
-        if (docTree instanceof ParamTree) {
-            return ((ParamTree) docTree).getDescription();
-        } else if (docTree instanceof ThrowsTree) {
-            return ((ThrowsTree) docTree).getDescription();
-        } else if (docTree instanceof ReturnTree) {
-            return ((ReturnTree) docTree).getDescription();
-        } else if (docTree instanceof VersionTree) {
-            return ((VersionTree) docTree).getBody();
-        } else if (docTree instanceof AuthorTree) {
-            return ((AuthorTree) docTree).getName();
-        } else if (docTree instanceof SinceTree) {
-            return ((SinceTree) docTree).getBody();
-        } else if (docTree instanceof SeeTree) {
-            return ((SeeTree) docTree).getReference();
-        } else if (docTree instanceof DeprecatedTree) {
-            return ((DeprecatedTree) docTree).getBody();
-//        } else if (docTree instanceof TypeParameterElement typeParameterElement) {
-//            return typeParameterElement.getDescription();
-        } else {
-            return Collections.emptyList();
-        }
+        return docContext_.getHtmlConfiguration().utils.getCommentHelper(element_).getDescription(docContext_.getHtmlConfiguration(), docTree);
     }
 }

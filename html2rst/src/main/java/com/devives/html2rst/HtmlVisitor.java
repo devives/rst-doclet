@@ -17,6 +17,8 @@
  */
 package com.devives.html2rst;
 
+import java.util.Map;
+
 public interface HtmlVisitor {
     void beginBody();
 
@@ -40,9 +42,7 @@ public interface HtmlVisitor {
 
     void endBlockQuote();
 
-    void visitAnchor(String name, String label);
-
-    void visitLink(String href, String label);
+    void visitAnchor(Map<String, String> attributes, String text);
 
     void beginOrderedList();
 

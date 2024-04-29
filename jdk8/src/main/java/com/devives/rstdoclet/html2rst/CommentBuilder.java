@@ -21,8 +21,7 @@ import com.devives.html2rst.HtmlDocumentReader;
 import com.devives.rst.Rst;
 import com.devives.rst.document.RstDocument;
 import com.devives.rst.document.RstNode;
-import com.devives.rstdoclet.ConfigurationImpl;
-import com.devives.rstdoclet.html2rst.jdkloans.DocContext;
+import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.Tag;
 import com.sun.tools.doclets.internal.toolkit.Content;
@@ -33,33 +32,40 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * {@link DocContext#commentTagsToContent(Tag, Doc, Tag[], boolean)}
- */
 public class CommentBuilder {
 
-    private final Doc doc;
-    private final Tag holderTag;
-    private final DocContext docContext_;
+    private final RstGeneratorContext docContext_;
+    private final Doc doc_;
+    private final Tag holderTag_;
+    private final Tag[] tags_;
 
-    public CommentBuilder(Doc doc, Doc parentDoc, ConfigurationImpl configuration) {
-        this.docContext_ = new DocContext(parentDoc, configuration);
-        this.doc = Objects.requireNonNull(doc);
-        this.holderTag = null;
+    public CommentBuilder(RstGeneratorContext docContext, Doc doc) {
+        this.docContext_ = Objects.requireNonNull(docContext);
+        this.doc_ = Objects.requireNonNull(doc);
+        this.holderTag_ = null;
+        this.tags_ = doc.inlineTags();
     }
 
-    public CommentBuilder(Tag holderTag, Doc parentDoc, ConfigurationImpl configuration) {
-        this.docContext_ = new DocContext(parentDoc, configuration);
-        this.doc = null;
-        this.holderTag = Objects.requireNonNull(holderTag);
+    public CommentBuilder(RstGeneratorContext docContext, Doc doc, Tag holderTag) {
+        this.docContext_ = Objects.requireNonNull(docContext);
+        this.doc_ = Objects.requireNonNull(doc);
+        this.holderTag_ = Objects.requireNonNull(holderTag);
+        this.tags_ = holderTag.inlineTags();
+    }
+
+    public CommentBuilder(RstGeneratorContext docContext, Doc doc, Tag[] tags) {
+        this.docContext_ = Objects.requireNonNull(docContext);
+        this.doc_ = Objects.requireNonNull(doc);
+        this.holderTag_ = null;
+        this.tags_ = tags;
     }
 
     public RstDocument build() {
-        Tag[] tags = doc != null ? doc.inlineTags() : holderTag.inlineTags();
-        Content content = docContext_.commentTagsToContent(holderTag, docContext_.getParentDoc(), tags, false);
+        Content content = docContext_.getHtmlDocletWriter().commentTagsToContent(holderTag_, doc_, tags_, false);
         String htmlText = content.toString();
         if (!htmlText.trim().isEmpty()) {
-            RstDocumentWriter visitor = new RstDocumentWriter();
+            HrefConverter hrefConverter = new HrefConverterImpl(docContext_, doc_);
+            RstDocumentWriter visitor = new RstDocumentWriter(hrefConverter);
             new HtmlDocumentReader(Jsoup.parse(htmlText)).accept(visitor);
             return visitor.getDocument();
         } else {

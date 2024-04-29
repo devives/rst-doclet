@@ -23,16 +23,11 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class DocUtils {
 
     public static String formatTypeName(TypeMirror type, Utils utils) {
-        return doFormatTypeName(type, () -> utils.getQualifiedTypeName(type), utils);
-    }
-
-    private static String doFormatTypeName(TypeMirror type, Supplier<String> nameGetter, Utils utils) {
         String result = type.toString();
         if (!type.getKind().isPrimitive()) {
             TypeElement typeElement = utils.asTypeElement(type);
@@ -47,40 +42,6 @@ public class DocUtils {
         }
         return result;
     }
-//
-//    private static final Pattern CLASS_NAME_PATTERN = Pattern.compile("(\\w+\\.)+(\\w+)");
-//
-//    public static String formatReturnTypeName(TypeMirror type) {
-//        String result = type.typeName();
-//        if (type.isPrimitive()) {
-//            // do nothing
-//        } else if ("[]".equals(type.dimension())) {
-//            result += type.dimension();
-//        } else if (type.asParameterizedType() != null) {
-//            String typeArgs = Arrays.stream(type.asParameterizedType().typeArguments())
-//                    .map(DocUtils::formatTypeName)
-//                    .collect(Collectors.joining(", "));
-//            if (!typeArgs.isEmpty()) {
-//                result += "<" + typeArgs + ">";
-//            }
-//        }
-//        return result;
-//    }
-//
-//
-//    public static String formatTypeVariable(TypeVariable typeVariable) {
-//        String result = typeVariable.toString();
-//        if (!typeVariable.isPrimitive()) {
-//            Map<String, TypeElement> refClasses = new HashMap<>();
-//            for (Type bound : typeVariable.bounds()) {
-//                refClasses.put(bound.qualifiedTypeName(), bound.asClassDoc());
-//            }
-//            for (Map.Entry<String, TypeElement> entry : refClasses.entrySet()) {
-//                result = result.replaceAll(entry.getKey(), entry.getValue().typeName());
-//            }
-//        }
-//        return result;
-//    }
 
     public static String formatAnnotations(TypeElement classDoc) {
         String result = "";
@@ -92,24 +53,5 @@ public class DocUtils {
         }
         return result;
     }
-//
-//    public static DocEnv getDocEnv(Type javadocType) {
-//        try {
-//            Field envField = javadocType.getClass().getDeclaredField("env");
-//            return (DocEnv) envField.get(javadocType);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//
-//        }
-//    }
-//
-//    public static com.sun.tools.javac.code.Type getJavacType(Type javadocType) {
-//        try {
-//            Field envField = javadocType.getClass().getField("type");
-//            return (com.sun.tools.javac.code.Type) envField.get(javadocType);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//
-//        }
-//    }
+
 }

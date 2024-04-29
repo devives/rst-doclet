@@ -17,10 +17,10 @@ SampleClass
    .. seealso::
 
       | :java:ref:`SampleInterface <com.devives.samples.SampleInterface>`
-      | `HTML ссылка на индекс пакета. <package-index.html>`_
+      | `HTML ссылка на индекс пакета. <package-index.html>`__
       | :ref:`Sphinx ссылка на якорь в описании пакета. <internal_sphinx_anchor>`
       | \ :ref:`Sphinx ссылка на якорь в описании пакета.<internal_sphinx_anchor>`\ 
-      | `Sphinx ссылка на инлайн якорь на странице <#this-is-inline-anchor>`_
+      | `Sphinx ссылка на инлайн якорь на странице <this-is-inline-anchor>`_
 
 Constructors
 ------------
@@ -95,13 +95,13 @@ linkTagsInComment
 
    Forth equals lines is correct. See tags illustrate different formats of references.
 
-   * :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
-   * :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
    * :java:ref:`This is multiline
      label for reference <com.devives.samples.SampleClass.inlineAnchorExample()>`
-   * :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
    * :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
-   * :java:ref:`com.devives.samples <com.devives.samples>`
+   * `com.devives.samples <package-index.html>`__
    * :java:ref:`ArrayList <java.util.ArrayList>`
 
 multilineCodeExamples
@@ -174,11 +174,11 @@ seeTagsInComment
 
    .. seealso::
 
-      | :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
-      | :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+      | :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+      | :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
       | :java:ref:`This is multiline
          label for reference <com.devives.samples.SampleClass.inlineAnchorExample()>`
-      | :java:ref:`SampleClass.inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+      | :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
       | :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
-      | :java:ref:`com.devives.samples <com.devives.samples>`
+      | `com.devives.samples <package-index.html>`__
       | :java:ref:`ArrayList <java.util.ArrayList>`
