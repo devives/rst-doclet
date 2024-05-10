@@ -66,7 +66,8 @@ public class HtmlDocletWriter extends jdk.javadoc.internal.doclets.formats.html.
     }
 
     private boolean addAnnotationInfo(List<? extends AnnotationMirror> descList,
-                                      boolean lineBreak, Content htmltree) {
+                                      boolean lineBreak,
+                                      Content htmltree) {
         List<Content> annotations = getAnnotations(descList, lineBreak);
         String sep = "";
         if (annotations.isEmpty()) {

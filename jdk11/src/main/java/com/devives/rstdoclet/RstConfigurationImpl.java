@@ -83,6 +83,11 @@ public class RstConfigurationImpl implements RstConfiguration {
         return htmlConfiguration_;
     }
 
+    @Override
+    public Utils utils() {
+        return utils;
+    }
+
     /**
      * Argument for command line option "-packageindexfilename".
      */

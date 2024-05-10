@@ -45,7 +45,10 @@ public class HtmlDocletWriter extends jdk.javadoc.internal.doclets.formats.html.
         return delegateWriter.commentTagsToContent(holderTag, element, tags, isFirstSentence);
     }
 
-    public boolean addAnnotationInfo(int indent, Element element, VariableElement param, StringBuilder stringBuilder) {
+    public boolean addAnnotationInfo(int indent,
+                                     Element element,
+                                     VariableElement param,
+                                     StringBuilder stringBuilder) {
         Content htmltree = new ContentBuilder();
         boolean result = addAnnotationInfo(indent, element, param, htmltree);
         if (result) {
@@ -54,8 +57,10 @@ public class HtmlDocletWriter extends jdk.javadoc.internal.doclets.formats.html.
         return result;
     }
 
-    public void addReceiverAnnotations(ExecutableElement member, TypeMirror rcvrType,
-                                       List descList, StringBuilder stringBuilder) {
+    public void addReceiverAnnotations(ExecutableElement member,
+                                       TypeMirror rcvrType,
+                                       List descList,
+                                       StringBuilder stringBuilder) {
         Content tree = new ContentBuilder();
         addReceiverAnnotationInfo(member, descList, tree);
         tree.addContent(nbsp);

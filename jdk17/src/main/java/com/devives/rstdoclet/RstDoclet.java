@@ -44,10 +44,8 @@ import java.util.SortedSet;
  * the {@link #run(jdk.javadoc.doclet.DocletEnvironment)} method required
  * by the doclet API in order to be called by the
  * javadoc tool.
- *
- * @author ivvlev
  */
-public final class RstDoclet extends AbstractDoclet {
+public final class RstDoclet extends AbstractRstDoclet {
 
     @Override
     protected void generatePackageFiles(ClassTree classtree) throws DocletException {

@@ -19,6 +19,7 @@ package com.devives.rstdoclet.html;
 
 import com.devives.html2rst.HtmlUtils;
 import com.devives.rst.document.inline.InlineElement;
+import com.devives.rst.util.StringUtils;
 import com.devives.rstdoclet.rst.builder.JavaMemberRefBuilder;
 import com.devives.rstdoclet.rst.builder.JavaTypeRefBuilder;
 import com.devives.sphinx.rst.document.JavaRef;
@@ -58,7 +59,7 @@ public class ClassHtmlWriterImpl extends ClassWriterImpl {
     public Content getDocLink(LinkInfoImpl.Kind context, ClassDoc classDoc, MemberDoc doc,
                               Content label, boolean strong, boolean isProperty) {
         Content content = super.getDocLink(context, classDoc, doc, label, strong, isProperty);
-        String text = HtmlUtils.removeCodeTags(label.toString());
+        String text = HtmlUtils.removeCodeTags((label != null) ? label.toString() : "");
         InlineElement inlineElement = new JavaMemberRefBuilder<>(doc).setText(text).build();
         return new RstContent(inlineElement, content);
     }
@@ -74,7 +75,8 @@ public class ClassHtmlWriterImpl extends ClassWriterImpl {
                                      Content label, boolean strong, String style,
                                      boolean code) {
         Content content = super.getCrossClassLink(qualifiedClassName, refMemName, label, strong, style, code);
-        InlineElement inlineElement = new JavaRef(qualifiedClassName, label.toString());
+        String text = HtmlUtils.removeCodeTags((label != null) ? label.toString() : "");
+        InlineElement inlineElement = new JavaRef(qualifiedClassName, StringUtils.findFirstNotNullOrEmpty(text, qualifiedClassName));
         return new RstContent(inlineElement, content);
     }
 

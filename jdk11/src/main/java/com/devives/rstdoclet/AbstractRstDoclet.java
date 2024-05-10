@@ -18,6 +18,8 @@
 package com.devives.rstdoclet;
 
 import com.devives.rst.Rst;
+import com.devives.rstdoclet.html.HtmlAdaptersFactory;
+import com.devives.rstdoclet.html.HtmlAdaptersFactoryImpl;
 import com.devives.sphinx.rst.document.JavaDocRstElementFactoryImpl;
 import com.sun.source.util.DocTreePath;
 import jdk.javadoc.doclet.Doclet;
@@ -52,6 +54,8 @@ abstract class AbstractRstDoclet implements Doclet {
         configuration = htmlDoclet_.getConfiguration();
         messages = htmlDoclet_.getConfiguration().getMessages();
         Rst.setElementFactory(new JavaDocRstElementFactoryImpl());
+        RstDocletComponentFactory.setInstance(new RstDocletComponentFactoryImpl());
+        HtmlAdaptersFactory.setInstance(new HtmlAdaptersFactoryImpl());
     }
 
     @Override

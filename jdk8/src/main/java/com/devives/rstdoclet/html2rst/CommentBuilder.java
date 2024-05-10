@@ -64,7 +64,7 @@ public class CommentBuilder {
         Content content = docContext_.getHtmlDocletWriter().commentTagsToContent(holderTag_, doc_, tags_, false);
         String htmlText = content.toString();
         if (!htmlText.trim().isEmpty()) {
-            HrefConverter hrefConverter = new HrefConverterImpl(docContext_, doc_);
+            HrefConverter hrefConverter = new HrefConverterImpl(docContext_);
             RstDocumentWriter visitor = new RstDocumentWriter(hrefConverter);
             new HtmlDocumentReader(Jsoup.parse(htmlText)).accept(visitor);
             return visitor.getDocument();

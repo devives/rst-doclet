@@ -25,9 +25,9 @@ import com.devives.rst.builder.directive.DirectiveBuilderAbst;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rst.document.inline.Text;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
-import com.devives.rstdoclet.html2rst.ImportsCollector;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.rst.RstGeneratorContext;
+import com.devives.rstdoclet.util.ImportsCollectorImpl;
 import com.devives.sphinx.rst.document.IncludeDocument;
 import com.sun.javadoc.ClassDoc;
 import com.sun.tools.doclets.formats.html.LinkInfoImpl;
@@ -50,7 +50,7 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
         super(new Directive.Type("java:type"));
         classDoc_ = Objects.requireNonNull(classDoc);
         docContext_ = docContext;
-        imports_ = new ImportsCollector().collect(classDoc_, true).getImportsMap();
+        imports_ = new ImportsCollectorImpl().collect(classDoc_, true).getImportsMap();
     }
 
     public JavaTypeBuilder fillImports(Map<String, ClassDoc> imports) {

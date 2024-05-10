@@ -23,7 +23,6 @@ import com.devives.rst.document.inline.InlineElement;
 import com.devives.rst.util.StringUtils;
 import com.devives.rstdoclet.rst.RstGeneratorContext;
 import com.devives.sphinx.rst.Rst4Sphinx;
-import com.sun.javadoc.Doc;
 
 import java.net.URI;
 import java.nio.file.Paths;
@@ -34,11 +33,9 @@ public class HrefConverterImpl implements HrefConverter {
     private final RstGeneratorContext docContext_;
     private final String packageIndexFileName_;
     private final String packageSummaryFileName_ = "package-summary.html";
-    private final Doc doc_;
 
-    public HrefConverterImpl(RstGeneratorContext docContext, Doc doc) {
+    public HrefConverterImpl(RstGeneratorContext docContext) {
         this.docContext_ = docContext;
-        this.doc_ = doc;
         this.packageIndexFileName_ = docContext_.getRstConfiguration().packageIndexFileName + ".html";
     }
 

@@ -20,7 +20,7 @@ package com.devives.rstdoclet;
 import jdk.javadoc.internal.doclets.formats.html.HtmlConfiguration;
 import jdk.javadoc.internal.doclets.toolkit.util.Utils;
 
-public class RstConfigurationImpl implements RstConfiguration{
+public class RstConfigurationImpl implements RstConfiguration {
 
     private final HtmlConfiguration htmlConfiguration_;
     private final RstOptions rstOptions_;
@@ -42,5 +42,10 @@ public class RstConfigurationImpl implements RstConfiguration{
     @Override
     public String getPackageIndexFileName() {
         return getOptions().getPackageIndexFileName();
+    }
+
+    @Override
+    public Utils utils() {
+        return utils;
     }
 }

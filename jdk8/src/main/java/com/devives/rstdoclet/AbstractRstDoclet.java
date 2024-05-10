@@ -31,7 +31,6 @@ import com.sun.tools.doclets.internal.toolkit.util.*;
 /**
  * An abstract implementation of a Doclet.
  *
- * @author <a href="mailto:ivvlev@devives.com">Vladimir Ivanov</a>
  * @see com.sun.javadoc.Doclet
  */
 public abstract class AbstractRstDoclet {

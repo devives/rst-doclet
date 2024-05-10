@@ -25,26 +25,6 @@ import com.sun.tools.javac.util.StringUtils;
 
 /**
  * Configure the output based on the command line options.
- * <p>
- * Also determine the length of the command line option. For example,
- * for a option "-header" there will be a string argument associated, then the
- * the length of option "-header" is two. But for option "-nohelp" no argument
- * is needed so it's length is 1.
- * </p>
- * <p>
- * Also do the error checking on the options used. For example it is illegal to
- * use "-helpfile" option when already "-nohelp" option is used.
- * </p>
- *
- * <p><b>This is NOT part of any supported API.
- * If you write code that depends on this, you do so at your own risk.
- * This code and its internal interfaces are subject to change or
- * deletion without notice.</b>
- *
- * @author Robert Field.
- * @author Atul Dambalkar.
- * @author Jamie Ho
- * @author Bhavesh Patel (Modified)
  */
 public class RstConfigurationImpl {
 

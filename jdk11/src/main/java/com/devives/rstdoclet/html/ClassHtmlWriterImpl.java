@@ -53,7 +53,7 @@ public class ClassHtmlWriterImpl extends jdk.javadoc.internal.doclets.formats.ht
     @Override
     public Content getDocLink(LinkInfoImpl.Kind context, TypeElement typeElement, Element element, Content label, boolean strong, boolean isProperty) {
         Content content = super.getDocLink(context, typeElement, element, label, strong, isProperty);
-        String text = HtmlUtils.removeCodeTags(label.toString());
+        String text = HtmlUtils.removeCodeTags((label != null) ? label.toString() : "");
         InlineElement inlineElement = new JavaMemberRefBuilder<>(element, configuration.utils).setText(text).build();
         return new RstContent(inlineElement, content);
     }

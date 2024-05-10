@@ -24,9 +24,9 @@ import com.devives.rst.builder.directive.DirectiveBuilderAbst;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rst.document.inline.Text;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
-import com.devives.rstdoclet.html2rst.ImportsCollector;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.rst.RstGeneratorContext;
+import com.devives.rstdoclet.util.ImportsCollectorImpl;
 import com.devives.sphinx.rst.document.IncludeDocument;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MemberDoc;
@@ -53,7 +53,7 @@ public abstract class JavaMemberBuilderAbst<
         super(type);
         this.memberDoc_ = memberDoc;
         this.docContext_ = docContext;
-        this.imports_ = new ImportsCollector().collect(memberDoc).getImportsMap();
+        this.imports_ = new ImportsCollectorImpl().collect(memberDoc).getImportsMap();
     }
 
     public JavaMemberBuilderAbst<PARENT, SELF> fillImports(Map<String, ClassDoc> imports) {

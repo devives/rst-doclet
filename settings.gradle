@@ -4,9 +4,8 @@ plugins {
 
 rootProject.name = 'rst-doclet'
 include 'html2rst',
-        'javasphinx',
+        'javadoc4sphinx',
         'jdk8',
-        'jdkxx',
         'jdk11',
         'jdk17'
 include 'usage:gradle:java8',
