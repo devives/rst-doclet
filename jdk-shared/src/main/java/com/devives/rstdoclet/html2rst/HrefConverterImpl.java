@@ -36,7 +36,7 @@ public class HrefConverterImpl implements HrefConverter {
 
     public HrefConverterImpl(RstGeneratorContext docContext) {
         this.docContext_ = docContext;
-        this.packageIndexFileName_ = docContext_.getRstConfiguration().packageIndexFileName + ".html";
+        this.packageIndexFileName_ = docContext_.getRstConfiguration().getPackageIndexFileName() + ".html";
     }
 
     private static String endWith(String text, String ending) {
@@ -45,7 +45,6 @@ public class HrefConverterImpl implements HrefConverter {
         }
         return text;
     }
-
 
     @Override
     public InlineElement resolve(String href, Map<String, String> attributes, String text) {
@@ -62,8 +61,8 @@ public class HrefConverterImpl implements HrefConverter {
             // Link to the package index.
             return Rst4Sphinx.elements().anonymousLink(packageIndexFileName_, text);
         } else if (href.endsWith(packageSummaryFileName_)) {
-            String path = Paths.get(docContext_.getHtmlDocletWriter().path.getPath()).getParent().toString().replace("\\", "/");
-            String pathToRoot = endWith(docContext_.getHtmlDocletWriter().pathToRoot.getPath().replace("\\", "/"), "/");
+            String path = Paths.get(docContext_.getHtmlDocletWriter().path().getPath()).getParent().toString().replace("\\", "/");
+            String pathToRoot = endWith(docContext_.getHtmlDocletWriter().pathToRoot().getPath().replace("\\", "/"), "/");
             URI pathUri = URI.create(pathToRoot).resolve(path);
             if (href.startsWith(pathUri.toString())) {
                 return Rst4Sphinx.elements().anonymousLink(packageIndexFileName_, text);
@@ -72,8 +71,8 @@ public class HrefConverterImpl implements HrefConverter {
             // Link to the package index.
             return Rst4Sphinx.elements().anonymousLink(packageIndexFileName_, text);
         } else if (href.endsWith(packageIndexFileName_)) {
-            String path = Paths.get(docContext_.getHtmlDocletWriter().path.getPath()).getParent().toString().replace("\\", "/");
-            String pathToRoot = endWith(docContext_.getHtmlDocletWriter().pathToRoot.getPath().replace("\\", "/"), "/");
+            String path = Paths.get(docContext_.getHtmlDocletWriter().path().getPath()).getParent().toString().replace("\\", "/");
+            String pathToRoot = endWith(docContext_.getHtmlDocletWriter().pathToRoot().getPath().replace("\\", "/"), "/");
             URI pathUri = URI.create(pathToRoot).resolve(path);
             if (href.startsWith(pathUri.toString())) {
                 return Rst4Sphinx.elements().anonymousLink(packageIndexFileName_, text);
@@ -81,5 +80,4 @@ public class HrefConverterImpl implements HrefConverter {
         }
         return HtmlUtils.hrefToLink(HtmlTagFactory.create("a", attributes, text));
     }
-
 }

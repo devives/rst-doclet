@@ -14,15 +14,12 @@ javadoc.failOnError = false
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
-        vendor = JvmVendorSpec.BELLSOFT
     }
 }
 
 sourceSets {
     main {
-        java {
-            srcDirs './../../../samples/src/main/java8/', './../../../samples/src/main/java11/', './../../../samples/src/main/java17/'
-        }
+        java.srcDirs += ['../../../samples/src/main/java8/', '../../../samples/src/main/java11/', '../../../samples/src/main/java17/']
     }
 }
 

@@ -47,7 +47,7 @@ import java.util.SortedSet;
  *
  * @author ivvlev
  */
-public final class RstDoclet extends AbstractDoclet {
+public final class RstDoclet extends AbstractRstDoclet {
 
     @Override
     protected void generatePackageFiles(ClassTree classtree) throws DocletException {

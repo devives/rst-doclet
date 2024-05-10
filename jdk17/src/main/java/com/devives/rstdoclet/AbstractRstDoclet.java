@@ -25,7 +25,6 @@ import com.sun.source.util.DocTreePath;
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
-import jdk.javadoc.doclet.StandardDoclet;
 import jdk.javadoc.internal.doclets.formats.html.HtmlConfiguration;
 import jdk.javadoc.internal.doclets.formats.html.HtmlDoclet;
 import jdk.javadoc.internal.doclets.toolkit.DocletException;
@@ -37,22 +36,29 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
+import java.io.PrintWriter;
 import java.util.*;
 
 import static javax.tools.Diagnostic.Kind.ERROR;
 
-abstract class AbstractRstDoclet implements Doclet {
+/**
+ * An abstract implementation of a Doclet.
+ *
+ * <p><b>This is NOT part of any supported API.
+ * If you write code that depends on this, you do so at your own risk.
+ * This code and its internal interfaces are subject to change or
+ * deletion without notice.</b>
+ */
+public abstract class AbstractRstDoclet implements Doclet {
 
     private final HtmlDoclet htmlDoclet_;
-    protected RstConfigurationImpl rstConfiguration;
-    protected HtmlConfiguration configuration;
-    protected final Messages messages;
+    protected RstConfigurationImpl configuration;
+    protected HtmlConfiguration htmlConfiguration;
+    protected Messages messages;
     protected Utils utils;
 
     public AbstractRstDoclet() {
         htmlDoclet_ = new LocalHtmlDoclet(this);
-        configuration = htmlDoclet_.getConfiguration();
-        messages = htmlDoclet_.getConfiguration().getMessages();
         Rst.setElementFactory(new JavaDocRstElementFactoryImpl());
         RstDocletComponentFactory.setInstance(new RstDocletComponentFactoryImpl());
         HtmlAdaptersFactory.setInstance(new HtmlAdaptersFactoryImpl());
@@ -61,7 +67,9 @@ abstract class AbstractRstDoclet implements Doclet {
     @Override
     public void init(Locale locale, Reporter reporter) {
         htmlDoclet_.init(locale, new ReporterFilter(reporter));
-        rstConfiguration = new RstConfigurationImpl(htmlDoclet_.getConfiguration());
+        htmlConfiguration = htmlDoclet_.getConfiguration();
+        configuration = new RstConfigurationImpl(htmlConfiguration);
+        messages = htmlDoclet_.getConfiguration().getMessages();
     }
 
     @Override
@@ -70,18 +78,25 @@ abstract class AbstractRstDoclet implements Doclet {
     }
 
     @Override
-    public Set<Option> getSupportedOptions() {
-        return rstConfiguration.getSupportedOptions();
+    public Set<? extends Option> getSupportedOptions() {
+        return configuration.getOptions().getSupportedOptions();
     }
 
+    /**
+     * The method that starts the execution of the doclet.
+     *
+     * @param docEnv the {@link DocletEnvironment}.
+     * @return true if the doclet executed without error.  False otherwise.
+     */
     @Override
     public boolean run(DocletEnvironment docEnv) {
         htmlDoclet_.run(docEnv);
         utils = htmlDoclet_.getConfiguration().utils;
-        rstConfiguration.utils = htmlDoclet_.getConfiguration().utils;
+        configuration.utils = htmlDoclet_.getConfiguration().utils;
+        RstOptions options = configuration.getOptions();
         try {
             try {
-                startGeneration(docEnv);
+                startGeneration();
                 return true;
             } catch (UncheckedDocletException e) {
                 throw (DocletException) e.getCause();
@@ -97,19 +112,19 @@ abstract class AbstractRstDoclet implements Doclet {
                     messages.error("doclet.exception.write.file",
                             e.fileName.getPath(), e.getCause());
             }
-            dumpStack(configuration.dumpOnError, e);
+            dumpStack(options.dumpOnError(), e);
 
         } catch (ResourceIOException e) {
             messages.error("doclet.exception.read.resource",
                     e.resource.getPath(), e.getCause());
-            dumpStack(configuration.dumpOnError, e);
+            dumpStack(options.dumpOnError(), e);
 
         } catch (SimpleDocletException e) {
-            configuration.reporter.print(ERROR, e.getMessage());
-            dumpStack(configuration.dumpOnError, e);
+            htmlConfiguration.reporter.print(ERROR, e.getMessage());
+            dumpStack(options.dumpOnError(), e);
 
         } catch (InternalException e) {
-            configuration.reporter.print(ERROR, e.getMessage());
+            htmlConfiguration.reporter.print(ERROR, e.getMessage());
             reportInternalError(e.getCause());
 
         } catch (DocletException | RuntimeException | Error e) {
@@ -121,9 +136,6 @@ abstract class AbstractRstDoclet implements Doclet {
     }
 
     private void reportInternalError(Throwable t) {
-        if (getClass().equals(StandardDoclet.class) || getClass().equals(HtmlDoclet.class)) {
-            System.err.println(configuration.getResources().getText("doclet.internal.report.bug"));
-        }
         dumpStack(true, t);
     }
 
@@ -149,7 +161,7 @@ abstract class AbstractRstDoclet implements Doclet {
      * @return the configuration of the doclet.
      */
     public RstConfigurationImpl getConfiguration() {
-        return rstConfiguration;
+        return configuration;
     }
 
     /**
@@ -160,28 +172,28 @@ abstract class AbstractRstDoclet implements Doclet {
      *
      * @throws DocletException if there is a problem while generating the documentation
      */
-    private void startGeneration(DocletEnvironment docEnv) throws DocletException {
+    private void startGeneration() throws DocletException {
 
         // Modules with no documented classes may be specified on the
         // command line to specify a service provider, allow these.
-        if (configuration.getSpecifiedModuleElements().isEmpty() &&
-                configuration.getIncludedTypeElements().isEmpty()) {
+        if (htmlConfiguration.getSpecifiedModuleElements().isEmpty() &&
+                htmlConfiguration.getIncludedTypeElements().isEmpty()) {
             messages.error("doclet.No_Public_Classes_To_Document");
             return;
         }
-        if (!configuration.setOptions()) {
+        if (!htmlConfiguration.setOptions()) {
             return;
         }
         messages.notice("doclet.build_version",
-                configuration.getDocletVersion());
-        ClassTree classtree = new ClassTree(configuration, configuration.nodeprecated);
+                htmlConfiguration.getDocletVersion());
+        ClassTree classtree = new ClassTree(htmlConfiguration, htmlConfiguration.getOptions().noDeprecated());
 
-        generateClassFiles(docEnv, classtree);
+        generateClassFiles(classtree);
 
-        ElementListWriter.generate(configuration);
+        ElementListWriter.generate(htmlConfiguration);
         generatePackageFiles(classtree);
 
-        configuration.tagletManager.printReport();
+        htmlConfiguration.tagletManager.printReport();
     }
 
     /**
@@ -195,7 +207,7 @@ abstract class AbstractRstDoclet implements Doclet {
     /**
      * Generate the class documentation.
      *
-     * @param arr       the set of types to be documented
+     * @param arr the set of types to be documented
      * @param classtree the data structure representing the class tree
      * @throws DocletException if there is a problem while generating the documentation
      */
@@ -205,33 +217,30 @@ abstract class AbstractRstDoclet implements Doclet {
     /**
      * Iterate through all classes and construct documentation for them.
      *
-     * @param docEnv    the DocletEnvironment
      * @param classtree the data structure representing the class tree
      * @throws DocletException if there is a problem while generating the documentation
      */
-    protected void generateClassFiles(DocletEnvironment docEnv, ClassTree classtree)
+    protected void generateClassFiles(ClassTree classtree)
             throws DocletException {
-        generateClassFiles(classtree);
-        SortedSet<PackageElement> packages = new TreeSet<>(configuration.utils.makePackageComparator());
-        packages.addAll(configuration.getSpecifiedPackageElements());
-        configuration.modulePackages.values().stream().forEach(packages::addAll);
-        for (PackageElement pkg : packages) {
-            generateClassFiles(configuration.utils.getAllClasses(pkg), classtree);
+
+        SortedSet<TypeElement> classes = new TreeSet<>(utils.comparators.makeGeneralPurposeComparator());
+
+        // handle classes specified as files on the command line
+        for (PackageElement pkg : htmlConfiguration.typeElementCatalog.packages()) {
+            classes.addAll(htmlConfiguration.typeElementCatalog.allClasses(pkg));
         }
+
+        // handle classes specified in modules and packages on the command line
+        SortedSet<PackageElement> packages = new TreeSet<>(utils.comparators.makePackageComparator());
+        packages.addAll(htmlConfiguration.getSpecifiedPackageElements());
+        htmlConfiguration.modulePackages.values().stream().forEach(packages::addAll);
+        for (PackageElement pkg : packages) {
+            classes.addAll(utils.getAllClasses(pkg));
+        }
+
+        generateClassFiles(classes, classtree);
     }
 
-    /**
-     * Generate the class files for single classes specified on the command line.
-     *
-     * @param classtree the data structure representing the class tree
-     * @throws DocletException if there is a problem while generating the documentation
-     */
-    private void generateClassFiles(ClassTree classtree) throws DocletException {
-        SortedSet<PackageElement> packages = configuration.typeElementCatalog.packages();
-        for (PackageElement pkg : packages) {
-            generateClassFiles(configuration.typeElementCatalog.allClasses(pkg), classtree);
-        }
-    }
 
     private static class LocalHtmlDoclet extends HtmlDoclet {
         public LocalHtmlDoclet(Doclet parent) {
@@ -242,20 +251,26 @@ abstract class AbstractRstDoclet implements Doclet {
     public class ReporterFilter implements Reporter {
 
         private final Reporter delegate_;
-        private final Set<String> filteredMessages_;
+        private Set<String> filteredMessages_;
 
         public ReporterFilter(Reporter delegate) {
             delegate_ = delegate;
-            filteredMessages_ = new HashSet<>() {{
-                add(htmlDoclet_.getConfiguration().getResources().getText(
-                        "doclet.Toolkit_Usage_Violation",
-                        HtmlDoclet.class.getName()));
-            }};
+        }
+
+        private Set<String> getFilteredMessages() {
+            if (filteredMessages_ == null) {
+                filteredMessages_ = new HashSet<>() {{
+                    add(htmlDoclet_.getConfiguration().getDocResources().getText(
+                            "doclet.Toolkit_Usage_Violation",
+                            HtmlDoclet.class.getName()));
+                }};
+            }
+            return filteredMessages_;
         }
 
         @Override
         public void print(Diagnostic.Kind kind, String msg) {
-            if (filteredMessages_.contains(msg)) {
+            if (getFilteredMessages().contains(msg)) {
                 return;
             }
             delegate_.print(kind, msg);
@@ -269,6 +284,16 @@ abstract class AbstractRstDoclet implements Doclet {
         @Override
         public void print(Diagnostic.Kind kind, Element e, String msg) {
             delegate_.print(kind, e, msg);
+        }
+
+        @Override // Reporter
+        public PrintWriter getStandardWriter() {
+            return delegate_.getStandardWriter();
+        }
+
+        @Override // Reporter
+        public PrintWriter getDiagnosticWriter() {
+            return delegate_.getDiagnosticWriter();
         }
     }
 }

@@ -22,47 +22,52 @@ import com.devives.rst.Rst;
 import com.devives.rst.document.RstDocument;
 import com.devives.rst.document.RstNode;
 import com.devives.rstdoclet.rst.RstGeneratorContext;
-import com.sun.javadoc.Doc;
-import com.sun.javadoc.Tag;
-import com.sun.tools.doclets.internal.toolkit.Content;
+import com.sun.source.doctree.DocTree;
+import com.sun.source.doctree.SeeTree;
+import jdk.javadoc.internal.doclets.toolkit.util.Utils;
 import org.jsoup.Jsoup;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import javax.lang.model.element.Element;
+import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * {@link jdk.javadoc.internal.doclets.formats.html.HtmlDocletWriter#commentTagsToContent(DocTree, Element, List, boolean)}
+ */
 public class CommentBuilder {
 
+    private final Element element_;
+    private final DocTree holderTag;
     private final RstGeneratorContext docContext_;
-    private final Doc doc_;
-    private final Tag holderTag_;
-    private final Tag[] tags_;
+    private final List<? extends DocTree> tags_;
+    private final Utils utils_;
 
-    public CommentBuilder(RstGeneratorContext docContext, Doc doc) {
+    public CommentBuilder(Element element, RstGeneratorContext docContext) {
+        this.element_ = Objects.requireNonNull(element);
         this.docContext_ = Objects.requireNonNull(docContext);
-        this.doc_ = Objects.requireNonNull(doc);
-        this.holderTag_ = null;
-        this.tags_ = doc.inlineTags();
+        this.holderTag = null;
+        this.utils_ = docContext_.getRstConfiguration().getHtmlConfiguration().utils;
+        this.tags_ = utils_.getBody(element_);
     }
 
-    public CommentBuilder(RstGeneratorContext docContext, Doc doc, Tag holderTag) {
+    public CommentBuilder(DocTree holderTag, Element element, RstGeneratorContext docContext) {
+        this.holderTag = Objects.requireNonNull(holderTag);
+        this.element_ = Objects.requireNonNull(element);
         this.docContext_ = Objects.requireNonNull(docContext);
-        this.doc_ = Objects.requireNonNull(doc);
-        this.holderTag_ = Objects.requireNonNull(holderTag);
-        this.tags_ = holderTag.inlineTags();
+        this.utils_ = docContext_.getRstConfiguration().getHtmlConfiguration().utils;
+        this.tags_ = docContext_.getHtmlDocletWriter().getDescription(element_, holderTag);
     }
 
-    public CommentBuilder(RstGeneratorContext docContext, Doc doc, Tag[] tags) {
+    public CommentBuilder(RstGeneratorContext docContext, Element element, SeeTree seeTag) {
         this.docContext_ = Objects.requireNonNull(docContext);
-        this.doc_ = Objects.requireNonNull(doc);
-        this.holderTag_ = null;
-        this.tags_ = tags;
+        this.element_ = Objects.requireNonNull(element);
+        this.tags_ = Collections.singletonList(Objects.requireNonNull(seeTag));
+        this.utils_ = docContext_.getRstConfiguration().getHtmlConfiguration().utils;
+        this.holderTag = null;
     }
 
     public RstDocument build() {
-        Content content = docContext_.getHtmlDocletWriter().commentTagsToContent(holderTag_, doc_, tags_, false);
-        String htmlText = content.toString();
+        String htmlText = docContext_.getHtmlDocletWriter().commentTagsToContent(holderTag, element_, tags_, false).toString();
         if (!htmlText.trim().isEmpty()) {
             HrefConverter hrefConverter = new HrefConverterImpl(docContext_);
             RstDocumentWriter visitor = new RstDocumentWriter(hrefConverter);
@@ -80,4 +85,5 @@ public class CommentBuilder {
                 .map(RstNode.class::cast)
                 .collect(Collectors.toCollection(ArrayList<RstNode>::new));
     }
+
 }

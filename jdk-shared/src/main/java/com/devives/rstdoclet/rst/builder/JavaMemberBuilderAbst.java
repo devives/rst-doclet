@@ -23,19 +23,19 @@ import com.devives.rst.builder.RstNodeBuilder;
 import com.devives.rst.builder.directive.DirectiveBuilderAbst;
 import com.devives.rst.document.directive.Directive;
 import com.devives.rst.document.inline.Text;
+import com.devives.rstdoclet.RstDocletComponentFactory;
 import com.devives.rstdoclet.html2rst.CommentBuilder;
 import com.devives.rstdoclet.html2rst.TagUtils;
 import com.devives.rstdoclet.rst.RstGeneratorContext;
-import com.devives.rstdoclet.util.ImportsCollectorImpl;
 import com.devives.sphinx.rst.document.IncludeDocument;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.MemberDoc;
-import com.sun.javadoc.ProgramElementDoc;
+import com.sun.source.doctree.DocTree;
+import jdk.javadoc.internal.doclets.toolkit.util.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.devives.rst.util.Constants.SPACE;
@@ -45,18 +45,20 @@ public abstract class JavaMemberBuilderAbst<
         SELF extends JavaMemberBuilderAbst<PARENT, SELF>>
         extends DirectiveBuilderAbst<PARENT, Directive, SELF> {
 
-    private final MemberDoc memberDoc_;
-    protected final Map<String, ClassDoc> imports_;
+    private final Element memberDoc_;
+    protected final Map<String, TypeElement> imports_;
     protected final RstGeneratorContext docContext_;
+    protected final Utils utils_;
 
-    public JavaMemberBuilderAbst(Directive.Type type, MemberDoc memberDoc, RstGeneratorContext docContext) {
+    public JavaMemberBuilderAbst(Directive.Type type, Element element, RstGeneratorContext docContext) {
         super(type);
-        this.memberDoc_ = memberDoc;
-        this.docContext_ = docContext;
-        this.imports_ = new ImportsCollectorImpl().collect(memberDoc).getImportsMap();
+        this.memberDoc_ = Objects.requireNonNull(element);
+        this.docContext_ = Objects.requireNonNull(docContext);
+        this.utils_ = docContext_.getRstConfiguration().getHtmlConfiguration().utils;
+        this.imports_ = RstDocletComponentFactory.getInstance().newImportsCollector(utils_).collect(element).getImportsMap();
     }
 
-    public JavaMemberBuilderAbst<PARENT, SELF> fillImports(Map<String, ClassDoc> imports) {
+    public JavaMemberBuilderAbst<PARENT, SELF> fillImports(Map<String, TypeElement> imports) {
         imports.putAll(imports_);
         return this;
     }
@@ -72,7 +74,7 @@ public abstract class JavaMemberBuilderAbst<
                 .map(Text::new)
                 .collect(Collectors.toList()));
 
-        directive.getOptions().put("outertype", memberDoc_.containingClass().typeName());
+        directive.getOptions().put("outertype", utils_.getSimpleName(memberDoc_.getEnclosingElement()));
 
         BlockQuoteBuilder<?> bodyBuilder = new BlockQuoteBuilderImpl<>();
         fillElements(bodyBuilder);
@@ -82,16 +84,17 @@ public abstract class JavaMemberBuilderAbst<
     protected abstract void fillArguments(List<String> argumentList);
 
     protected void fillElements(BlockQuoteBuilder<?> bodyBuilder) {
+        List<? extends DocTree> tags = utils_.getBody(memberDoc_);
+        List<? extends DocTree> inlineTags = utils_.getBlockTags(memberDoc_, DocTree.Kind.UNKNOWN_INLINE_TAG);
         bodyBuilder
-                .ifTrue(memberDoc_.tags().length > 0, shiftBuilder -> {
+                .ifTrue(inlineTags.size() > 0, shiftBuilder -> {
                     new TagUtils(docContext_).appendTags(bodyBuilder, memberDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
                 })
-                .ifTrue(memberDoc_.inlineTags().length > 0, quoteBuilder -> {
+                .ifTrue(tags.size() > 0, quoteBuilder -> {
                     IncludeDocument includeDocument = new IncludeDocument();
-                    includeDocument.getChildren().add(
-                            new CommentBuilder(
-                                    docContext_,
-                                    memberDoc_).build());
+                    includeDocument.getChildren().add(new CommentBuilder(
+                            memberDoc_,
+                            docContext_).build());
                     quoteBuilder.addChild(includeDocument);
                 });
     }
@@ -99,27 +102,37 @@ public abstract class JavaMemberBuilderAbst<
     protected String collapseNamespaces(String content) {
         String[] values = new String[]{content};
         imports_.forEach((name, classDoc) -> {
-            values[0] = values[0].replace(name, classDoc.typeName());
+            values[0] = values[0].replace(name, utils_.getSimpleName(classDoc));
         });
         return values[0];
     }
 
-    protected static String formatAnnotations(ProgramElementDoc programElementDoc) {
+    protected String formatAnnotations(Element programElementDoc) {
         String result = "";
-        if (programElementDoc.annotations().length > 0) {
-            result = Arrays.stream(programElementDoc.annotations())
-                    .map(a -> "@" + a.annotationType().typeName())
+        if (programElementDoc.getAnnotationMirrors().size() > 0) {
+            result = programElementDoc.getAnnotationMirrors().stream()
+                    .map(a -> "@" + a.getAnnotationType().asElement().getSimpleName().toString())
                     .collect(Collectors.joining(" "));
         }
         return result;
     }
 
-    protected static String formatModifiers(ProgramElementDoc programElementDoc) {
-        if (programElementDoc.containingClass().isInterface()) {
-            return programElementDoc.modifiers().replace("public", "").trim();
+    protected String formatModifiers(Element programElementDoc) {
+        Set<Modifier> modifiers;
+        if (programElementDoc.getEnclosingElement().getKind().isInterface()) {
+            modifiers = programElementDoc.getModifiers().stream().filter(m -> m != Modifier.PUBLIC && m != Modifier.ABSTRACT).collect(Collectors.toSet());
         } else {
-            return programElementDoc.modifiers();
+            modifiers = programElementDoc.getModifiers();
         }
+        return modifiers.stream().map(Modifier::toString).collect(Collectors.joining(" "));
+    }
+
+
+    private static final Pattern COMMA_PATTERN = Pattern.compile(",\\S");
+
+    protected static String reformatCommas(String text) {
+        text = text.replace("<wbr>", " ");
+        return COMMA_PATTERN.matcher(text).replaceAll((m) -> m.group(0).replaceAll(",", ", "));
     }
 
 

@@ -17,6 +17,7 @@
  */
 package com.devives.rstdoclet.html2rst;
 
+import com.devives.rstdoclet.util.ImportsCollectorImpl;
 import com.sun.javadoc.ClassDoc;
 
 import java.util.Arrays;
@@ -42,7 +43,7 @@ public class DocUtils {
         if (!type.isPrimitive()) {
             Map<String, ClassDoc> refClasses = new HashMap<>();
             refClasses.put(type.qualifiedTypeName(), type.asClassDoc());
-            refClasses.putAll(new ImportsCollector().collect(type.asClassDoc()).getImportsMap());
+            refClasses.putAll(new ImportsCollectorImpl().collect(type.asClassDoc()).getImportsMap());
             for (Map.Entry<String, ClassDoc> entry : refClasses.entrySet()) {
                 result = result.replace(entry.getKey(), entry.getValue().typeName());
             }

@@ -17,35 +17,14 @@
  */
 package com.devives.rstdoclet;
 
-import jdk.javadoc.internal.doclets.formats.html.HtmlConfiguration;
+import com.devives.rstdoclet.util.ImportsCollector;
+import com.devives.rstdoclet.util.ImportsCollectorImpl;
 import jdk.javadoc.internal.doclets.toolkit.util.Utils;
 
-public class RstConfigurationImpl implements RstConfiguration {
-
-    private final HtmlConfiguration htmlConfiguration_;
-    private final RstOptions rstOptions_;
-    public Utils utils;
-
-    public RstConfigurationImpl(HtmlConfiguration htmlConfiguration) {
-        htmlConfiguration_ = htmlConfiguration;
-        rstOptions_ = new RstOptions(htmlConfiguration.getOptions(), htmlConfiguration);
-    }
-
-    public HtmlConfiguration getHtmlConfiguration() {
-        return htmlConfiguration_;
-    }
-
-    RstOptions getOptions() {
-        return rstOptions_;
-    }
+public class RstDocletComponentFactoryImpl extends RstDocletComponentFactory {
 
     @Override
-    public String getPackageIndexFileName() {
-        return getOptions().getPackageIndexFileName();
-    }
-
-    @Override
-    public Utils utils() {
-        return utils;
+    public ImportsCollector newImportsCollector(Utils utils) {
+        return new ImportsCollectorImpl(utils);
     }
 }

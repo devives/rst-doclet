@@ -15,37 +15,31 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.devives.rstdoclet;
+package com.devives.rstdoclet.util;
 
-import jdk.javadoc.internal.doclets.formats.html.HtmlConfiguration;
+import jdk.javadoc.internal.doclets.toolkit.Content;
 import jdk.javadoc.internal.doclets.toolkit.util.Utils;
 
-public class RstConfigurationImpl implements RstConfiguration {
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.SimpleTypeVisitor9;
 
-    private final HtmlConfiguration htmlConfiguration_;
-    private final RstOptions rstOptions_;
-    public Utils utils;
+public class ImportsCollectorImpl extends ImportsCollectorAbst {
 
-    public RstConfigurationImpl(HtmlConfiguration htmlConfiguration) {
-        htmlConfiguration_ = htmlConfiguration;
-        rstOptions_ = new RstOptions(htmlConfiguration.getOptions(), htmlConfiguration);
-    }
-
-    public HtmlConfiguration getHtmlConfiguration() {
-        return htmlConfiguration_;
-    }
-
-    RstOptions getOptions() {
-        return rstOptions_;
+    public ImportsCollectorImpl(Utils utils) {
+        super(utils);
     }
 
     @Override
-    public String getPackageIndexFileName() {
-        return getOptions().getPackageIndexFileName();
-    }
-
-    @Override
-    public Utils utils() {
-        return utils;
+    protected void collectTypeParameters(TypeMirror typeMirror) {
+        typeMirror.accept(new SimpleTypeVisitor9<Content, Void>() {
+            @Override
+            public Content visitDeclared(DeclaredType t, Void unused) {
+                for (TypeMirror argTypeMirror : t.getTypeArguments()) {
+                    collect(argTypeMirror);
+                }
+                return super.visitDeclared(t, unused);
+            }
+        }, null);
     }
 }
