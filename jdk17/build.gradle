@@ -81,7 +81,7 @@ java {
 
 sourceSets {
     main {
-        java.srcDirs += './../jdk-shared/src/main/java/'
+        java.srcDirs += '../jdk-shared/src/main/java/'
     }
 }
 
@@ -103,7 +103,7 @@ jar {
     }
 
     into("META-INF") {
-        from { "LICENSE-GPL-2.0" }
+        from { "../LICENSE-GPL-3.0" }
     }
 }
 
@@ -116,7 +116,7 @@ sourcesJar {
     }
 
     into("META-INF") {
-        from { "LICENSE-GPL-2.0" }
+        from { "../LICENSE-GPL-3.0" }
     }
 
 }

@@ -146,13 +146,8 @@ Are placed at `GitHub <https://github.com/devives/rst-doclet/tree/main/usage/gra
 License
 -------
 
-The code of project distributed under the GNU General Public License version 2 only. 
+The code of project distributed under the GNU General Public License version 3 or any later version.
 The source code is available on `GitHub <https://github.com/devives/rst-doclet>`_.
-
-Why ``GNU General Public License version 2 only``?
-
-   The RstDoclet project has several code borrowings from JDK, which redistribute under GNU General Public License version 2 only.
-   May be later, borrowings will be removed and license can be changed. All depends on future and demand of the project.
 
 Links
 -----
