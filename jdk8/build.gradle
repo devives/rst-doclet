@@ -179,11 +179,18 @@ signing {
     sign publishing.publications.RstDoclet
 }
 
+tasks.register("zip-for-central-sonatype", Zip) {
+    group("publishing")
+    dependsOn("publish")
+    setArchiveFileName( "$archivesBaseName-all-$version"+".zip")
+    from(layout.buildDirectory.dir("repo")){
+        exclude("**/maven-metadata.xml*")
+    }
+}
 
 test {
     useJUnitPlatform()
 }
-
 
 tasks.register('javadoc4sphinx', Javadoc) {
     description = 'Generate rst files based on javadoc comments in code.'

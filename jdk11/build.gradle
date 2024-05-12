@@ -177,6 +177,15 @@ signing {
     sign publishing.publications.RstDoclet
 }
 
+tasks.register("zip-for-central-sonatype", Zip) {
+    group("publishing")
+    dependsOn("publish")
+    setArchiveFileName( "$archivesBaseName-all-$version"+".zip")
+    from(layout.buildDirectory.dir("repo")){
+        exclude("**/maven-metadata.xml*")
+    }
+}
+
 List<String> exportsList = [
         "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
         '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',
