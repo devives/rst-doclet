@@ -59,11 +59,6 @@ dependencies {
     testImplementation 'org.junit.platform:junit-platform-suite'
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
 var manifest = manifest {
     attributes = [
             "Manifest-Version"      : "1.0",
@@ -78,6 +73,15 @@ var manifest = manifest {
             "X-Compile-Source-JDK"  : "$sourceCompatibility",
             "X-Compile-Target-JDK"  : "$targetCompatibility"
     ]
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+        vendor = JvmVendorSpec.BELLSOFT
+    }
+    withJavadocJar()
+    withSourcesJar()
 }
 
 jar {
@@ -98,7 +102,7 @@ jar {
     }
 
     into("META-INF") {
-        from { "LICENSE-GPL-2.0" }
+        from { "../LICENSE-GPL-3.0" }
     }
 }
 
@@ -111,7 +115,7 @@ sourcesJar {
     }
 
     into("META-INF") {
-        from { "LICENSE-GPL-2.0" }
+        from { "../LICENSE-GPL-3.0" }
     }
 }
 
