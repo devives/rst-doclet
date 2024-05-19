@@ -184,7 +184,7 @@ public abstract class HtmlUtils {
         Matcher m = A_TAG_PATTERN.matcher(text);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
-            m.appendReplacement(sb, m.group(1));
+            m.appendReplacement(sb, "$1");
         }
         m.appendTail(sb);
         return sb.toString();
@@ -198,7 +198,7 @@ public abstract class HtmlUtils {
         Matcher m = CODE_TAG_PATTERN.matcher(text);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
-            m.appendReplacement(sb, m.group(1));
+            m.appendReplacement(sb, "$1");
         }
         m.appendTail(sb);
         return sb.toString();
