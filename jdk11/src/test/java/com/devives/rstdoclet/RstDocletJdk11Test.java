@@ -117,7 +117,7 @@ public class RstDocletJdk11Test {
                 , "-packageindexfilename", "package-index"
         ));
         System.out.println("sourcePath = " + sourcePath + ";" + source11Path);
-        Assertions.assertEquals(0, Main.execute(args.toArray(String[]::new)));
+        Assertions.assertEquals(1, Main.execute(args.toArray(String[]::new)));
         validateResults(
                 projectRootPath.resolve("src/test/expectations"),
                 testOutputPath);

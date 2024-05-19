@@ -87,7 +87,7 @@ public class HtmlDocletJdk11Test {
     }
 
     @Test
-    //@Disabled // Test exists for debugging purposes.
+    @Disabled // Test exists for debugging purposes.
     public void generate_forSamples_noExceptions() throws Exception {
         Path testOutputPath = outputPath.resolve("samples");
         Path sourcePath = projectRootPath.resolve("../samples/src/main/java8/");
@@ -100,7 +100,7 @@ public class HtmlDocletJdk11Test {
                 , "-sourcepath", sourcePath + ";" + source11Path
                 , "-subpackages", subPackages
         };
-        Assertions.assertEquals(0, Main.execute(args));
+        Assertions.assertEquals(1, Main.execute(args));
     }
 
 

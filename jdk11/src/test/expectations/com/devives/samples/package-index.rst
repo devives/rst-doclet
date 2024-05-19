@@ -30,6 +30,7 @@ Sample classes package. This is inline anchor.
    SampleFieldDeclarations.rst
    SampleGenericCollection.rst
    SampleInterface.rst
+   SampleInterface$Sample.rst
    SampleInterface2.rst
    SampleMethodDeclarations.rst
    SampleParametrizedClass.rst

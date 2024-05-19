@@ -130,11 +130,21 @@ public interface SampleMethodDeclarations<T> {
 
     /**
      * Method with class type parameter.
+     *
      * @param map map
-     * @return Some object
      * @param <R> return type
+     * @return Some object
      */
     default <R> R methodWithClassTypeParameter(Map<T, R> map) {
+        return null;
+    }
+
+    /**
+     * Incorrect link in return.
+     *
+     * @return {@link Map<String, Object>}
+     */
+    default Map<String, Object> getIncorrectLinkinReturn() {
         return null;
     }
 }

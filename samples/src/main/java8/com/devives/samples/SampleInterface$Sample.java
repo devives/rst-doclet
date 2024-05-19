@@ -20,6 +20,6 @@ package com.devives.samples;
 /**
  * Sample interface.
  */
-public interface SampleInterface extends SampleInterface$Sample{
+public interface SampleInterface$Sample {
 
 }

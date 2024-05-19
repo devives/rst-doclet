@@ -72,6 +72,16 @@ functionReturnsPrimitive
 
    :return: ``true`` or ``false``\ .
 
+getIncorrectLinkinReturn
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: default Map<String, Object> getIncorrectLinkinReturn()
+   :outertype: SampleMethodDeclarations
+
+   Incorrect link in return.
+
+   :return: :java:ref:`Map <java.util.Map>`
+
 methodWithClassTypeParameter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
