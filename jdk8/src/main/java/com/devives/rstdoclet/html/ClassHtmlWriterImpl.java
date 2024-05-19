@@ -75,9 +75,13 @@ public class ClassHtmlWriterImpl extends ClassWriterImpl {
                                      Content label, boolean strong, String style,
                                      boolean code) {
         Content content = super.getCrossClassLink(qualifiedClassName, refMemName, label, strong, style, code);
-        String text = HtmlUtils.removeCodeTags((label != null) ? label.toString() : "");
-        InlineElement inlineElement = new JavaRef(qualifiedClassName, StringUtils.findFirstNotNullOrEmpty(text, qualifiedClassName));
-        return new RstContent(inlineElement, content);
+        if (StringUtils.notNullOrEmpty(qualifiedClassName)) {
+            String text = HtmlUtils.removeCodeTags((label != null) ? label.toString() : "");
+            InlineElement inlineElement = new JavaRef(qualifiedClassName, StringUtils.findFirstNotNullOrEmpty(text, qualifiedClassName));
+            return new RstContent(inlineElement, content);
+        } else {
+            return null;
+        }
     }
 
 }
