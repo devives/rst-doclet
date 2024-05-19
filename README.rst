@@ -40,7 +40,7 @@ Quick Start
    .. code:: gradle
 
       dependencies {
-          rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.4.0')
+          rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.4.1')
       }
 
    Java 11
@@ -48,7 +48,7 @@ Quick Start
    .. code:: gradle
 
       dependencies {
-          rstDoclet('com.devives:devive-rst-doclet-jdk11-all:0.4.0')
+          rstDoclet('com.devives:devive-rst-doclet-jdk11-all:0.4.1')
       }
 
    Java 17
@@ -56,7 +56,7 @@ Quick Start
    .. code:: gradle
 
       dependencies {
-          rstDoclet('com.devives:devive-rst-doclet-jdk17-all:0.4.0')
+          rstDoclet('com.devives:devive-rst-doclet-jdk17-all:0.4.1')
       }
 #. Register gradle task ``javadoc4sphinx``depends java version:
 
