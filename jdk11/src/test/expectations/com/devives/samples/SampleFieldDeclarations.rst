@@ -1,8 +1,8 @@
-.. java:import:: java.util HashMap
+.. java:import:: com.devives.samples.inners SampleRootInterface
 
 .. java:import:: java.util Collection
 
-.. java:import:: com.devives.samples.inners SampleRootInterface
+.. java:import:: java.util HashMap
 
 .. java:import:: java.util List
 

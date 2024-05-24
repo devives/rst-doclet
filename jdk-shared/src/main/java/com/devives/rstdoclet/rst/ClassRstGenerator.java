@@ -121,10 +121,11 @@ public class ClassRstGenerator implements Supplier<String> {
                 ))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        List<Directive> imports = new ArrayList<>();
-        for (TypeElement doc : filteredImports.values()) {
-            imports.add(0, new JavaImportBuilder<>(doc, configuration_.utils()).build());
-        }
+        List<Directive> imports = filteredImports.values().stream()
+                .sorted(Comparator.comparing(o -> o.getQualifiedName().toString()))
+                .map(doc -> new JavaImportBuilder<>(doc, configuration_.utils()).build())
+                .collect(Collectors.toList());
+
         RstDocument document = classContentBuilder.build();
         document.getChildren().addAll(0, imports);
         return document.getSerialized("Something gone wrong.");

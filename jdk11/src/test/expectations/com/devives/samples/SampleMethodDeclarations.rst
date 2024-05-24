@@ -1,10 +1,10 @@
-.. java:import:: java.util HashMap
-
 .. java:import:: java.util Collection
 
-.. java:import:: java.util Map
+.. java:import:: java.util HashMap
 
 .. java:import:: java.util List
+
+.. java:import:: java.util Map
 
 SampleMethodDeclarations
 ========================
