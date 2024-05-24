@@ -2,6 +2,8 @@
 
 .. java:import:: java.util Collection
 
+.. java:import:: com.devives.samples.inners SampleRootInterface
+
 .. java:import:: java.util List
 
 SampleFieldDeclarations
@@ -96,6 +98,14 @@ publicField
    :outertype: SampleFieldDeclarations
 
    Public field.
+
+subpackageField
+^^^^^^^^^^^^^^^
+
+.. java:field:: public SampleRootInterface<?> subpackageField
+   :outertype: SampleFieldDeclarations
+
+   Field of ``com.devives.samples.inners.SampleRootInterface`` type.
 
 Constructors
 ------------

@@ -100,7 +100,7 @@ public class ClassRstGenerator implements Supplier<String> {
                     }
                 });
         Map<String, ClassDoc> filteredImports = imports_.entrySet().stream()
-                .filter((entry) -> (!(entry.getKey()).startsWith(classDoc_.containingPackage().name())
+                .filter((entry) -> (!(entry.getValue().containingPackage().name()).equals(classDoc_.containingPackage().name())
                         && !entry.getKey().startsWith(Object.class.getPackage().getName())
                         && entry.getValue().containingPackage() != null
                         && !entry.getValue().containingPackage().equals(classDoc_.containingPackage())

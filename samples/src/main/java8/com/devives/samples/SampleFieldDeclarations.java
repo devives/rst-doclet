@@ -17,6 +17,8 @@
  */
 package com.devives.samples;
 
+import com.devives.samples.inners.SampleRootInterface;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -71,5 +73,9 @@ public class SampleFieldDeclarations<T> {
      * Public field holds object with nested generic types.
      */
     public List<Collection<SampleInterface2<HashMap<String, T>>>> genericField5;
+    /**
+     * Field of {@code com.devives.samples.inners.SampleRootInterface} type.
+     */
+    public SampleRootInterface<?> subpackageField;
 
 }

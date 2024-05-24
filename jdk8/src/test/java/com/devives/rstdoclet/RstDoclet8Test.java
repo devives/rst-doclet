@@ -121,6 +121,30 @@ public class RstDoclet8Test {
                 testOutputPath);
     }
 
+
+    @Test
+    @Disabled
+    public void generate_for_gtk_core() throws Exception {
+        Path sourceRoot = Paths.get("d:\\git\\GlobalDev\\Global3\\ApplicationServer_Master").toAbsolutePath();
+        String sourcePath = sourceRoot.resolve("src\\gtk-core\\src\\main\\java\\") + "\\" + ";"
+                + sourceRoot.resolve("src\\common\\src\\main\\java\\") + "\\" + ";"
+                + sourceRoot.resolve("src\\engine-core\\src\\main\\java\\") + "\\" + ";";
+        String subPackages = "ru.bitec.gtk.core";
+        String outPath = sourceRoot.resolve("docs-sphinx\\sphinx-project\\source\\reference\\api\\core-gtk") + "\\";
+        String[] args = new String[]{
+                "-d", outPath
+                , "-package"
+                , "-encoding", "UTF-8"
+                , "-doclet", RstDoclet.class.getCanonicalName()
+                , "-docletpath", docletPath.toString()
+                , "-sourcepath", sourcePath
+                , "-subpackages", subPackages
+                , "-packageindexfilename", "package-index"
+                , "-link" , "https://docs.oracle.com/javase/8/docs/api/"
+        };
+        Assertions.assertEquals(1, Main.execute(args));
+    }
+
     @Test
     public void generate_forRstDoclet_noExceptions() throws Exception {
         Path testOutputPath = outputPath.resolve("rst-doclet");
