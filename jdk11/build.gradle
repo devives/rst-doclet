@@ -27,24 +27,30 @@ configurations {
 dependencies {
     // Why `compileOnly` instead `api`?
     // We build a fat jar. `compileOnly` dependencies will no be added to pom.xml.
-    compileOnly 'com.devives:devive-rst-document:0.2.0'
-    //compileOnly project(path: ':rst-document')
-    compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.0'
-    //compileOnly project(path: ':rst-document-for-sphinx')
-    compileOnly project(path: ':html2rst')
-    compileOnly project(path: ':javadoc4sphinx')
-//    compileOnly project(path: ':jdkxx')
+    compileOnly 'com.devives:devive-commons-lang:0.1.0'
+    testImplementation 'com.devives:devive-commons-lang:0.1.0'
+    if (project.hasProperty("com.devives.rst.project-group")) {
+        compileOnly project(path: ':rst-document')
+        compileOnly project(path: ':rst-document-for-sphinx')
+        compileOnly project(path: ':rst-doclet:html2rst')
+        compileOnly project(path: ':rst-doclet:javadoc4sphinx')
+        testImplementation project(path: ':rst-document')
+        testImplementation project(path: ':rst-document-for-sphinx')
+        testImplementation project(path: ':rst-doclet:html2rst')
+        testImplementation project(path: ':rst-doclet:javadoc4sphinx')
+        rstDoclet project(path: ':rst-doclet:jdk11')
+    } else {
+        compileOnly 'com.devives:devive-rst-document:0.2.0'
+        compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.0'
+        compileOnly project(path: ':html2rst')
+        compileOnly project(path: ':javadoc4sphinx')
+        testImplementation 'com.devives:devive-rst-document:0.2.0'
+        testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
+        testImplementation project(path: ':html2rst')
+        testImplementation project(path: ':javadoc4sphinx')
+        rstDoclet project(path: ':jdk11')
+    }
     compileOnly 'org.jsoup:jsoup:1.15.3'
-
-    rstDoclet project(path: ':jdk11')
-
-    testImplementation 'com.devives:devive-rst-document:0.2.0'
-    //testImplementation project(path: ':rst-document')
-    testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
-    //testImplementation project(path: ':rst-document-for-sphinx')
-    testImplementation project(path: ':html2rst')
-    testImplementation project(path: ':javadoc4sphinx')
-//    testImplementation project(path: ':jdkxx')
     testImplementation 'org.jsoup:jsoup:1.15.3'
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
