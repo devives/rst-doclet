@@ -1,0 +1,245 @@
+plugins {
+    id 'java-library'
+    id "com.github.hierynomus.license" version "0.16.1"
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'com.devives'
+archivesBaseName = "devive-rst-doclet-jdk21"
+version = '0.4.2'
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+javadoc.options.encoding = "UTF-8"
+javadoc.failOnError = false
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+configurations {
+    rstDoclet
+}
+
+dependencies {
+    // Why `compileOnly` instead `api`?
+    // We build a fat jar. `compileOnly` dependencies will no be added to pom.xml.
+    compileOnly 'com.devives:devive-commons-lang:0.1.0'
+    testImplementation 'com.devives:devive-commons-lang:0.1.0'
+    if (project.hasProperty("com.devives.rst.project-group")) {
+        compileOnly project(path: ':rst-document')
+        compileOnly project(path: ':rst-document-for-sphinx')
+        compileOnly project(path: ':rst-doclet:html2rst')
+        compileOnly project(path: ':rst-doclet:javadoc4sphinx')
+        testImplementation project(path: ':rst-document')
+        testImplementation project(path: ':rst-document-for-sphinx')
+        testImplementation project(path: ':rst-doclet:html2rst')
+        testImplementation project(path: ':rst-doclet:javadoc4sphinx')
+        rstDoclet project(path: ':rst-doclet:jdk21')
+    } else {
+        compileOnly 'com.devives:devive-rst-document:0.2.0'
+        compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.0'
+        compileOnly project(path: ':html2rst')
+        compileOnly project(path: ':javadoc4sphinx')
+        testImplementation 'com.devives:devive-rst-document:0.2.0'
+        testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
+        testImplementation project(path: ':html2rst')
+        testImplementation project(path: ':javadoc4sphinx')
+        rstDoclet project(path: ':jdk21')
+    }
+    compileOnly 'org.jsoup:jsoup:1.15.3'
+    testImplementation 'org.jsoup:jsoup:1.15.3'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.platform:junit-platform-suite'
+}
+
+
+var manifest = manifest {
+    attributes = [
+            "Manifest-Version"      : "1.0",
+            "Name"                  : "com/devives/rstdoclet",
+            "Specification-Title"   : "RstDoclet for JavaDoc Tool, generating reStructuredText for Sphinx",
+            "Specification-Version" : "$project.version",
+            "Specification-Vendor"  : "Vladimir Ivanov",
+            "Implementation-Title"  : "com.devives.rstdoclet",
+            "Implementation-Version": "$project.version",
+            "Implementation-Vendor" : "Vladimir Ivanov",
+            "Build-Date"            : new Date().format("yyyy-MM-dd HH:mm:ss (Z)"),
+            "X-Compile-Source-JDK"  : "$sourceCompatibility",
+            "X-Compile-Target-JDK"  : "$targetCompatibility"
+    ]
+}
+
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+        vendor = JvmVendorSpec.BELLSOFT
+    }
+    withJavadocJar()
+    withSourcesJar()
+}
+
+sourceSets {
+    main {
+        java.srcDirs += '../jdk-shared/src/main/java/'
+    }
+}
+
+jar {
+    setManifest(manifest)
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    archiveAppendix = 'all'
+    from {
+        // Collect fat jar, excluding 'tools.jar'
+        configurations.compileClasspath
+                .filter { it.toString().endsWith('tools.jar') ? null : it }
+                .collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    into("META-INF/maven/$project.group/$project.name") {
+        from { generatePomFileForRstDocletPublication }
+        rename ".*", "pom.xml"
+    }
+
+    into("META-INF") {
+        from { "../LICENSE-GPL-3.0" }
+    }
+}
+
+sourcesJar {
+    setManifest(manifest)
+
+    into("META-INF/maven/$project.group/$project.name") {
+        from { generatePomFileForRstDocletPublication }
+        rename ".*", "pom.xml"
+    }
+
+    into("META-INF") {
+        from { "../LICENSE-GPL-3.0" }
+    }
+
+}
+
+license {
+    header project.file('./../codequality/HEADER')
+    strictCheck true
+}
+
+publishing {
+    publications {
+        RstDoclet(MavenPublication) {
+            from components.java
+            pom {
+                packaging = "jar"
+                artifactId = archivesBaseName + '-all'
+                url = "https://github.com/devives/rst-doclet"
+                description = "Doclet for JavaDoc Tool, generating reStructuredText for Sphinx."
+
+                properties = [
+                        "project.build.sourceEncoding": "UTF-8"
+                ]
+
+                organization {
+                    name = "DEVIVES"
+                    url = "https://github.com/devives"
+                }
+
+                licenses {
+                    license {
+                        name = "GNU General Public License Version 2.0"
+                        url = "https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt"
+                    }
+                }
+
+                scm {
+                    connection = "scm:https://github.com/devives/rst-doclet.git"
+                    developerConnection = "scm:git@github.com:devives/rst-doclet.git"
+                    url = "https://github.com/devives/rst-doclet"
+                }
+
+                developers {
+                    developer {
+                        id = "ivvlev"
+                        name = "Vladimir Ivanov"
+                        email = "ivvlev@devives.com"
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'buildRepo'
+            url = layout.buildDirectory.dir("repo")
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.RstDoclet
+}
+
+tasks.register("zip-for-central-sonatype", Zip) {
+    group("publishing")
+    dependsOn("publish")
+    setArchiveFileName( "$archivesBaseName-all-$version"+".zip")
+    from(layout.buildDirectory.dir("repo")){
+        exclude("**/maven-metadata.xml*")
+    }
+}
+
+List<String> exportsList = [
+        "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED',
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED',
+]
+
+List<String> testExportsList = [
+        '--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED',
+]
+
+List<String> opensList = [
+        '--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',
+]
+
+test {
+    useJUnitPlatform()
+    jvmArgs += exportsList + testExportsList + opensList
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += exportsList + testExportsList
+}
+
+tasks.withType(Javadoc).configureEach {
+    options {
+        addMultilineStringsOption("-add-exports").setValue(exportsList.collect { it.replace("--add-exports=", "") })
+    }
+}
+
+tasks.register('javadoc4sphinx', Javadoc) {
+    description = 'Generate rst files based on javadoc comments in code.'
+    group = 'documentation'
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+    destinationDir = file("$docsDir/javadoc4sphinx")
+    failOnError = true
+    options.docletpath = configurations.rstDoclet.files as List
+    options.doclet = "com.devives.rstdoclet.RstDoclet"
+    options.encoding = "UTF-8"
+    options.showFromPackage()
+    (options as CoreJavadocOptions).addStringOption("packageIndexFileName", "package-index")
+    (options as CoreJavadocOptions).setJFlags(exportsList + opensList)
+}

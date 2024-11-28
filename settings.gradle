@@ -7,8 +7,10 @@ include 'html2rst',
         'javadoc4sphinx',
         'jdk8',
         'jdk11',
-        'jdk17'
+        'jdk17',
+        'jdk21'
 include 'usage:gradle:java8',
         'usage:gradle:java11',
-        'usage:gradle:java17'
+        'usage:gradle:java17',
+        'usage:gradle:java21'
 

@@ -149,6 +149,37 @@ public class ReadMeGenerator implements Constants {
                                         "    failOnError = false\n" +
                                         "    (options as CoreJavadocOptions).addStringOption(\"packageindexfilename\", \"package-index\")\n" +
                                         "    (options as CoreJavadocOptions).setJFlags(exportsList)\n" +
+                                        "}")
+                                .paragraph("Java 21")
+                                .code("gradle", "List<String> exportsList = [\n" +
+                                        "        '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED',\n" +
+                                        "]\n" +
+                                        "\n" +
+                                        "List<String> opensList = [\n" +
+                                        "        '--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',\n" +
+                                        "]\n" +
+                                        "\n" +
+                                        "tasks.register('javadoc4sphinx', Javadoc) {\n" +
+                                        "    description = 'Generate rst files based on javadoc comments in code.'\n" +
+                                        "    group = 'documentation'\n" +
+                                        "    source = sourceSets.main.allJava\n" +
+                                        "    classpath = configurations.compileClasspath\n" +
+                                        "    destinationDir = file(\"$docsDir/javadoc4sphinx\")\n" +
+                                        "    options.docletpath = configurations.rstDoclet.files.asType(List)\n" +
+                                        "    options.doclet = \"com.devives.rstdoclet.RstDoclet\"\n" +
+                                        "    options.encoding = \"UTF-8\"\n" +
+                                        "    options.windowTitle(null)\n" +
+                                        "    options.showFromPackage()\n" +
+                                        "    failOnError = false\n" +
+                                        "    (options as CoreJavadocOptions).addStringOption(\"packageindexfilename\", \"package-index\")\n" +
+                                        "    (options as CoreJavadocOptions).setJFlags(exportsList + opensList)\n" +
                                         "}"))
                         .item("Reload All Gradle Projects.")
                         .item(itm -> itm.paragraph(p -> p.text("Execute gradle task ").literal("documentation \\ javadoc4sphinx").text(".")))

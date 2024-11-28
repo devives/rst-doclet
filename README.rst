@@ -134,6 +134,41 @@ Quick Start
           (options as CoreJavadocOptions).addStringOption("packageindexfilename", "package-index")
           (options as CoreJavadocOptions).setJFlags(exportsList)
       }
+
+   Java 21
+
+   .. code:: gradle
+
+      List<String> exportsList = [
+              '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+              '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',
+              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',
+              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',
+              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',
+              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html.markup=ALL-UNNAMED',
+              '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.builders=ALL-UNNAMED',
+      ]
+
+      List<String> opensList = [
+              '--add-opens=jdk.javadoc/jdk.javadoc.internal.doclets.formats.html=ALL-UNNAMED',
+      ]
+
+      tasks.register('javadoc4sphinx', Javadoc) {
+          description = 'Generate rst files based on javadoc comments in code.'
+          group = 'documentation'
+          source = sourceSets.main.allJava
+          classpath = configurations.compileClasspath
+          destinationDir = file("$docsDir/javadoc4sphinx")
+          options.docletpath = configurations.rstDoclet.files.asType(List)
+          options.doclet = "com.devives.rstdoclet.RstDoclet"
+          options.encoding = "UTF-8"
+          options.windowTitle(null)
+          options.showFromPackage()
+          failOnError = false
+          (options as CoreJavadocOptions).addStringOption("packageindexfilename", "package-index")
+          (options as CoreJavadocOptions).setJFlags(exportsList + opensList)
+      }
 #. Reload All Gradle Projects.
 #. Execute gradle task ``documentation \ javadoc4sphinx``.
 #. Find generated files at ``$project.build/docs/javadoc4sphinx/``.
