@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * {@link jdk.javadoc.internal.doclets.formats.html.HtmlDocletWriter#commentTagsToContent(DocTree, Element, List, boolean)}
+ * @see "jdk.javadoc.internal.doclets.formats.html.HtmlDocletWriter#commentTagsToContent(DocTree, Element, List, boolean)"
  */
 public class CommentBuilder {
 
