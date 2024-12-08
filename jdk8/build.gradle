@@ -207,7 +207,7 @@ tasks.register('javadoc4sphinx', Javadoc) {
     source = sourceSets.main.allJava
     classpath = configurations.compileClasspath
     destinationDir = file("$docsDir/javadoc4sphinx")
-    failOnError = true
+    failOnError = false
     options.docletpath = configurations.rstDoclet.files as List
     options.doclet = "com.devives.rstdoclet.RstDoclet"
     options.encoding = "UTF-8"

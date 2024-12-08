@@ -1,3 +1,5 @@
+.. java:import:: java.util Map
+
 SampleClass17
 =============
 
@@ -21,6 +23,16 @@ SampleClass17
 
 Methods
 -------
+
+getLinkWithTypeParametersInReturn
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Map<String, Object> getLinkWithTypeParametersInReturn()
+   :outertype: SampleClass17
+
+   Link with label in return.
+
+   :return: :java:ref:`Map <java.util.Map>`
 
 seeTagsInComment
 ^^^^^^^^^^^^^^^^

@@ -17,6 +17,8 @@
  */
 package com.devives.samples;
 
+import java.util.Map;
+
 /**
  * Sample class with java 17 javadoc features.
  */
@@ -29,6 +31,15 @@ public class SampleClass17 extends SampleClassAbst<String> implements SampleInte
      * @see java.util.ArrayList<String>
      */
     public void seeTagsInComment() {
+    }
+
+    /**
+     * Link with label in return.
+     *
+     * @return {@link Map<String, Object>}
+     */
+    public  Map<String, Object> getLinkWithTypeParametersInReturn() {
+        return null;
     }
 
 }

@@ -61,7 +61,7 @@ tasks.register('javadoc4sphinx', Javadoc) {
     options.doclet = "com.devives.rstdoclet.RstDoclet"
     options.encoding = "UTF-8"
     options.showFromPackage()
-    failOnError = false
+    failOnError = true
     (options as CoreJavadocOptions).addStringOption("packageindexfilename", "package-index")
     (options as CoreJavadocOptions).setJFlags(exportsList)
 }

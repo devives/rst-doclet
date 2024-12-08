@@ -72,7 +72,8 @@ public abstract class JavaMemberBuilderAbst<
                 .map(Text::new)
                 .collect(Collectors.toList()));
 
-        directive.getOptions().put("outertype", memberDoc_.containingClass().typeName());
+        directive.getOptions().put("outertype", memberDoc_.containingClass().typeName()
+        );
 
         BlockQuoteBuilder<?> bodyBuilder = new BlockQuoteBuilderImpl<>();
         fillElements(bodyBuilder);

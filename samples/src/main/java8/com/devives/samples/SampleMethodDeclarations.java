@@ -140,11 +140,20 @@ public interface SampleMethodDeclarations<T> {
     }
 
     /**
-     * Incorrect link in return.
+     * Link in return.
      *
-     * @return {@link Map<String, Object>}
+     * @return {@link Map}
      */
-    default Map<String, Object> getIncorrectLinkinReturn() {
+    default Map<String, Object> getLinkInReturn() {
+        return null;
+    }
+
+    /**
+     * Link with label in return.
+     *
+     * @return {@link Map Map&lt;String, Object&gt;}
+     */
+    default Map<String, Object> getLinkWithLabelInReturn() {
         return null;
     }
 }

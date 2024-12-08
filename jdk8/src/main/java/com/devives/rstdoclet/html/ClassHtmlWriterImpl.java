@@ -49,7 +49,11 @@ public class ClassHtmlWriterImpl extends ClassWriterImpl {
             InlineElement inlineElement = new JavaMemberRefBuilder<>(linkInfo.executableMemberDoc).build();
             return new RstContent(inlineElement, content);
         } else if (linkInfo.classDoc != null) {
-            InlineElement inlineElement = new JavaTypeRefBuilder<>(linkInfo.classDoc).build();
+            String text = null;
+            if (linkInfo.label != null) {
+                text = HtmlUtils.removeCodeTags((linkInfo.label != null) ? linkInfo.label.toString() : "");
+            }
+            InlineElement inlineElement = new JavaTypeRefBuilder<>(linkInfo.classDoc).setText(text).build();
             return new RstContent(inlineElement, content);
         }
         return content;

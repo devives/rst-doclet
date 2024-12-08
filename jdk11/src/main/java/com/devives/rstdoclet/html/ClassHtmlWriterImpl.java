@@ -44,7 +44,11 @@ public class ClassHtmlWriterImpl extends jdk.javadoc.internal.doclets.formats.ht
             InlineElement inlineElement = new JavaMemberRefBuilder<>(linkInfo.executableElement, configuration.utils).build();
             return  new RstContent(inlineElement, content);
         } else if (linkInfo.typeElement != null) {
-            InlineElement inlineElement = new JavaTypeRefBuilder<>(linkInfo.typeElement).build();
+            String text = null;
+            if (linkInfo.label != null) {
+                text = HtmlUtils.removeCodeTags((linkInfo.label != null) ? linkInfo.label.toString() : "");
+            }
+            InlineElement inlineElement = new JavaTypeRefBuilder<>(linkInfo.typeElement).setText(text).build();
             return  new RstContent(inlineElement, content);
         }
         return content;

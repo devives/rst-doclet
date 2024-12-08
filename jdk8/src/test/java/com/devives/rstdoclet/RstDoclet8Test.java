@@ -115,7 +115,7 @@ public class RstDoclet8Test {
                 , "-packageindexfilename", "package-index"
         };
         System.out.println("sourcePath = " + sourcePath);
-        Assertions.assertEquals(1, Main.execute(args));
+        Assertions.assertEquals(0, Main.execute(args));
         validateResults(
                 projectRootPath.resolve("src/test/expectations"),
                 testOutputPath);
