@@ -24,7 +24,7 @@ public class JavaDocParagraph extends Paragraph {
     @Override
     protected void onCollectChildText(StringBuilder stringBuilder, String itemText) {
         if (stringBuilder.length() > 0 && !itemText.isEmpty()) {
-            if (!(itemText.startsWith(NL) || itemText.startsWith(SPACE))) {
+            if (!(itemText.startsWith("\r\n") || itemText.startsWith("\n") || itemText.startsWith(SPACE))) {
                 final String ending = stringBuilder.substring(Math.min(stringBuilder.length(), Math.max(2, stringBuilder.length() - NL.length())));
                 if (ending.endsWith("*") || ending.endsWith("`") || ending.endsWith("`_")) {
                     stringBuilder.append(HIDDEN_SPACE);

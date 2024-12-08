@@ -3,8 +3,8 @@ plugins {
 }
 
 group = 'com.devives'
-archivesBaseName = "devive-javasphinx"
-version = '0.3.0'
+archivesBaseName = "devive-javadoc4sphinx"
+version = '0.3.1'
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -42,9 +42,9 @@ dependencies {
     testImplementation 'org.junit.platform:junit-platform-suite'
 }
 
-jar {
-
-}
+//jar {
+//
+//}
 
 //configurations.archives.with {
 //    artifacts.remove artifacts.find { it.toString().contains("jar") }
