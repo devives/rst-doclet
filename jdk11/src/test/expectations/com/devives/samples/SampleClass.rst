@@ -8,11 +8,19 @@ SampleClass
 
 .. java:type:: public class SampleClass extends SampleClassAbst<String> implements SampleInterface, SampleInterface2<String>
 
+   .. versionadded:: 0.1.0 Since description.
+
+   .. versionchanged:: 0.1.0 Version description.
+
+   .. deprecated:: Deprecated description.
+
    Sample class.
 
    * `HTML ссылка на индекс пакета. <package-index.html>`__
    * :ref:`Sphinx ссылка на якорь в описании пакета. <internal_sphinx_anchor>`
    * :ref:`Native Sphinx ссылка на якорь в описании пакета. <internal_sphinx_anchor_native>`
+
+   .. sectionauthor:: Author name adaress.
 
    .. seealso::
 
@@ -103,6 +111,18 @@ linkTagsInComment
    * :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
    * `com.devives.samples <package-index.html>`__
    * :java:ref:`ArrayList <java.util.ArrayList>`
+
+methodWithInlineTags
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void methodWithInlineTags()
+   :outertype: SampleClass
+
+   .. versionadded:: 0.1.0 Since description.
+
+   .. deprecated:: 0.1.0 Deprecated description.
+
+   Some method with inline tags.
 
 multilineCodeExamples
 ^^^^^^^^^^^^^^^^^^^^^

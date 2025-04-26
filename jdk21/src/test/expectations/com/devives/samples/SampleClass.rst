@@ -8,11 +8,19 @@ SampleClass
 
 .. java:type:: public class SampleClass extends SampleClassAbst<String> implements SampleInterface, SampleInterface2<String>
 
+   .. versionadded:: 0.1.0 Since description.
+
+   .. versionchanged:: 0.1.0 Version description.
+
+   .. deprecated:: Deprecated description.
+
    Sample class.
 
    * `HTML ссылка на индекс пакета. <package-index.html>`__
    * :ref:`Sphinx ссылка на якорь в описании пакета. <internal_sphinx_anchor>`
    * :ref:`Native Sphinx ссылка на якорь в описании пакета. <internal_sphinx_anchor_native>`
+
+   .. sectionauthor:: Author name adaress.
 
    .. seealso::
 
@@ -104,6 +112,18 @@ linkTagsInComment
    * `com.devives.samples <package-index.html>`__
    * :java:ref:`ArrayList <java.util.ArrayList>`
 
+methodWithInlineTags
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void methodWithInlineTags()
+   :outertype: SampleClass
+
+   .. versionadded:: 0.1.0 Since description.
+
+   .. deprecated:: 0.1.0 Deprecated description.
+
+   Some method with inline tags.
+
 multilineCodeExamples
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -115,8 +135,8 @@ multilineCodeExamples
    .. parsed-literal::
 
       public class Application(){
-          List<Integer> nums = new ArrayList<>(); 
-      }
+           List<Integer> nums = new ArrayList<>(); 
+       }
 
 
 
@@ -135,9 +155,9 @@ multilineCodeExamples
    .. parsed-literal::
 
       public class Application(){
-          @Getter
-          List<Integer> nums = new ArrayList<>(); 
-      }
+           @Getter
+           List<Integer> nums = new ArrayList<>(); 
+       }
 
 
 
@@ -146,10 +166,10 @@ multilineCodeExamples
    .. parsed-literal::
 
       <script>
-           $document.ready(function(){
-               console.log("Hello World!);
-           })
-      </script>
+            $document.ready(function(){
+                console.log("Hello World!);
+            })
+       </script>
 
 
 
@@ -177,7 +197,7 @@ seeTagsInComment
       | :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
       | :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
       | :java:ref:`This is multiline
-        label for reference <com.devives.samples.SampleClass.inlineAnchorExample()>`
+         label for reference <com.devives.samples.SampleClass.inlineAnchorExample()>`
       | :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
       | :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
       | `com.devives.samples <package-index.html>`__

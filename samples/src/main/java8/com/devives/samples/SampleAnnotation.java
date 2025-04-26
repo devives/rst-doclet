@@ -21,6 +21,11 @@ import java.lang.annotation.*;
 
 /**
  * Sample annotation.
+ *
+ * @since 0.1.0 Since description.
+ * @version 0.1.0 Version description.
+ * @author Author name adaress.
+ * @deprecated Deprecated description.
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})

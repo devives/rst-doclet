@@ -30,9 +30,24 @@ package com.devives.samples;
  * @see <a href="internal_sphinx_anchor">Sphinx ссылка на якорь в описании пакета.</a>
  * @see ":ref:`Sphinx ссылка на якорь в описании пакета.<internal_sphinx_anchor>`"
  * @see <a href="#this-is-inline-anchor">Sphinx ссылка на инлайн якорь на странице</a>
+ * @since 0.1.0 Since description.
+ * @version 0.1.0 Version description.
+ * @author Author name adaress.
+ * @deprecated Deprecated description.
  */
 @SampleAnnotation
 public class SampleClass extends SampleClassAbst<String> implements SampleInterface, SampleInterface2<String> {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 0.1.0 Since description.
+     * @deprecated 0.1.0 Deprecated description.
+     */
+    @Override
+    public void methodWithInlineTags() {
+
+    }
 
     /**
      * The problem with inline anchors: ReStructuredText allow latin symbols only. <a id='this-text-has-no-matter'>This is inline anchor</a>.

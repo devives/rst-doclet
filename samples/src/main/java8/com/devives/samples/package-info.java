@@ -23,6 +23,6 @@
  * Native Internal sphinx anchor
  * <p>
  * Sample classes package. <a id="this-text-has-no-matter">This is inline anchor</a>.
- * @since 0.1.0
+ * @since 0.1.0 Since description.
  */
 package com.devives.samples;

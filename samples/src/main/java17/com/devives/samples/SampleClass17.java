@@ -26,6 +26,17 @@ import java.util.Map;
 public class SampleClass17 extends SampleClassAbst<String> implements SampleInterface, SampleInterface2<String> {
 
     /**
+     * {@inheritDoc}
+     *
+     * @since 0.1.0 Since description.
+     * @deprecated 0.1.0 Deprecated description.
+     */
+    @Override
+    public void methodWithInlineTags() {
+
+    }
+
+    /**
      * JavaDoc 17 allow generics in {@code @see} tag.
      *
      * @see java.util.ArrayList<String>

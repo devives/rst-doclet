@@ -23,4 +23,14 @@ package com.devives.samples;
 @SampleAnnotation
 public class SampleClass21 extends SampleClassAbst<String> implements SampleInterface, SampleInterface2<String> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since 0.1.0 Since description.
+     * @deprecated 0.1.0 Deprecated description.
+     */
+    @Override
+    public void methodWithInlineTags() {
+
+    }
 }

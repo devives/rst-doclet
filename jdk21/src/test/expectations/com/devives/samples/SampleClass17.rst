@@ -34,6 +34,18 @@ getLinkWithTypeParametersInReturn
 
    :return: :java:ref:`Map <java.util.Map>`
 
+methodWithInlineTags
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void methodWithInlineTags()
+   :outertype: SampleClass17
+
+   .. versionadded:: 0.1.0 Since description.
+
+   .. deprecated:: 0.1.0 Deprecated description.
+
+   Some method with inline tags.
+
 seeTagsInComment
 ^^^^^^^^^^^^^^^^
 

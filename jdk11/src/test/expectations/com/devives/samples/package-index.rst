@@ -3,7 +3,7 @@ com.devives.samples
 
 .. java:package:: com.devives.samples
 
-.. versionadded:: 0.1.0
+.. versionadded:: 0.1.0 Since description.
 
 .. _internal_sphinx_anchor:
 

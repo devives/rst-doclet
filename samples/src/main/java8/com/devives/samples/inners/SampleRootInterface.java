@@ -26,6 +26,11 @@ public interface SampleRootInterface<R> extends SampleInterface {
 
     /**
      * Some inner class.
+     *
+     * @since 0.1.0 Since description.
+     * @version 0.1.0 Version description.
+     * @author Author name adaress.
+     * @deprecated Deprecated description.
      */
     class InnerClass {
 
@@ -33,6 +38,11 @@ public interface SampleRootInterface<R> extends SampleInterface {
 
     /**
      * Inner interface.
+     *
+     * @since 0.1.0 Since description.
+     * @version 0.1.0 Version description.
+     * @author Author name adaress.
+     * @deprecated Deprecated description.
      */
     interface InnerInterface {
 

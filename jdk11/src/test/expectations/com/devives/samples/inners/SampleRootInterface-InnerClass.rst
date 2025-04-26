@@ -7,7 +7,15 @@ SampleRootInterface.InnerClass
 .. java:type:: public static class InnerClass
    :outertype: SampleRootInterface
 
+   .. versionadded:: 0.1.0 Since description.
+
+   .. versionchanged:: 0.1.0 Version description.
+
+   .. deprecated:: Deprecated description.
+
    Some inner class.
+
+   .. sectionauthor:: Author name adaress.
 
 Constructors
 ------------

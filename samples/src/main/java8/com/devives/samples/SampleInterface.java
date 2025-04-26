@@ -19,7 +19,18 @@ package com.devives.samples;
 
 /**
  * Sample interface.
+ * @since 0.1.0 Since description.
+ * @version 0.1.0 Version description.
+ * @author Author name adaress.
+ * @deprecated Deprecated description.
  */
 public interface SampleInterface extends SampleInterface$Sample{
 
+    /**
+     * Some method with inline tags.
+     *
+     * @since 0.1.0 Since description.
+     * @deprecated 0.1.0 Deprecated description.
+     */
+    void methodWithInlineTags();
 }

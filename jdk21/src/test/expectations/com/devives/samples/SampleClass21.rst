@@ -18,3 +18,18 @@ SampleClass21
 
 .. java:constructor:: public SampleClass21()
    :outertype: SampleClass21
+
+Methods
+-------
+
+methodWithInlineTags
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void methodWithInlineTags()
+   :outertype: SampleClass21
+
+   .. versionadded:: 0.1.0 Since description.
+
+   .. deprecated:: 0.1.0 Deprecated description.
+
+   Some method with inline tags.
