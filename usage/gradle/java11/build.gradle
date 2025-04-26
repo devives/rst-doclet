@@ -33,7 +33,7 @@ configurations {
 }
 
 dependencies {
-    rstDoclet("com.devives:devive-rst-doclet-jdk11-all:0.4.3")
+    rstDoclet("com.devives:devive-rst-doclet-jdk11-all:0.4.4")
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

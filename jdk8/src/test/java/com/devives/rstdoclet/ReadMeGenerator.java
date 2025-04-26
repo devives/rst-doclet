@@ -75,19 +75,19 @@ public class ReadMeGenerator implements Constants {
                                 .paragraph("Add the library of required java version to the dependencies:")
                                 .paragraph("Java 8")
                                 .code("gradle", "dependencies {\n" +
-                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.4.3')\n" +
+                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk8-all:0.4.4')\n" +
                                         "}")
                                 .paragraph("Java 11")
                                 .code("gradle", "dependencies {\n" +
-                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk11-all:0.4.3')\n" +
+                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk11-all:0.4.4')\n" +
                                         "}")
                                 .paragraph("Java 17")
                                 .code("gradle", "dependencies {\n" +
-                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk17-all:0.4.3')\n" +
+                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk17-all:0.4.4')\n" +
                                         "}")
                                 .paragraph("Java 21")
                                 .code("gradle", "dependencies {\n" +
-                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk21-all:0.4.3')\n" +
+                                        "    rstDoclet('com.devives:devive-rst-doclet-jdk21-all:0.4.4')\n" +
                                         "}")
                         )
                         .item(itm -> itm
