@@ -85,10 +85,12 @@ public abstract class JavaMemberBuilderAbst<
 
     protected void fillElements(BlockQuoteBuilder<?> bodyBuilder) {
         List<? extends DocTree> tags = utils_.getBody(memberDoc_);
-        List<? extends DocTree> inlineTags = utils_.getBlockTags(memberDoc_, DocTree.Kind.UNKNOWN_INLINE_TAG);
+        List<? extends DocTree> inlineTags = utils_.getBlockTags(memberDoc_).stream()
+                .filter(tag -> tag.getKind() == DocTree.Kind.SINCE || tag.getKind() == DocTree.Kind.DEPRECATED)
+                .collect(Collectors.toList());
         bodyBuilder
                 .ifTrue(inlineTags.size() > 0, shiftBuilder -> {
-                    new TagUtils(docContext_).appendTags(bodyBuilder, memberDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Version, TagUtils.TagName.Deprecated));
+                    new TagUtils(docContext_).appendTags(bodyBuilder, memberDoc_, Arrays.asList(TagUtils.TagName.Since, TagUtils.TagName.Deprecated));
                 })
                 .ifTrue(tags.size() > 0, quoteBuilder -> {
                     IncludeDocument includeDocument = new IncludeDocument();
