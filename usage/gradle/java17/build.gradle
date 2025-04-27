@@ -33,7 +33,7 @@ configurations {
 }
 
 dependencies {
-    rstDoclet("com.devives:devive-rst-doclet-jdk17-all:0.4.4")
+    rstDoclet("com.devives:devive-rst-doclet-jdk17-all:0.4.5")
 }
 
 List<String> exportsList = [
