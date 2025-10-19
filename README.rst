@@ -150,6 +150,7 @@ Quick Start
       List<String> exportsList = [
               '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
               '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+              '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',
               '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',

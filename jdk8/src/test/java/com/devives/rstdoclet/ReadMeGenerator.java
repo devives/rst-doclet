@@ -159,6 +159,7 @@ public class ReadMeGenerator implements Constants {
                                 .code("gradle", "List<String> exportsList = [\n" +
                                         "        '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',\n" +
                                         "        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',\n" +
+                                        "        '--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',\n" +
                                         "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit=ALL-UNNAMED',\n" +
                                         "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.taglets=ALL-UNNAMED',\n" +
                                         "        '--add-exports=jdk.javadoc/jdk.javadoc.internal.doclets.toolkit.util=ALL-UNNAMED',\n" +
