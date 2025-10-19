@@ -63,14 +63,14 @@ public class HtmlDocletWriter extends jdk.javadoc.internal.doclets.formats.html.
                                        StringBuilder stringBuilder) {
         Content tree = new ContentBuilder();
         addReceiverAnnotationInfo(member, descList, tree);
-        tree.addContent(nbsp);
+        tree.add(nbsp);
         //todo
         //tree.add(rcvrType.typeName());
         LinkInfoImpl linkInfo = new LinkInfoImpl(configuration,
                 LinkInfoImpl.Kind.CLASS_SIGNATURE, rcvrType);
-        tree.addContent(getTypeParameterLinks(linkInfo));
-        tree.addContent(nbsp);
-        tree.addContent("this");
+        tree.add(getTypeParameterLinks(linkInfo));
+        tree.add(nbsp);
+        tree.add("this");
         stringBuilder.append(tree.toString());
     }
 

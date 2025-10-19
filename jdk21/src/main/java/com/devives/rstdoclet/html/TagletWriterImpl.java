@@ -24,27 +24,23 @@ import com.devives.rstdoclet.rst.builder.JavaTypeRefBuilder;
 import com.sun.source.doctree.DocTree;
 import com.sun.source.doctree.LinkTree;
 import com.sun.source.doctree.SeeTree;
-import jdk.javadoc.internal.doclets.formats.html.ClassWriterImpl;
+import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Symbol.MethodSymbol;
 import jdk.javadoc.internal.doclets.formats.html.HtmlConfiguration;
 import jdk.javadoc.internal.doclets.formats.html.HtmlDocletWriter;
 import jdk.javadoc.internal.doclets.formats.html.HtmlOptions;
-import jdk.javadoc.internal.doclets.formats.html.markup.ContentBuilder;
-import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle;
-import jdk.javadoc.internal.doclets.formats.html.markup.HtmlTree;
-import jdk.javadoc.internal.doclets.formats.html.markup.Text;
 import jdk.javadoc.internal.doclets.toolkit.Content;
-import jdk.javadoc.internal.doclets.toolkit.builders.SerializedFormBuilder;
 import jdk.javadoc.internal.doclets.toolkit.util.*;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class TagletWriterImpl extends jdk.javadoc.internal.doclets.formats.html.TagletWriterImpl {
 
@@ -103,7 +99,7 @@ public class TagletWriterImpl extends jdk.javadoc.internal.doclets.formats.html.
             if (refMem != null) {
                 String text = getLabelDocTree(ch, seeTag)
                         .map(dText -> HtmlUtils.removeCodeTags(dText.toString()))
-                        .orElseGet(() -> HtmlUtils.removeCodeTags(ref.toString()));
+                        .orElseGet(() -> HtmlUtils.removeCodeTags(formatMemberReferenceName((Symbol) refMem)));
                 InlineElement inlineElement = new JavaMemberRefBuilder<>(refMem, configuration.utils).setText(text).build();
                 return new RstContent(inlineElement, content);
             }
@@ -119,6 +115,27 @@ public class TagletWriterImpl extends jdk.javadoc.internal.doclets.formats.html.
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e.getCause());
         }
+    }
+
+    private String formatMemberReferenceName(Symbol methodSymbol) {
+        Symbol enclosingSymbol = methodSymbol.getEnclosingElement();
+        if (configuration.currentTypeElement == enclosingSymbol) {
+            return methodSymbol.toString();
+        } else {
+            return String.format("%s.%s", formatSimpleNameOfEnclosedType((TypeElement) enclosingSymbol), methodSymbol.toString());
+        }
+    }
+
+    private static final ElementKind[] METHOD_OWNERS = new ElementKind[]{ElementKind.CLASS, ElementKind.INTERFACE, ElementKind.ENUM};
+
+    private String formatSimpleNameOfEnclosedType(TypeElement typeElement) {
+        String result = typeElement.getSimpleName().toString();
+        Element enclosingElement = typeElement.getEnclosingElement();
+        while (Arrays.binarySearch(METHOD_OWNERS, enclosingElement.getKind()) >= 0) {
+            result = enclosingElement.getSimpleName().toString() + "." + result;
+            enclosingElement = enclosingElement.getEnclosingElement();
+        }
+        return result;
     }
 
     private Optional<DocTree> getLabelDocTree(CommentHelper ch, DocTree seeTag) {
