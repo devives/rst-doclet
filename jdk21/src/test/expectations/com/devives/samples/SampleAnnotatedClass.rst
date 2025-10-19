@@ -49,3 +49,4 @@ annotatedProcedure
    :outertype: SampleAnnotatedClass
 
    Annotated procedure.
+

@@ -34,4 +34,4 @@ size
 .. java:method:: @Override public int size()
    :outertype: SampleCollection
 
-   :return:
+   :return: 

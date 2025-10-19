@@ -33,3 +33,4 @@ methodWithInlineTags
    .. deprecated:: 0.1.0 Deprecated description.
 
    Some method with inline tags.
+

@@ -180,6 +180,23 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
     public void codeSampleWithUnderlinesInComment() {
     }
 
+    /**
+     * <pre>import org.junit.jupiter.api.Test;
+     * import org.openqa.selenium.chrome.ChromeDriver;
+     * import org.openqa.selenium.remote.RemoteWebDriver;</pre>
+     * <pre> import org.junit.jupiter.api.Test;
+     * import org.openqa.selenium.chrome.ChromeDriver;
+     * import org.openqa.selenium.remote.RemoteWebDriver;</pre>
+     * <pre>
+     * import org.junit.jupiter.api.Test;
+     * import org.openqa.selenium.chrome.ChromeDriver;
+     * import org.openqa.selenium.remote.RemoteWebDriver;
+     * </pre>
+     */
+    public void multilinePreTag() {
+
+    }
+
     public interface InnerClass {
 
         void methodInInnerClass();

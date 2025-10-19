@@ -52,7 +52,8 @@ codeSampleWithUnderlinesInComment
 
    .. parsed-literal::
 
-      private T _field;
+
+       private T _field;
        private T field\_;
        public T _get_Field(){
            if (_field == null){
@@ -67,6 +68,7 @@ codeSampleWithUnderlinesInComment
            return field\_;
        }
 
+
 inlineAnchorExample
 ^^^^^^^^^^^^^^^^^^^
 
@@ -76,6 +78,7 @@ inlineAnchorExample
    .. _this-text-has-no-matter:
 
    The problem with inline anchors: ReStructuredText allow latin symbols only. This is inline anchor.
+
 
 inlineCodeExamples
 ^^^^^^^^^^^^^^^^^^
@@ -94,6 +97,7 @@ inlineCodeExamples
 
    ``@Getter``
    ``List<Integer> nums = new ArrayList<>();``
+
 
 linkTagsInComment
 ^^^^^^^^^^^^^^^^^
@@ -115,6 +119,7 @@ linkTagsInComment
    * `com.devives.samples <package-index.html>`__
    * :java:ref:`ArrayList <java.util.ArrayList>`
 
+
 methodWithInlineTags
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -127,6 +132,7 @@ methodWithInlineTags
 
    Some method with inline tags.
 
+
 multilineCodeExamples
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -136,6 +142,7 @@ multilineCodeExamples
    This is an example to show usage of HTML character entities while code snippet formatting in Javadocs
 
    .. parsed-literal::
+
 
       public class Application(){
            List<Integer> nums = new ArrayList<>(); 
@@ -147,15 +154,19 @@ multilineCodeExamples
 
    .. parsed-literal::
 
-      public class Application(){
+
+
+       public class Application(){
            List<Integer> nums = new ArrayList<>();
        }
+
 
 
 
    This is an example to show usage of javadoc code tag for handling '@' character
 
    .. parsed-literal::
+
 
       public class Application(){
            @Getter
@@ -168,7 +179,8 @@ multilineCodeExamples
 
    .. parsed-literal::
 
-      <script>
+
+       <script>
            $document.ready(function(){
                console.log("Hello World!);
            })
@@ -180,11 +192,43 @@ multilineCodeExamples
 
    .. parsed-literal::
 
-      <html>
+
+       <html>
        <body>
        <h4>Hello World!</h4>
        </body>
        </html>
+
+
+multilinePreTag
+^^^^^^^^^^^^^^^
+
+.. java:method:: public void multilinePreTag()
+   :outertype: SampleClass
+
+   .. parsed-literal::
+
+      import org.junit.jupiter.api.Test;
+      import org.openqa.selenium.chrome.ChromeDriver;
+      import org.openqa.selenium.remote.RemoteWebDriver;
+
+
+
+   .. parsed-literal::
+
+       import org.junit.jupiter.api.Test;
+      import org.openqa.selenium.chrome.ChromeDriver;
+      import org.openqa.selenium.remote.RemoteWebDriver;
+
+
+
+   .. parsed-literal::
+
+
+      import org.junit.jupiter.api.Test;
+      import org.openqa.selenium.chrome.ChromeDriver;
+      import org.openqa.selenium.remote.RemoteWebDriver;
+
 
 seeTagsInComment
 ^^^^^^^^^^^^^^^^

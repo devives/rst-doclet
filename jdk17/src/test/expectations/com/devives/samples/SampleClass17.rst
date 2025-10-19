@@ -46,6 +46,7 @@ methodWithInlineTags
 
    Some method with inline tags.
 
+
 seeTagsInComment
 ^^^^^^^^^^^^^^^^
 
