@@ -40,12 +40,12 @@ dependencies {
         testImplementation project(path: ':rst-doclet:javadoc4sphinx')
         rstDoclet project(path: ':rst-doclet:jdk21')
     } else {
-        compileOnly 'com.devives:devive-rst-document:0.2.0'
-        compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.0'
+        compileOnly 'com.devives:devive-rst-document:0.2.1'
+        compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.1'
         compileOnly project(path: ':html2rst')
         compileOnly project(path: ':javadoc4sphinx')
-        testImplementation 'com.devives:devive-rst-document:0.2.0'
-        testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
+        testImplementation 'com.devives:devive-rst-document:0.2.1'
+        testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.1'
         testImplementation project(path: ':html2rst')
         testImplementation project(path: ':javadoc4sphinx')
         rstDoclet project(path: ':jdk21')

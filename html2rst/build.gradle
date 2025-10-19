@@ -25,15 +25,15 @@ repositories {
 dependencies {
     // Why `compileOnly` instead `api`?
     // We build a fat jar. `compileOnly` dependencies will no be added to pom.xml.
-    compileOnly 'com.devives:devive-rst-document:0.2.0'
+    compileOnly 'com.devives:devive-rst-document:0.2.1'
     //compileOnly project(path: ':rst-document')
-    compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.0'
+    compileOnly 'com.devives:devive-rst-doc4sphinx:0.2.1'
     //compileOnly project(path: ':rst-document-for-sphinx')
     compileOnly 'org.jsoup:jsoup:1.15.3'
 
-    testImplementation 'com.devives:devive-rst-document:0.2.0'
+    testImplementation 'com.devives:devive-rst-document:0.2.1'
     //testImplementation project(path: ':rst-document')
-    testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.0'
+    testImplementation 'com.devives:devive-rst-doc4sphinx:0.2.1'
     //testImplementation project(path: ':rst-document-for-sphinx')
     testImplementation 'org.jsoup:jsoup:1.15.3'
     testImplementation platform('org.junit:junit-bom:5.9.1')
