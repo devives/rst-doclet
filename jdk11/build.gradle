@@ -138,6 +138,7 @@ publishing {
                 artifactId = archivesBaseName + '-all'
                 url = "https://github.com/devives/rst-doclet"
                 description = "Doclet for JavaDoc Tool, generating reStructuredText for Sphinx."
+                name = "Devive RST Doclet"
 
                 properties = [
                         "project.build.sourceEncoding": "UTF-8"
