@@ -129,6 +129,9 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
      * @see SampleClass#inlineAnchorExample This is multiline
      * label for reference
      * @see SampleClass#inlineAnchorExample()
+     * @see SampleClass.InnerClass#methodInInnerClass
+     * @see com.devives.samples.SampleCollection#size
+     * @see SampleCollection.InnerClass#methodInInnerClass
      * @see com.devives.samples.inners.SampleRootClass
      * @see com.devives.samples
      * @see java.util.ArrayList
@@ -144,6 +147,9 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
      * <li>{@link SampleClass#inlineAnchorExample This is multiline
      * label for reference}
      * <li>{@link SampleClass#inlineAnchorExample()}
+     * <li>{@link SampleClass.InnerClass#methodInInnerClass()}
+     * <li>{@link com.devives.samples.SampleCollection#size()}
+     * <li>{@link SampleCollection.InnerClass#methodInInnerClass}
      * <li>{@link com.devives.samples.inners.SampleRootClass}
      * <li>{@link com.devives.samples}
      * <li>{@link java.util.ArrayList}
@@ -174,4 +180,9 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
     public void codeSampleWithUnderlinesInComment() {
     }
 
+    public interface InnerClass {
+
+        void methodInInnerClass();
+
+    }
 }

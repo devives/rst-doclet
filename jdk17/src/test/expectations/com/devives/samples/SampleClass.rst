@@ -108,6 +108,9 @@ linkTagsInComment
    * :java:ref:`This is multiline
      label for reference <com.devives.samples.SampleClass.inlineAnchorExample()>`
    * :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+   * :java:ref:`SampleClass.InnerClass.methodInInnerClass() <com.devives.samples.SampleClass.InnerClass.methodInInnerClass()>`
+   * :java:ref:`SampleCollection.size() <com.devives.samples.SampleCollection.size()>`
+   * :java:ref:`SampleCollection.InnerClass.methodInInnerClass() <com.devives.samples.SampleCollection.InnerClass.methodInInnerClass()>`
    * :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
    * `com.devives.samples <package-index.html>`__
    * :java:ref:`ArrayList <java.util.ArrayList>`
@@ -199,6 +202,9 @@ seeTagsInComment
       | :java:ref:`This is multiline
         label for reference <com.devives.samples.SampleClass.inlineAnchorExample()>`
       | :java:ref:`inlineAnchorExample() <com.devives.samples.SampleClass.inlineAnchorExample()>`
+      | :java:ref:`SampleClass.InnerClass.methodInInnerClass() <com.devives.samples.SampleClass.InnerClass.methodInInnerClass()>`
+      | :java:ref:`SampleCollection.size() <com.devives.samples.SampleCollection.size()>`
+      | :java:ref:`SampleCollection.InnerClass.methodInInnerClass() <com.devives.samples.SampleCollection.InnerClass.methodInInnerClass()>`
       | :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
       | `com.devives.samples <package-index.html>`__
       | :java:ref:`ArrayList <java.util.ArrayList>`

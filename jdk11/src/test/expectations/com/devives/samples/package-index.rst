@@ -23,9 +23,11 @@ Sample classes package. This is inline anchor.
    SampleAnnotatedClass.rst
    SampleAnnotation.rst
    SampleClass.rst
+   SampleClass-InnerClass.rst
    SampleClass11.rst
    SampleClassAbst.rst
    SampleCollection.rst
+   SampleCollection-InnerClass.rst
    SampleEnum.rst
    SampleFieldDeclarations.rst
    SampleGenericCollection.rst

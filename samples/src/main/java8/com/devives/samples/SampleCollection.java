@@ -41,4 +41,11 @@ public class SampleCollection extends AbstractList<String> {
     public int size() {
         return 0;
     }
+
+    public interface InnerClass {
+
+        void methodInInnerClass();
+
+    }
+
 }
