@@ -42,12 +42,12 @@ public class RstContent extends Content {
     }
 
     @Override
-    public void addContent(Content content) {
+    public void add(Content content) {
 
     }
 
     @Override
-    public void addContent(CharSequence stringContent) {
+    public void add(CharSequence stringContent) {
 
     }
 

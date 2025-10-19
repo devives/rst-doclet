@@ -56,12 +56,12 @@ public class Text extends Content {
     }
 
     @Override
-    public void addContent(Content content) {
+    public void add(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void addContent(CharSequence stringContent) {
+    public void add(CharSequence stringContent) {
         throw new UnsupportedOperationException();
     }
 
