@@ -33,8 +33,8 @@ configurations {
 dependencies {
     // Why `compileOnly` instead `api`?
     // We build a fat jar. `compileOnly` dependencies will no be added to pom.xml.
-    compileOnly 'com.devives:devive-commons-lang:0.1.0'
-    testImplementation 'com.devives:devive-commons-lang:0.1.0'
+    compileOnly 'com.devives:devive-commons-lang:0.3.1'
+    testImplementation 'com.devives:devive-commons-lang:0.3.1'
     if (project.hasProperty("com.devives.rst.project-group")) {
         compileOnly project(path: ':rst-document')
         compileOnly project(path: ':rst-document-for-sphinx')
