@@ -180,6 +180,10 @@ public abstract class HtmlUtils {
     private static final Pattern A_TAG_PATTERN = Pattern.compile("<a .+?>(.+?)</a>");
     private static final Pattern A_TAG_PATTERN_QUOTED = Pattern.compile("(.*)<a .+?>(.+?)</a>(.*)");
 
+    public static String removeWbrTags(String text) {
+        return text != null ? text.replaceAll("<wbr>", " ") : null;
+    }
+
     public static String removeATags(String text) {
         Matcher m = A_TAG_PATTERN.matcher(text);
         StringBuffer sb = new StringBuffer();

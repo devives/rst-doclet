@@ -53,6 +53,7 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
                 docContext_.getRstConfiguration().getHtmlConfiguration(), executableElement);
         String className = HtmlUtils.removeATags(content.toString());
         String result = HtmlUtils.unescapeLtRtAmpBSlash(className);
+        result = HtmlUtils.removeWbrTags(result);
         result = collapseNamespaces(result);
         return result;
     }
@@ -65,6 +66,7 @@ public class JavaMethodBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>>
                 true);
         String className = HtmlUtils.removeATags(content.toString());
         String result = HtmlUtils.unescapeLtRtAmpBSlash(className);
+        result = HtmlUtils.removeWbrTags(result);
         result = collapseNamespaces(result);
         return reformatCommas(result);
     }

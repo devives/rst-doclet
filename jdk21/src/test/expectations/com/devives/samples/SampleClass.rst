@@ -1,3 +1,5 @@
+.. java:import:: java.util Map
+
 SampleClass
 ===========
 
@@ -69,6 +71,17 @@ codeSampleWithUnderlinesInComment
        }
 
 
+genericMethod
+^^^^^^^^^^^^^
+
+.. java:method:: public <K, V> Map<K, V> genericMethod(Map<K, V> map)
+   :outertype: SampleClass
+
+   :param map: ``Map<K, V>``
+   :param <K>: key type
+   :param <V>: value type
+   :return: passed :java:ref:`Map <java.util.Map>` instance.
+
 inlineAnchorExample
 ^^^^^^^^^^^^^^^^^^^
 
@@ -118,6 +131,7 @@ linkTagsInComment
    * :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
    * `com.devives.samples <package-index.html>`__
    * :java:ref:`ArrayList <java.util.ArrayList>`
+   * :java:ref:`genericMethod(Map) <com.devives.samples.SampleClass.genericMethod(Map<K,V>)>`
 
 
 methodWithInlineTags
@@ -205,16 +219,16 @@ multilinePreTag
    .. parsed-literal::
 
       import org.junit.jupiter.api.Test;
-      import org.openqa.selenium.chrome.ChromeDriver;
-      import org.openqa.selenium.remote.RemoteWebDriver;
+       import org.openqa.selenium.chrome.ChromeDriver;
+       import org.openqa.selenium.remote.RemoteWebDriver;
 
 
 
    .. parsed-literal::
 
        import org.junit.jupiter.api.Test;
-      import org.openqa.selenium.chrome.ChromeDriver;
-      import org.openqa.selenium.remote.RemoteWebDriver;
+       import org.openqa.selenium.chrome.ChromeDriver;
+       import org.openqa.selenium.remote.RemoteWebDriver;
 
 
 
@@ -247,3 +261,4 @@ seeTagsInComment
       | :java:ref:`SampleRootClass <com.devives.samples.inners.SampleRootClass>`
       | `com.devives.samples <package-index.html>`__
       | :java:ref:`ArrayList <java.util.ArrayList>`
+      | :java:ref:`<K,V>genericMethod(java.util.Map<K,V>) <com.devives.samples.SampleClass.genericMethod(Map<K,V>)>`

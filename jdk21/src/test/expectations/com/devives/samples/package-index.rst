@@ -32,6 +32,7 @@ Sample classes package. This is inline anchor.
    SampleCollection-InnerClass.rst
    SampleEnum.rst
    SampleFieldDeclarations.rst
+   SampleGenericClass.rst
    SampleGenericCollection.rst
    SampleInterface.rst
    SampleInterface$Sample.rst

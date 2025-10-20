@@ -17,6 +17,8 @@
  */
 package com.devives.samples;
 
+import java.util.Map;
+
 /**
  * Sample class.
  * <ul>
@@ -135,6 +137,7 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
      * @see com.devives.samples.inners.SampleRootClass
      * @see com.devives.samples
      * @see java.util.ArrayList
+     * @see #genericMethod(Map)
      */
     public void seeTagsInComment() {
     }
@@ -153,6 +156,7 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
      * <li>{@link com.devives.samples.inners.SampleRootClass}
      * <li>{@link com.devives.samples}
      * <li>{@link java.util.ArrayList}
+     * <li>{@link #genericMethod(Map)}
      * </ul>
      */
     public void linkTagsInComment() {
@@ -195,6 +199,16 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
      */
     public void multilinePreTag() {
 
+    }
+
+    /**
+     * @param map {@code Map<K, V>}
+     * @return passed {@link Map<K, V>} instance.
+     * @param <K> key type
+     * @param <V> value type
+     */
+    public <K, V> Map<K, V> genericMethod(Map<K, V> map) {
+        return map;
     }
 
     public interface InnerClass {

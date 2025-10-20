@@ -110,6 +110,7 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                 classDoc);
         String className = HtmlUtils.removeATags(content.toString());
         result += HtmlUtils.unescapeLtRtAmpBSlash(className);
+        result = HtmlUtils.removeWbrTags(result);
         result = collapseNamespaces(result);
         return result;
     }
@@ -129,6 +130,7 @@ public class JavaTypeBuilder<PARENT extends RstNodeBuilder<?, ?, ?, ?>> extends 
                     false);
             String className = HtmlUtils.removeATags(content.toString());
             result += HtmlUtils.unescapeLtRtAmpBSlash(className);
+            result = HtmlUtils.removeWbrTags(result);
             result = collapseNamespaces(result);
         }
         return result;
