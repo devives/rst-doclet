@@ -90,7 +90,7 @@ getLinkWithLabelInReturn
 
    Link with label in return.
 
-   :return: :java:ref:`Map<String, Object> <java.util.Map>`
+   :return: :java:ref:`Map\<String, Object> <java.util.Map>`
 
 methodWithClassTypeParameter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

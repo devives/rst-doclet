@@ -80,7 +80,7 @@ genericMethod
    :param map: ``Map<K, V>``
    :param <K>: key type
    :param <V>: value type
-   :return: passed :java:ref:`Map <java.util.Map>` instance.
+   :return: passed :java:ref:`Map\<K, V> <java.util.Map>` instance.
 
 inlineAnchorExample
 ^^^^^^^^^^^^^^^^^^^

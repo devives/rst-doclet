@@ -36,7 +36,6 @@ import com.devives.rst.util.StringUtils;
 import java.util.Map;
 import java.util.Stack;
 
-import static com.devives.html2rst.HtmlUtils.escapeUnderlines;
 import static com.devives.html2rst.HtmlUtils.unescapeLtRtAmpBSlash;
 import static com.devives.rst.util.StringUtils.*;
 
@@ -78,7 +77,10 @@ public class RstDocumentWriter implements HtmlVisitor {
     @Override
     public void visitText(String text) {
         if (!strip(text, SPACE).isEmpty()) {
-            appendText(getTextBuilder(), unescapeLtRtAmpBSlash(escapeRstEmphasis(text)));
+            String tmp = escapeRstEmphasis(text);
+            tmp = escapeUnderlines(tmp);
+            tmp = unescapeLtRtAmpBSlash(tmp);
+            appendText(getTextBuilder(), tmp);
         }
     }
 
@@ -444,7 +446,7 @@ public class RstDocumentWriter implements HtmlVisitor {
         }
     }
 
-    private String leftJustify(String s, int indent) {
+    protected String leftJustify(String s, int indent) {
         String[] lines = s.split(NL);
         StringBuilder sb = new StringBuilder();
 
@@ -455,16 +457,16 @@ public class RstDocumentWriter implements HtmlVisitor {
         return sb.toString();
     }
 
-    private String escapeRstEmphasis(String text) {
+    protected String escapeRstEmphasis(String text) {
         if (text == null || text.isEmpty()) return text;
         if (text.trim().startsWith(".. ")) return text;
-        text = text
-                .replaceAll("\\\\", "\\\\\\\\")
-                .replaceAll("\\*", "\\\\*")
-        //.replaceAll("`", "\\\\`") // Проблема с :ref:`link`
-        ;
-        text = HtmlUtils.escapeUnderlines(text);
-        return text;
+        return RstUtils.escapeRstEmphasis(text);
+    }
+
+    protected String escapeUnderlines(String text) {
+        if (text == null || text.isEmpty()) return text;
+        if (text.trim().startsWith(".. ")) return text;
+        return RstUtils.escapeEndingUnderlines(text);
     }
 
 }

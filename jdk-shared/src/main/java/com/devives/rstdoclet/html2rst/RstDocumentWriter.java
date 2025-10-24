@@ -24,9 +24,6 @@ import com.devives.sphinx.rst.document.Ref;
 
 import java.util.Map;
 
-import static com.devives.html2rst.HtmlUtils.escapeUnderlines;
-import static com.devives.html2rst.HtmlUtils.unescapeLtRtAmpBSlash;
-
 public class RstDocumentWriter extends com.devives.html2rst.RstDocumentWriter {
 
     private final HrefConverter linkResolver;
@@ -55,10 +52,19 @@ public class RstDocumentWriter extends com.devives.html2rst.RstDocumentWriter {
     @Override
     public void visitCode(String text) {
         if (text != null && text.startsWith(":java:")) {
-            getTextBuilder().text(escapeUnderlines(unescapeLtRtAmpBSlash(text)));
+            String tmp = HtmlUtils.unescapeLtRtAmpBSlash(text);
+            tmp = escapeUnderlines(tmp);
+            getTextBuilder().text(tmp);
         } else {
             super.visitCode(text);
         }
 
+    }
+
+    @Override
+    protected String escapeRstEmphasis(String text) {
+        if (text == null || text.isEmpty()) return text;
+        if (text.trim().startsWith(".. ")) return text;
+        return text.replaceAll("\\\\(?!&lt;)", "\\\\\\\\");
     }
 }

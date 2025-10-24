@@ -53,22 +53,6 @@ public abstract class HtmlUtils {
                 : unescapeLtRtAmpBSlash(text);
     }
 
-    private static final Pattern UNDERLINE_PATTERN = Pattern.compile("(\\w*)_(\\W)");
-
-    public static String escapeUnderlines(String text) {
-        if (StringUtils.isNullOrEmpty(text)) {
-            return text;
-        } else {
-            Matcher m = UNDERLINE_PATTERN.matcher(text);
-            StringBuffer sb = new StringBuffer();
-            while (m.find()) {
-                m.appendReplacement(sb, "$1" + Matcher.quoteReplacement("\\_") + "$2");
-            }
-            m.appendTail(sb);
-            return sb.toString();
-        }
-    }
-
     /**
      * Returns a String with escaped special JavaScript characters.
      *

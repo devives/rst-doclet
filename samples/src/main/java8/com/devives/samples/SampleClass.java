@@ -203,7 +203,7 @@ public class SampleClass extends SampleClassAbst<String> implements SampleInterf
 
     /**
      * @param map {@code Map<K, V>}
-     * @return passed {@link Map<K, V>} instance.
+     * @return passed {@link Map<K, V> Map&lt;K, V>} instance.
      * @param <K> key type
      * @param <V> value type
      */

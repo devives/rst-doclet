@@ -45,6 +45,8 @@ public class JavaTypeRefBuilder<
 
     @Override
     protected String formatText() {
-        return text_ != null ? text_ : typeElement_.getSimpleName().toString();
+        String result = text_ != null ? text_ : typeElement_.getSimpleName().toString();
+        // Escaping generics: Map&lt;K, V&gt;
+        return result.replaceAll("\\&lt;", "\\\\&lt;");
     }
 }
